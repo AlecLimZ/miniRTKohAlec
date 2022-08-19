@@ -1,0 +1,40 @@
+# Camera (unique, required)
+# id     centre: x,y,z       orientation: x,y,z  fov
+# C      (-inf, inf)         [0, 1]              (0, 180)
+  C      0,0,4               0,0,-1              70
+
+# Light - Ambient (unique)
+# id                                             ratio     colour: r,g,b
+# A                                              [0, 1]    [0, 255]
+  A                                              0.025     255,255,255
+
+# Light - Point
+# id     centre: x,y,z                           ratio     colour: r,g,b
+# lp     (-inf, inf)                             [0, 1]    [0, 255]
+#   lp     5,0,5                                   0.8       255,255,255
+
+# Light - Spot
+# id     centre: x,y,z       orientation: x,y,z  ratio     colour: r,g,b
+# ls     (-inf, inf)         [0, 1]              [0, 1]    [0, 255]
+  ls     3,0,5               -0.3,0,-0.5         0.5       255,255,255
+
+# Object - Cone
+# id     centre: x,y,z       orientation: x,y,z  height              colour: r,g,b       checkerboard        norm_map
+# cn     (-inf, inf)         [0, 1]              (0, inf)            [0, 255]            float               path (optional)
+#   cn     0,0,0               0,0,1               100                 0,128,255           0                   
+
+# Object - Cylinder
+# id     centre: x,y,z       orientation: x,y,z  radius,height       colour: r,g,b       checkerboard        norm_map
+# cy     (-inf, inf)         [0, 1]              (0, inf)            [0, 255]            float               path (optional)
+#   cy     0,0,0               0,0,1               1,2                 0,128,255           0                   
+
+# Object - Plane
+# id     centre: x,y,z       orientation: x,y,z                      colour: r,g,b       checkerboard        norm_map
+# pl     (-inf, inf)         [0, 1]                                  [0, 255]            float               path (optional)
+#   pl     0,0,0               0,0,1                                    0,128,255           0                  
+
+# Object - Sphere
+# id     centre: x,y,z       orientation: x,y,z  radius,height       colour: r,g,b       checkerboard        norm_map
+# sp     (-inf, inf)         [0, 1]              (0, inf)            [0, 255]            float               path (optional)
+  sp     0,0,0               0,1,0               1,2                 255,0,0             0                   
+  sp     0,0,0               0,1,0               1,2                 255,255,0             0                   
