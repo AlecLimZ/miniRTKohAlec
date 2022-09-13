@@ -29,7 +29,7 @@ linux	:
 		make -C mlx_linux
 		$(CC) -Wall -Werror -Wextra -Imlx -c $(SRC) $(CUR) -I$(HEADERDIR)
 		mv *.o SRC/
-		$(CC) SRC/*.o $(LIBPATH)libft.a -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o miniRT
+		$(CC) SRC/*.o $(LIBPATH)libft.a -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o miniRT -fsanitize=address
 
 clean	:
 		rm -rf $(OBJ) $(OBJC)
