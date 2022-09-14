@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leng-chu <leng-chu@student.42kl.edu.m      +#+  +:+       +#+        */
+/*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 21:52:26 by leng-chu          #+#    #+#             */
 /*   Updated: 2022/09/15 12:50:39 by leng-chu         ###   ########.fr       */
