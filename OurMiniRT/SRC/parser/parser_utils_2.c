@@ -1,19 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
+/*   parser_utils_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/19 16:16:17 by jacklearn         #+#    #+#             */
-/*   Updated: 2022/09/14 23:37:03 by Koh              ###   ########.fr       */
+/*   Created: 2022/09/15 02:05:56 by Koh               #+#    #+#             */
+/*   Updated: 2022/09/15 02:36:32 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "parser.h"
 
-void	ft_lstadd_front(t_list **lst, t_list *new)
+double	parse_double(const char *a)
 {
-	new->next = *lst;
-	*lst = new;
+	return (strtod(a, NULL));
+}
+
+int	ft_isspace(int c)
+{
+	return (c == ' ' || ('\t' <= c && c <= '\r'));
 }
