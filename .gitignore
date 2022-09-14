@@ -4,3 +4,4 @@
 *.dSYM/
 obj/
 [mM]iniRT
+.DS_Store
