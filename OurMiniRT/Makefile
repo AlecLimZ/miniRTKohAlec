@@ -1,4 +1,4 @@
-NAME		= MiniRT
+NAME		= miniRT
 SRC			= SRC/*.c
 CUR			= main.c
 OBJ			= $(SRC:%.c=%.o)
@@ -36,7 +36,7 @@ clean	:
 		make clean -C $(LIBPATH)
 		make clean -C mlx_mms_20191025
 		make clean -C minilibx_macos
-		make clean -C mlx_linux
+#		make clean -C mlx_linux
 
 fclean	: clean
 		rm -rf $(NAME)
