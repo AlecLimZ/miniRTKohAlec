@@ -1,0 +1,6 @@
+*.o
+*.a
+*.dylib
+*.dSYM/
+obj/
+[mM]iniRT
