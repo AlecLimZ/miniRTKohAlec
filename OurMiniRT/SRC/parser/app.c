@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:00:06 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/15 14:02:07 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/15 14:42:35 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	app_exit(t_app *app, const char *error)
 // wrap system functions eg open()
 int	if_errno_exit(int ret, t_app *app)
 {
-	if (ret < 0)
+	if (ret == -1 && errno)
 		app_exit(app, strerror(errno));
 	return (ret);
 }
