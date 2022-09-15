@@ -20,31 +20,21 @@ SRC		=	ft_strlcpy.c ft_strlen.c ft_strncmp.c ft_strlcat.c \
 			ft_split.c ft_itoa.c ft_strmapi.c ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c
 BONUS	=	ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c \
 			ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c
+GNL		=	get_next_line.o get_next_line_utils.o
 CC		=	gcc -Wall -Wextra -Werror
 OBJ		=	$(SRC:%.c=%.o)
 OBJB	=	$(BONUS:%.c=%.o)
 
 all:	$(NAME)
 
-$(OBJ):	$(SRC)
-	$(CC) -I. -c $^
-
-$(OBJB): $(BONUS)
-	$(CC) -I. -c $^
-
-$(NAME):	$(OBJ)
-	ar rc $(NAME) $(OBJ)
-	ranlib $@
-
-bonus: $(OBJ) $(OBJB)
-	ar rcs $(NAME) $(OBJ) $(OBJB)
+$(NAME): $(OBJ) $(OBJB) $(GNL)
+	ar rcs $(NAME) $?
 
 clean:
 	rm -rf $(OBJ) $(OBJB)
 
 fclean:	clean
 	rm -rf $(NAME)
-	rm -rf libft.so
 
 re:	fclean all
 

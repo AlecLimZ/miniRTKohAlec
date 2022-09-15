@@ -13,7 +13,6 @@
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include "../INCLUDES/miniRT.h"
 # include <unistd.h>
 # include <stdlib.h>
 
