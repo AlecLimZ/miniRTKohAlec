@@ -35,7 +35,15 @@ int	main(void)
 	void	*mlx;
 	void	*mlx_win;
 	t_data	img;
+	char	*input;
 
+	ft_putstr_fd("Your name: ", 1);
+	if (get_next_line(0, &input))
+	{
+		ft_putstr_fd("Hello ", 1);
+		ft_putendl_fd(input, 1);
+		free(input);
+	}
 	mlx = mlx_init();
 	mlx_win = mlx_new_window(mlx, 1000, 500, "HELLO");
 	img.img = mlx_new_image(mlx, 300, 300);
