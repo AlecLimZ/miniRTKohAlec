@@ -1,24 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_utils_2.c                                   :+:      :+:    :+:   */
+/*   app.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/15 02:05:56 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/15 12:58:45 by Koh              ###   ########.fr       */
+/*   Created: 2022/09/15 14:01:46 by Koh               #+#    #+#             */
+/*   Updated: 2022/09/15 14:14:06 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
+#ifndef APP_H
+# define APP_H
 
-// todo string to double
-double	parse_double(const char *a)
-{
-	return (strtod(a, NULL));
-}
+# include "libft.h"
+# include "structs.h"
 
-int	ft_isspace(int c)
-{
-	return (c == ' ' || ('\t' <= c && c <= '\r'));
-}
+void	app_exit(t_app *app, const char *error);
+int		if_errno_exit(int ret, t_app *app);
+
+#endif

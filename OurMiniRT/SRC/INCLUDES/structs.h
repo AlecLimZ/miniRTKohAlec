@@ -1,19 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/15 02:37:24 by Koh              ###   ########.fr       */
+/*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
+/*   Updated: 2022/09/15 14:14:15 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_H
-# define PARSER_H
-
-# include "libft/libft.h"
+#ifndef STRUCTS_H
+# define STRUCTS_H
 
 # define MIN_COOR -999
 # define MAX_COOR 999
@@ -45,29 +43,33 @@ typedef union s_vec3
 typedef t_vec3	t_rgb;
 typedef t_vec3	t_xyz;
 
+// only 1 ambient-light allowed (check "is_configured") 
 typedef struct s_ambient
 {
 	double	ratio;
 	t_rgb	color;
-	int		loaded;
+	int		is_configured;
 }	t_ambient;
 
+// only 1 camera allowed (check "is_configured") 
 typedef struct s_camera
 {
 	double	fov;
 	t_xyz	coor;
 	t_xyz	orientation;
-	int		loaded;
+	int		is_configured;
 }	t_camera;
 
+// only 1 light allowed (check "is_configured") 
 typedef struct s_light
 {
 	double	brightness;
 	t_xyz	coor;
 	t_rgb	color;
-	int		loaded;
+	int		is_configured;
 }	t_light;
 
+// can be sphere/plane/cylinder (as linked-list content)
 typedef struct s_object
 {
 	double	diameter;
@@ -78,6 +80,8 @@ typedef struct s_object
 	char	type;
 }	t_object;
 
+// a scene only 1 ambient,camera,light
+// may be multiple sphere/plane/cylinder objects 
 typedef struct s_app
 {
 	int			has_error;
@@ -86,23 +90,5 @@ typedef struct s_app
 	t_light		light;
 	t_list		*objects;
 }	t_app;
-
-// parser
-void	parse_file(char *fp, t_app *app);
-
-// parser_types
-int		parse_sphere(char *line, t_app *app);
-int		parse_plane(char *line, t_app *app);
-int		parse_cylinder(char *line, t_app *app);
-
-// parser_utils
-int		trim_str(char **s, int (*f)(int));
-int		pull_nbr(char **line, double *d, double min, double max);
-int		pull_vec(char **line, t_vec3 *d, double min, double max);
-int		pull_rgb(char **line, t_vec3 *d);
-
-// parser_utils_2
-double	parse_double(const char *a);
-int		ft_isspace(int c);
 
 #endif
