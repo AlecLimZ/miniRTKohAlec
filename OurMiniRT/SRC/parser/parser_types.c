@@ -6,12 +6,16 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 02:18:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/15 02:29:08 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/15 13:14:00 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
+// a scene may have none/multiple sphere/plane/cylinder
+// these objects are malloc'ed and added to linked-list
+
+// "sp <x,y,z> <diameter> <r,g,b>" eg "sp 0.0,0.0,20.6 12.6 10,0,255"
 int	parse_sphere(char *line, t_app *app)
 {
 	t_object *const	a = ft_calloc(1, sizeof(t_object));
@@ -34,6 +38,8 @@ int	parse_sphere(char *line, t_app *app)
 	return (0);
 }
 
+// "pl <x,y,z> <orientation:x,y,z> <r,g,b>"
+// eg "pl 0.0,0.0,-10.0 0.0,1.0,0.0 0,0,225"
 int	parse_plane(char *line, t_app *app)
 {
 	t_object *const	a = ft_calloc(1, sizeof(t_object));
@@ -55,6 +61,8 @@ int	parse_plane(char *line, t_app *app)
 	return (0);
 }
 
+// "cy <x,y,z> <orientation:x,y,z> <diameter> <height> <r,g,b>"
+// eg "cy 50.0,0.0,20.6 0.0,0.0,1.0 14.2 21.42 10,0,255"
 int	parse_cylinder(char *line, t_app *app)
 {
 	t_object *const	a = ft_calloc(1, sizeof(t_object));

@@ -6,43 +6,37 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 01:57:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/15 02:35:51 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/15 12:58:08 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-// int	pull_str(char **s, int (*f)(int), char **begin, char **end)
-// {
-// 	const char	*s_ = *s;
-
-// 	if (begin)
-// 		*begin = *s;
-// 	while (**s && f(**s))
-// 		++*s;
-// 	if (end)
-// 		*end = *s;
-// 	return (*s - s_);
-// }
-
-int	trim_chr(char **s, char c)
+// left trim by c, return count of char trimmed
+// char *s = "aabc"; trim_chr(&a, 'a'); // return 2, s becomes "bc"
+static int	trim_chr(char **line, char c)
 {
-	const char	*s_ = *s;
+	const char	*start = *line;
 
-	while (**s && **s == c)
-		++*s;
-	return (*s - s_);
+	while (**line && **line == c)
+		++*line;
+	return (*line - start);
 }
 
-int	trim_str(char **s, int (*f)(int))
+// left trim by isxxx(), return count of char trimmed
+// char *s = "12bc"; trim_str(&a, isdigit); // return 2, s becomes "bc"
+int	trim_str(char **line, int (*f)(int))
 {
-	const char	*s_ = *s;
+	const char	*start = *line;
 
-	while (**s && f(**s))
-		++*s;
-	return (*s - s_);
+	while (**line && f(**line))
+		++*line;
+	return (*line - start);
 }
 
+// trim /^-?[0-9]+.?[0-9]*/ into number, while moving str pointer
+// return 1 if correct format and number within min and max (inclusive)
+// return 0 otherwise
 int	pull_nbr(char **line, double *d, double min, double max)
 {
 	const char	*begin = *line;
@@ -59,6 +53,9 @@ int	pull_nbr(char **line, double *d, double min, double max)
 	return (0);
 }
 
+// trim <number>,<number>,<number> into t_vec3, while moving str pointer
+// return 1 if correct format and number within min and max (inclusive)
+// return 0 otherwise
 int	pull_vec(char **line, t_vec3 *d, double min, double max)
 {
 	return (
@@ -70,6 +67,10 @@ int	pull_vec(char **line, t_vec3 *d, double min, double max)
 	);
 }
 
+// trim <number>,<number>,<number> into t_vec3, while moving str pointer
+// number is converted into 0.0 to 1.0 instead of 0 and 255
+// return 1 if correct format and number within 0 and 255 (inclusive)
+// return 0 otherwise
 int	pull_rgb(char **line, t_vec3 *d)
 {
 	if (

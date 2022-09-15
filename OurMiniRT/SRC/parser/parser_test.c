@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_utils_2.c                                   :+:      :+:    :+:   */
+/*   parser_test.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/15 02:05:56 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/15 12:58:45 by Koh              ###   ########.fr       */
+/*   Created: 2022/09/15 14:05:48 by Koh               #+#    #+#             */
+/*   Updated: 2022/09/15 14:06:01 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-// todo string to double
-double	parse_double(const char *a)
+int	main(int argc, char **argv)
 {
-	return (strtod(a, NULL));
-}
+	t_app		app;
 
-int	ft_isspace(int c)
-{
-	return (c == ' ' || ('\t' <= c && c <= '\r'));
+	app = (t_app){};
+	if (argc != 2)
+		app_exit(&app, "Require 1 rt file");
+	parse_file(argv[1], &app);
+	printf("lstsize %d\n", ft_lstsize(app.objects));
+	app_exit(&app, NULL);
 }
