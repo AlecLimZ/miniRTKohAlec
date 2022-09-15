@@ -18,11 +18,12 @@ LDLIBS		= $(LIBFT) $(LIBMLX) -framework OpenGL -framework AppKit
 ifeq ($(shell uname), Linux)
 	LIBMLX	= $(MLXLINUX)
 	LDLIBS	= $(LIBFT) $(LIBMLX) -lXext -lX11 -lm
+	WSL_MSG	= wsl
 endif
 
 all		: $(NAME)
 
-$(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT)
+$(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT) $(WSL_MSG)
 
 $(LIBFT) $(LIBMLX):
 		make -C $(dir $@)
@@ -39,7 +40,15 @@ fclean	: clean
 
 re		: fclean all
 
-.PHONY	: all clean fclean re debug
+.PHONY	: all clean fclean re debug wsl
+
+wsl		:
+		@echo =====================================================================================
+		@echo \"sudo apt-get install gcc make xorg libxext-dev libbsd-dev\" if you have not done so
+		@if test -d /run/WSL; then echo export DISPLAY=$$(cat /etc/resolv.conf | grep nameserver | awk '{print $$2}'):0.0; fi
+		@if test ! -d /run/WSL; then echo export DISPLAY=localhost:0.0; fi
+		@echo =====================================================================================
+		./miniRT
 
 debug	:
 		: $(COMPILE.c)
