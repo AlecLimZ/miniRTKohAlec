@@ -9,10 +9,11 @@ MLXOPENGL	= minilibx_macos/libmlx.a
 LIBMLX		= $(MLXMETAL) # choose MLXOPENGL or MLXMETAL
 VPATH		= SRC # ./miniRT from ./SRC/miniRT.c
 
-# ASAN		= -fsanitize=address
+ASAN		= -fsanitize=address
 CFLAGS		= -Wall -Werror -Wextra $(ASAN) #-g3
 CPPFLAGS	= $(addprefix -I, $(HEADERDIR) $(dir $(LIBFT) $(LIBMLX)))
 LDFLAGS		= $(ASAN)
+LDLIBS		= $(LIBFT) $(LIBMLX) -framework OpenGL -framework AppKit
 
 ifeq ($(shell uname), Linux)
 	LIBMLX	= $(MLXLINUX)
@@ -21,10 +22,11 @@ endif
 
 all		: $(NAME)
 
-$(NAME)	: $(LIBMLX) $(LIBFT) $(OBJ)
+$(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT)
 
 $(LIBFT) $(LIBMLX):
 		make -C $(dir $@)
+		- @cp $(MLXMETAL) libmlx.dylib
 
 clean	:
 		rm -rf $(OBJ) $(OBJC)
