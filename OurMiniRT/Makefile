@@ -1,48 +1,46 @@
 NAME		= miniRT
-SRC			= SRC/*.c
-CUR			= main.c
+SRC			= $(wildcard SRC/*.c) $(wildcard SRC/*/*.c)
 OBJ			= $(SRC:%.c=%.o)
-OBJC		= $(CUR:%.c=%.o)
-CC			= gcc
-LIBPATH		= SRC/libft/
-HEADERDIR	= SRC/INCLUDES/
+HEADERDIR	= SRC/INCLUDES
+LIBFT		= libft/libft.a
+MLXLINUX	= mlx_linux/libmlx.a
+MLXMETAL	= mlx_mms_20191025/libmlx.dylib
+MLXOPENGL	= minilibx_macos/libmlx.a
+LIBMLX		= $(MLXMETAL) # choose MLXOPENGL or MLXMETAL
+VPATH		= SRC # ./miniRT from ./SRC/miniRT.c
+
+# ASAN		= -fsanitize=address
+CFLAGS		= -Wall -Werror -Wextra $(ASAN) #-g3
+CPPFLAGS	= $(addprefix -I, $(HEADERDIR) $(dir $(LIBFT) $(LIBMLX)))
+LDFLAGS		= $(ASAN)
+
+ifeq ($(shell uname), Linux)
+	LIBMLX	= $(MLXLINUX)
+	LDLIBS	= $(LIBFT) $(LIBMLX) -lXext -lX11 -lm
+endif
 
 all		: $(NAME)
 
-#Macos
-$(OBJ)	: $(SRC)
-		make bonus -C $(LIBPATH)
-#		make -C mlx_mms_20191025
-		make -C minilibx_macos
-		$(CC) -Wall -Werror -Wextra -Imlx -c $(SRC) -I$(HEADERDIR)
-		mv *.o SRC/
+$(NAME)	: $(LIBMLX) $(LIBFT) $(OBJ)
 
-# Convert the main to .o on the main place
-$(OBJC)	: $(CUR)
-		$(CC) -Wall -Werror -Wextra -Imlx -c $(CUR) -I$(HEADERDIR)
-
-$(NAME)	: $(OBJ) $(OBJC)
-		$(CC) -Lminilibx_macos -lmlx -framework OpenGL -framework AppKit $^ $(LIBPATH)libft.a -o $(NAME)
-
-linux	:
-		make bonus -C $(LIBPATH)
-		make -C mlx_linux
-		$(CC) -Wall -Werror -Wextra -Imlx -c $(SRC) $(CUR) -I$(HEADERDIR)
-		mv *.o SRC/
-		$(CC) SRC/*.o $(LIBPATH)libft.a -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o miniRT -fsanitize=address
+$(LIBFT) $(LIBMLX):
+		make -C $(dir $@)
 
 clean	:
 		rm -rf $(OBJ) $(OBJC)
-		make clean -C $(LIBPATH)
-		make clean -C mlx_mms_20191025
-		make clean -C minilibx_macos
-#		make clean -C mlx_linux
+		make clean -C $(dir $(LIBFT))
+		make clean -C $(dir $(LIBMLX))
 
 fclean	: clean
 		rm -rf $(NAME)
-		make fclean -C $(LIBPATH)
+		make fclean -C $(dir $(LIBFT))
 
 re		: fclean all
-		make re -C $(LIBPATH)
 
-.PHONY	: all clean fclean re
+.PHONY	: all clean fclean re debug
+
+debug	:
+		: $(COMPILE.c)
+		: $(LINK.o) ... $(LOADLIBES) $(LDLIBS) -o ...
+		: $(SRC)
+		: $(OBJ)

@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
-#include <fcntl.h>
+#include "libft.h"
+#include <stdlib.h>
+#include <unistd.h>
 
 size_t	ft_strlen_c(const char *s, const char c)
 {
