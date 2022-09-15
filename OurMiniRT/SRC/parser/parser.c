@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 13:10:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/15 14:05:35 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/15 14:47:24 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static int	parse_line(char *line, t_app *app)
 
 // entry point to parser
 // rt-file as input, app struct as output
-// caller responsible for free-ing scene objects linked-list
+// if any error, it will app_exit() which includes cleanup
 void	parse_file(char *fp, t_app *app)
 {
 	char	*file_ext;

@@ -4,6 +4,8 @@ test:
 	@echo =========================
 	./a.out sample.rt
 	@echo =========================
+	- ./a.out sample.rt sample.rt
+	@echo =========================
 	- ./a.out missing.rt
 	@echo =========================
 	- ./a.out
