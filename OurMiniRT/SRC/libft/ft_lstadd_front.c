@@ -6,7 +6,7 @@
 /*   By: jacklearn <marvin@42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/19 16:16:17 by jacklearn         #+#    #+#             */
-/*   Updated: 2021/05/19 19:53:16 by jacklearn        ###   ########.fr       */
+/*   Updated: 2022/09/15 12:42:29 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,6 @@
 
 void	ft_lstadd_front(t_list **lst, t_list *new)
 {
+	new->next = *list;
 	*lst = new;
 }
