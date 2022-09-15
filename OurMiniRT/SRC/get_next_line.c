@@ -6,7 +6,7 @@
 /*   By: leng-chu <leng-chu@student.42kl.edu.m      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 21:52:26 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/15 12:33:15 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/15 12:50:39 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,10 @@ int	get_next_line(int fd, char **line)
 	while (readbts > 0)
 	{
 		readbts = read(fd, newline, BUFFER_SIZE);
-		newline[readbts] = '\0';
+		if (readbts > 0)
+			newline[readbts] = '\0';
+		else
+			newline[0] = '\0';
 		linebuff[fd] = ft_strjoin_free(linebuff[fd], newline);
 		if (ft_strchr(linebuff[fd], '\n'))
 			break ;
