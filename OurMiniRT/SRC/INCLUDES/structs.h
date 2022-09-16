@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/15 14:14:15 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 17:26:49 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,15 +80,26 @@ typedef struct s_object
 	char	type;
 }	t_object;
 
+typedef struct s_image
+{
+	void	*ptr;
+	int		*px;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}	t_image;
+
 // a scene only 1 ambient,camera,light
 // may be multiple sphere/plane/cylinder objects 
 typedef struct s_app
 {
-	int			has_error;
 	t_ambient	ambient;
 	t_camera	camera;
 	t_light		light;
 	t_list		*objects;
+	void		*mlx_ptr;
+	void		*win_ptr;
+	t_image		image;
 }	t_app;
 
 #endif

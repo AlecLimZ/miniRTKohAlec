@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 13:10:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 18:17:07 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 18:17:41 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include "parser.h"
 
 // a scene must have only 1 ambient, camera, light. they are stored in struct
-
 // "A <ratio> <r,g,b>" eg "A 0.2 255,255,25"
 static int	parse_ambient(char *line, t_app *app)
 {
@@ -105,11 +104,10 @@ static int	parse_line(char *line, t_app *app)
 // if any error, it will app_exit() which includes cleanup
 void	parse_file(char *fp, t_app *app)
 {
-	char	*file_ext;
-	int		fd;
-	char	*line;
+	const char	*file_ext = ft_strrchr(fp, '.');
+	int			fd;
+	char		*line;
 
-	file_ext = ft_strrchr(fp, '.');
 	if (file_ext == NULL || ft_strncmp(file_ext, ".rt", 4) != 0)
 		app_exit(app, "Incorrect file extension");
 	fd = if_errno_exit(open(fp, 0), app);
@@ -125,7 +123,10 @@ void	parse_file(char *fp, t_app *app)
 	}
 	free(line);
 	close(fd);
-	if (!app->ambient.is_configured || !app->camera.is_configured
-		|| !app->light.is_configured)
+	if (!app->ambient.is_configured)
 		app_exit(app, "Ambient/Camera/Light is not configured");
+	if (!app->camera.is_configured)
+		app_exit(app, "Camera/Light is not configured");
+	if (!app->light.is_configured)
+		app_exit(app, "Light is not configured");
 }

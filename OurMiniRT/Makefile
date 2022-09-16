@@ -54,3 +54,15 @@ re		: fclean all
 
 norm	: $(SRC) $(wildcard $(HEADERDIR)/*)
 		- @ if [ "$@" == "norm" ]; then norminette $? && touch $@; fi
+
+test	: $(NAME)
+		@echo =========================
+		- ./miniRT scenes/sample.rt
+		@echo =========================
+		- ./miniRT scenes/sample.rt sample.rt
+		@echo =========================
+		- ./miniRT missing.rt
+		@echo =========================
+		- ./miniRT
+		@echo =========================
+		- ./miniRT Makefile
