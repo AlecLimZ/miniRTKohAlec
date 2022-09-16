@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 20:53:57 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 21:29:23 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,21 @@ int	gui_input(unsigned int key, t_app *app)
 
 	if (key == KEY_ESC)
 		app_exit(app, NULL);
-	if (key < 127)
+	if (key == KEY_UP)
+		app->y--;
+	else if (key == KEY_DOWN)
+		app->y++;
+	else if (key == KEY_LEFT)
+		app->x--;
+	else if (key == KEY_RIGHT)
+		app->x++;
+	else if (key < 127)
 		ft_putchar_fd(map[key], 1);
 	app->last_updated++;
 	return (0);
 }
 
-static inline	int	color(double r, double g, double b)
+static inline int	color(double r, double g, double b)
 {
 	return (((int)r << 16) + ((int)g << 8) + (int)b);
 }
@@ -59,9 +67,11 @@ int	gui_render(t_app *app)
 		{
 			w = -1;
 			while (++w < app->width)
-				app->image.px[h * app->width + w]
-					= color(w * v.r, h * v.g, v.b);
+				app->image.px[h * app->width + w] = color(w * v.r, h * v.g, .3);
 		}
+		mlx_clear_window(app->mlx_ptr, app->win_ptr);
+		mlx_put_image_to_window(
+			app->mlx_ptr, app->win_ptr, app->image.ptr, app->x, app->y);
 	}
 	return (0);
 }

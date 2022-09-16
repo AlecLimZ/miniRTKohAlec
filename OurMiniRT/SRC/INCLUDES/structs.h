@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 20:28:35 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 21:19:43 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ typedef struct s_app
 	unsigned int	last_updated;
 	int				width;
 	int				height;
+	int				x;
+	int				y;
 	t_ambient		ambient;
 	t_camera		camera;
 	t_light			light;
