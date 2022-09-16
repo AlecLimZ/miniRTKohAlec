@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/15 14:05:01 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 16:56:33 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 # define PARSER_H
 
 # include <fcntl.h>
-# include "app.h"
-# include "get_next_line.h"
+# include "miniRT.h"
 
 // parser
 // this is the main/entry function triggering remaining functions
