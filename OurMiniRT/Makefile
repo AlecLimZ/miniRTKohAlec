@@ -50,7 +50,7 @@ fclean	: clean
 
 re		: fclean all
 
-.PHONY	: all clean fclean re info
+.PHONY	: all clean fclean re
 
 norm	: $(SRC) $(wildcard $(HEADERDIR)/*)
 		- @ if [ "$@" == "norm" ]; then norminette $? && touch $@; fi
