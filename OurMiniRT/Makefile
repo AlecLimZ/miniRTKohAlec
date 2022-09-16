@@ -19,16 +19,19 @@ LDLIBS		= $(LIBFT) $(LIBMLX) -framework OpenGL -framework AppKit
 ifeq ($(shell uname), Linux)
 	LIBMLX	= $(MLXLINUX)
 	LDLIBS	= $(LIBFT) $(LIBMLX) -lXext -lX11 -lm
-wsl: all
-	@echo =====================================================================================
-	@echo \"sudo apt-get install gcc make xorg libxext-dev libbsd-dev\" if you have not done so
-	@if test -d /run/WSL; then echo export DISPLAY=$$(cat /etc/resolv.conf | grep nameserver | awk '{print $$2}'):0.0; fi
-	@if test ! -d /run/WSL; then echo export DISPLAY=localhost:0.0; fi
-	@echo =====================================================================================
+wsl_run: all | wsl_pre
+	@if test -d /run/WSL; then \
+		export DISPLAY=$$(cat /etc/resolv.conf | grep nameserver | awk '{print $$2}'):0.0; \
+	else \
+		export DISPLAY=localhost:0.0; \
+	fi; \
+	echo export DISPLAY=$$DISPLAY; \
+	./$(NAME)
+wsl_pre:
+	@echo \"sudo apt-get install gcc make xorg libxext-dev libbsd-dev\" if cannot compile
 endif
 
 all		: $(NAME)
-#		./$(NAME)
 
 $(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT) #norm
 
@@ -48,12 +51,6 @@ fclean	: clean
 re		: fclean all
 
 .PHONY	: all clean fclean re info
-
-info	:
-		: $(COMPILE.c) -o ".o" ".c"
-		: $(LINK.o) "*.o" $(LOADLIBES) $(LDLIBS) -o "executable"
-		: $(SRC)
-		: $(OBJ)
 
 norm	: $(SRC) $(wildcard $(HEADERDIR)/*)
 		- @ if [ "$@" == "norm" ]; then norminette $? && touch $@; fi
