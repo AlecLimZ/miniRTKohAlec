@@ -29,7 +29,7 @@ int	gui_input(unsigned int key, t_app *app)
 	if (key == KEY_ESC)
 		app_exit(app, NULL);
 	if (key < 127)
-		printf("user input %c\n", 'A' + map[key]);
+		ft_putchar_fd(map[key], 1);
 	return (0);
 }
 
