@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 14:53:36 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/16 16:59:45 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 19:30:31 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,8 @@
 # include "structs.h"
 # include "app.h"
 # include "parser.h"
+
+int		gui_input(int key, t_app *app);
+int		gui_render(t_app *app);
 
 #endif

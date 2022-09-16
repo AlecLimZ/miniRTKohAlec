@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:00:06 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 18:02:00 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 19:28:13 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,33 @@
 #include <string.h>
 #include "app.h"
 
+#ifdef LINUX
+
+int	mlx_destroy_display(void *mlx_ptr);
+
+#else
+
+int	mlx_destroy_display(void *mlx_ptr)
+{
+	(void)mlx_ptr;
+	return (0);
+}
+
+#endif
+
 // exit with/without error. free() before exit
 void	app_exit(t_app *app, const char *error)
 {
 	ft_lstclear(&app->objects, free);
+	if (app->image.ptr)
+		mlx_destroy_image(app->mlx_ptr, app->image.ptr);
+	if (app->win_ptr)
+		mlx_destroy_window(app->mlx_ptr, app->win_ptr);
+	if (app->mlx_ptr)
+	{
+		mlx_destroy_display(app->mlx_ptr);
+		free(app->mlx_ptr);
+	}
 	if (error)
 	{
 		ft_putstr_fd("Error\n", 2);
@@ -40,4 +63,10 @@ void	*if_null_exit(void *p, t_app *app)
 	if (p == NULL)
 		app_exit(app, "Unexpected NULL pointer");
 	return (p);
+}
+
+int	gui_exit(t_app *app)
+{
+	app_exit(app, NULL);
+	return (0);
 }

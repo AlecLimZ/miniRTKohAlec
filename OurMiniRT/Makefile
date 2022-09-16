@@ -26,7 +26,7 @@ wsl_run: all | wsl_pre
 		export DISPLAY=localhost:0.0; \
 	fi; \
 	echo export DISPLAY=$$DISPLAY; \
-	./$(NAME)
+	./$(NAME) scenes/sample.rt
 wsl_pre:
 	@echo \"sudo apt-get install gcc make xorg libxext-dev libbsd-dev\" if cannot compile
 endif

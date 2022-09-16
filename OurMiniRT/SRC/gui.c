@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   app.h                                              :+:      :+:    :+:   */
+/*   gui.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/15 14:01:46 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 19:29:04 by Koh              ###   ########.fr       */
+/*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
+/*   Updated: 2022/09/16 19:31:12 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef APP_H
-# define APP_H
+#include "miniRT.h"
 
-# include "miniRT.h"
+int	gui_input(int key, t_app *app)
+{
+	static const char	map[] = {
+	[KEY_A] = 0, [KEY_B] = 1, [KEY_C] = 2, [KEY_D] = 3
+	};
 
-void	app_exit(t_app *app, const char *error);
-int		if_errno_exit(int ret, t_app *app);
-void	*if_null_exit(void *p, t_app *app);
-int		gui_exit(t_app *app);
+	(void)app;
+	printf("user input %c\n", 'A' + map[key]);
+	return (0);
+}
 
-#endif
+int	gui_render(t_app *app)
+{
+	(void)app;
+	return (0);
+}
