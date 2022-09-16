@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 17:26:49 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 20:28:35 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,16 @@ typedef struct s_image
 // may be multiple sphere/plane/cylinder objects 
 typedef struct s_app
 {
-	t_ambient	ambient;
-	t_camera	camera;
-	t_light		light;
-	t_list		*objects;
-	void		*mlx_ptr;
-	void		*win_ptr;
-	t_image		image;
+	unsigned int	last_updated;
+	int				width;
+	int				height;
+	t_ambient		ambient;
+	t_camera		camera;
+	t_light			light;
+	t_list			*objects;
+	void			*mlx_ptr;
+	void			*win_ptr;
+	t_image			image;
 }	t_app;
 
 #endif
