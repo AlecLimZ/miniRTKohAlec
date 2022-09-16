@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 17:21:46 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/15 17:37:27 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/16 14:27:02 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ class ray
 			return orig + (t * dir); // formula of position that point3 is at
 		}
 
-		point3	orig;
-		vec3 	dir;
+		point3	orig; // point3 is vec3
+		vec3 	dir; // vec3 is vec3
 };
 
 #endif
