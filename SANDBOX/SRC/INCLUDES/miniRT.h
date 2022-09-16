@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 14:53:36 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/16 11:06:48 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/16 13:05:10 by leng-chu         ###   ########.fr       */
 /*   Updated: 2021/12/07 11:44:18 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -26,7 +26,6 @@
 # include <math.h>
 # include "ansi_colors.h"
 # include "vec.h"
-# include "draw.h"
 
 typedef struct s_data
 {
@@ -36,5 +35,8 @@ typedef struct s_data
 	int		len;
 	int		end;
 }	t_data;
+
+void	ft_pixel(t_data *data, int x, int y, int color);
+int		rgbtohex2(double a, double r, double g, double b);
 
 #endif

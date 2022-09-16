@@ -6,11 +6,11 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 18:45:06 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/15 18:49:39 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/16 13:04:30 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "draw.h"
+#include "miniRT.h"
 
 int	rgbtohex2(double a, double r, double g, double b)
 {
