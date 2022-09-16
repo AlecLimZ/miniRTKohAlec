@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/16 17:58:38 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 18:41:14 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ int	main(int argc, char **argv)
 {
 	t_app		app;
 
+	init_app(&app);
 	if (argc != 2)
 		app_exit(&app, "Require 1 rt file");
-	init_app(&app);
 	load_scene_or_exit(&app, argv[1]);
 	start_gui(&app);
 	app_exit(&app, "Unexpected GUI failure");

@@ -57,8 +57,6 @@ norm	: $(SRC) $(wildcard $(HEADERDIR)/*)
 
 test	: $(NAME)
 		@echo =========================
-		- ./miniRT scenes/sample.rt
-		@echo =========================
 		- ./miniRT scenes/sample.rt sample.rt
 		@echo =========================
 		- ./miniRT missing.rt
@@ -66,3 +64,5 @@ test	: $(NAME)
 		- ./miniRT
 		@echo =========================
 		- ./miniRT Makefile
+		@echo =========================
+		./miniRT scenes/sample.rt
