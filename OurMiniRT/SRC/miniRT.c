@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/16 18:41:14 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 19:31:28 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,10 @@ static void	start_gui(t_app *app)
 		for (int j = 0; j < 300; j++)
 			ft_pixel(app->image.px, i * 300 + j, 0x00FF0000);
 	mlx_put_image_to_window(app->mlx_ptr, app->win_ptr, app->image.ptr, 100, 0);
+	mlx_do_key_autorepeaton(app->mlx_ptr);
+	mlx_hook(app->win_ptr, 17, 1L << 17, &gui_exit, app);
+	mlx_hook(app->win_ptr, 2, 1L << 0, gui_input, app);
+	mlx_loop_hook(app->mlx_ptr, gui_render, app);
 	mlx_loop(app->mlx_ptr);
 }
 
