@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 21:49:05 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 22:26:05 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ static inline int	color(double r, double g, double b)
 	return (((int)r << 16) + ((int)g << 8) + (int)b);
 }
 
+		// if (last_updated + 1 < app->last_updated)
+		// 	printf("skipped %d render\n", app->last_updated - last_updated - 1);
 int	gui_render(t_app *app)
 {
 	static unsigned int	last_updated = 0;
@@ -57,8 +59,7 @@ int	gui_render(t_app *app)
 	{
 		v.r = 255.999 / (app->width - 1);
 		v.g = 255.999 / (app->height - 1);
-		if (last_updated + 1 < app->last_updated)
-			printf("skipped %d render\n", app->last_updated - last_updated - 1);
+		v.b = 255.999 * .25;
 		last_updated = app->last_updated;
 		h = -1;
 		while (++h < app->height)
@@ -66,7 +67,7 @@ int	gui_render(t_app *app)
 			w = -1;
 			while (++w < app->width)
 				app->image.px[h * app->width + w]
-					= color(w * v.r, (app->height - 1 - h) * v.g, .25);
+					= color(w * v.r, (app->height - 1 - h) * v.g, v.b);
 		}
 		mlx_clear_window(app->mlx_ptr, app->win_ptr);
 		mlx_put_image_to_window(
