@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 21:46:12 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 21:49:05 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ int	gui_input(unsigned int key, t_app *app)
 	if (key == KEY_ESC)
 		app_exit(app, NULL);
 	if (key == KEY_UP)
-		app->y--;
-	else if (key == KEY_DOWN)
 		app->y++;
+	else if (key == KEY_DOWN)
+		app->y--;
 	else if (key == KEY_LEFT)
-		app->x--;
-	else if (key == KEY_RIGHT)
 		app->x++;
+	else if (key == KEY_RIGHT)
+		app->x--;
 	else if (key < 127)
 		ft_putchar_fd(map[key], 1);
 	app->last_updated++;
