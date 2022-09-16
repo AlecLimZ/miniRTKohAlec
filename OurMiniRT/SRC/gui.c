@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 19:57:20 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 20:53:57 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,38 @@ int	gui_input(unsigned int key, t_app *app)
 		app_exit(app, NULL);
 	if (key < 127)
 		ft_putchar_fd(map[key], 1);
+	app->last_updated++;
 	return (0);
+}
+
+static inline	int	color(double r, double g, double b)
+{
+	return (((int)r << 16) + ((int)g << 8) + (int)b);
 }
 
 int	gui_render(t_app *app)
 {
-	(void)app;
+	static unsigned int	last_updated = 0;
+	int					w;
+	int					h;
+	t_vec3				v;
+
+	if (last_updated < app->last_updated)
+	{
+		v.r = 255.999 / app->width;
+		v.g = 255.999 / app->height;
+		v.b = .25;
+		if (last_updated + 1 < app->last_updated)
+			printf("skipped %d render\n", app->last_updated - last_updated - 1);
+		last_updated = app->last_updated;
+		h = -1;
+		while (++h < app->height)
+		{
+			w = -1;
+			while (++w < app->width)
+				app->image.px[h * app->width + w]
+					= color(w * v.r, h * v.g, v.b);
+		}
+	}
 	return (0);
 }
