@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 21:29:23 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/16 21:46:12 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ int	gui_input(unsigned int key, t_app *app)
 	[KEY_K] = 'k', [KEY_L] = 'l', [KEY_M] = 'm', [KEY_N] = 'n', [KEY_O] = 'o',
 	[KEY_P] = 'p', [KEY_Q] = 'q', [KEY_R] = 'r', [KEY_S] = 's', [KEY_T] = 't',
 	[KEY_U] = 'u', [KEY_V] = 'v', [KEY_W] = 'w', [KEY_X] = 'x', [KEY_Y] = 'y',
-	[KEY_Z] = 'z',
-	};
+	[KEY_Z] = 'z' };
 
 	if (key == KEY_ESC)
 		app_exit(app, NULL);
@@ -56,9 +55,8 @@ int	gui_render(t_app *app)
 
 	if (last_updated < app->last_updated)
 	{
-		v.r = 255.999 / app->width;
-		v.g = 255.999 / app->height;
-		v.b = .25;
+		v.r = 255.999 / (app->width - 1);
+		v.g = 255.999 / (app->height - 1);
 		if (last_updated + 1 < app->last_updated)
 			printf("skipped %d render\n", app->last_updated - last_updated - 1);
 		last_updated = app->last_updated;
@@ -67,7 +65,8 @@ int	gui_render(t_app *app)
 		{
 			w = -1;
 			while (++w < app->width)
-				app->image.px[h * app->width + w] = color(w * v.r, h * v.g, .3);
+				app->image.px[h * app->width + w]
+					= color(w * v.r, (app->height - 1 - h) * v.g, .25);
 		}
 		mlx_clear_window(app->mlx_ptr, app->win_ptr);
 		mlx_put_image_to_window(
