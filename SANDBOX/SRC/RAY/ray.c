@@ -6,7 +6,7 @@
 /*   By: leng-chu <leng-chu@student.42kl.edu.m      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 14:44:43 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/16 16:27:52 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/17 14:45:13 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ t_color	ray_color(t_ray *r)
 
 	unit = new_unitvector(&r->dir);
 	t = 0.5 * (unit.rgb[1] + 1.0);
-	v_init(&a, 1.0, 1.0, 1.0);
-	v_init(&b, 0.5, 0.7, 1.0);
+	v_init(&a, 1.0, 1.0, 1.0); // a is the starter's color we want
+	v_init(&b, 0.5, 0.7, 1.0); // b is the ender's color we want
 	a = new_xv(1.0 - t, &a);
 	b = new_xv(t, &b);
 	fa = new_plus2v(&a, &b);
