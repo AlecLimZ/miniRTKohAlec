@@ -33,7 +33,7 @@ endif
 
 all		: $(NAME)
 
-$(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT) #norm
+$(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT) norm
 
 $(LIBFT) $(LIBMLX):
 		make -C $(dir $@)
@@ -42,7 +42,7 @@ $(LIBFT) $(LIBMLX):
 clean	:
 		rm -rf $(OBJ) $(OBJC)
 		make clean -C $(dir $(LIBFT))
-		make clean -C $(dir $(LIBMLX))
+		# make clean -C $(dir $(LIBMLX))
 
 fclean	: clean
 		rm -rf $(NAME)
@@ -66,3 +66,7 @@ test	: $(NAME)
 		- ./miniRT Makefile
 		@echo =========================
 		./miniRT scenes/sample.rt
+
+info	:
+	: $(SRC)
+	: $(OBJ)
