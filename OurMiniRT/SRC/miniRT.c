@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/17 23:23:06 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/17 23:50:56 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,9 @@ static void	start_gui(t_app *app)
 	app->image.addr = mlx_get_data_addr(
 			app->image.ptr, &app->image.bits_per_pixel,
 			&app->image.line_length, &app->image.endian);
-	if (app->image.line_length > app->image.bits_per_pixel * app->width)
-		printf("mlx image wider than requested by %d px\n",
-			(app->image.line_length / app->image.bits_per_pixel / 8)
-			- app->width);
+	app->image.width = app->image.line_length / (app->image.bits_per_pixel / 8);
+	if (app->image.width != app->width)
+		printf("mlx image is %d px wider\n", app->image.width - app->width);
 	if (app->image.bits_per_pixel != 32)
 		app_exit(app, "Require 32bit pixel");
 	if (app->image.endian != 0)

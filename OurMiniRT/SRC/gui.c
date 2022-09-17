@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/17 23:15:16 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/18 00:04:25 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ static inline int	color(double r, double g, double b)
 
 static void	*gradient(t_app *app)
 {
-	const int		img_width = app->image.line_length / 4;
 	const double	r = 255.999 / (app->width - 1);
 	const double	g = 255.999 / (app->height - 1);
 	const double	b = 255.999 * .25;
@@ -59,12 +58,13 @@ static void	*gradient(t_app *app)
 	{
 		size.w = -1;
 		while (++size.w < app->width)
-			app->image.px[size.h * img_width + size.w]
+			app->image.px[size.h * app->image.width + size.w]
 				= color(size.w * r, (app->height - 1 - size.h) * g, b);
 	}
 	return (app->image.ptr);
 }
 
+// app->image.width instead of app->width, in case MLXMETAL wider image
 // todo: not just x86 little-endian [b,g,r,a]
 static void	*ants(t_app *app)
 {
@@ -72,7 +72,7 @@ static void	*ants(t_app *app)
 	int			i;
 
 	ft_bzero(app->image.addr, app->width * app->height * 4);
-	i = app->width * app->height;
+	i = app->image.width * app->height;
 	while (i--)
 		read(fd, (void *)app->image.c + i * 4, 3);
 	return (app->image.ptr);

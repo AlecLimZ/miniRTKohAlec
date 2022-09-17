@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/17 09:44:58 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/17 23:44:08 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,9 @@ typedef struct s_object
 	char	type;
 }	t_object;
 
+// MLX Metal buffer width may more than requested
+// eg request 800px width, but actual width is 832px
+// width = line_length / (bits_per_pixel / 8)
 typedef struct s_image
 {
 	void	*ptr;
@@ -122,6 +125,7 @@ typedef struct s_image
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
+	int		width;
 }	t_image;
 
 // a scene only 1 ambient,camera,light
