@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/16 20:39:04 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/17 08:09:18 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,9 @@ static void	load_scene_or_exit(t_app *app, char *filepath)
 	printf("lstsize %d\n", ft_lstsize(app->objects));
 }
 
-	// mlx_get_screen_size(app->mlx_ptr, &app->width, &app->height);
-	// app->height = app->height * 10 / 8;
+// why macOs API missing mlx_get_screen_size??
+// mlx_get_screen_size(app->mlx_ptr, &app->width, &app->height);
+
 static void	start_gui(t_app *app)
 {
 	app->mlx_ptr = if_null_exit(mlx_init(), app);
@@ -35,7 +36,7 @@ static void	start_gui(t_app *app)
 			&app->image.line_length, &app->image.endian);
 	mlx_put_image_to_window(app->mlx_ptr, app->win_ptr, app->image.ptr, 100, 0);
 	mlx_do_key_autorepeaton(app->mlx_ptr);
-	mlx_hook(app->win_ptr, 17, 1L << 17, &gui_exit, app);
+	mlx_hook(app->win_ptr, 17, 1L << 17, gui_exit, app);
 	mlx_hook(app->win_ptr, 2, 1L << 0, gui_input, app);
 	mlx_loop_hook(app->mlx_ptr, gui_render, app);
 	mlx_loop(app->mlx_ptr);

@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 21:19:43 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/17 07:11:09 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ enum e_object_type
 
 typedef union s_vec3
 {
-	double	elements[3];
+	double	e[3];
 	struct
 	{
 		double	x;
@@ -42,6 +42,36 @@ typedef union s_vec3
 
 typedef t_vec3	t_rgb;
 typedef t_vec3	t_xyz;
+
+typedef union s_wh
+{
+	int	e[2];
+	struct
+	{
+		int	width;
+		int	height;
+	};
+	struct
+	{
+		int	w;
+		int	h;
+	};
+	struct
+	{
+		int	col;
+		int	row;
+	};
+	struct
+	{
+		int	c;
+		int	r;
+	};
+	struct
+	{
+		int	x;
+		int	y;
+	};
+}	t_wh;
 
 // only 1 ambient-light allowed (check "is_configured") 
 typedef struct s_ambient
