@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 22:26:05 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/17 07:55:54 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,32 +46,37 @@ static inline int	color(double r, double g, double b)
 	return (((int)r << 16) + ((int)g << 8) + (int)b);
 }
 
-		// if (last_updated + 1 < app->last_updated)
-		// 	printf("skipped %d render\n", app->last_updated - last_updated - 1);
+static void	*gradient(t_app *app)
+{
+	const double	r = 255.999 / (app->width - 1);
+	const double	g = 255.999 / (app->height - 1);
+	const double	b = 255.999 * .25;
+	t_wh			size;
+
+	size.h = -1;
+	while (++size.h < app->height)
+	{
+		size.w = -1;
+		while (++size.w < app->width)
+			app->image.px[size.h * app->width + size.w]
+				= color(size.w * r, (app->height - 1 - size.h) * g, b);
+	}
+	return (app->image.ptr);
+}
+
 int	gui_render(t_app *app)
 {
-	static unsigned int	last_updated = 0;
-	int					w;
-	int					h;
-	t_vec3				v;
+	static unsigned int		last_updated = 0;
+	static unsigned long	tick = 0;
 
+	++tick;
 	if (last_updated < app->last_updated)
 	{
-		v.r = 255.999 / (app->width - 1);
-		v.g = 255.999 / (app->height - 1);
-		v.b = 255.999 * .25;
+		printf("tick %lu\n", tick);
 		last_updated = app->last_updated;
-		h = -1;
-		while (++h < app->height)
-		{
-			w = -1;
-			while (++w < app->width)
-				app->image.px[h * app->width + w]
-					= color(w * v.r, (app->height - 1 - h) * v.g, v.b);
-		}
 		mlx_clear_window(app->mlx_ptr, app->win_ptr);
 		mlx_put_image_to_window(
-			app->mlx_ptr, app->win_ptr, app->image.ptr, app->x, app->y);
+			app->mlx_ptr, app->win_ptr, gradient(app), app->x, app->y);
 	}
 	return (0);
 }
