@@ -6,12 +6,13 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/17 08:09:18 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/17 10:03:41 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
 
+// app.last_updated = 1 to trigger first render
 static void	init_app(t_app *app)
 {
 	*app = (t_app){.last_updated = 1, .width = 800, .height = 600};
@@ -25,16 +26,19 @@ static void	load_scene_or_exit(t_app *app, char *filepath)
 
 // why macOs API missing mlx_get_screen_size??
 // mlx_get_screen_size(app->mlx_ptr, &app->width, &app->height);
-
+// todo: support little-endian (x86), eg remove ants()
 static void	start_gui(t_app *app)
 {
 	app->mlx_ptr = if_null_exit(mlx_init(), app);
 	app->win_ptr = mlx_new_window(app->mlx_ptr, app->width, app->height, "RT");
 	app->image.ptr = mlx_new_image(app->mlx_ptr, app->width, app->height);
-	app->image.px = (int *)mlx_get_data_addr(
+	app->image.addr = mlx_get_data_addr(
 			app->image.ptr, &app->image.bits_per_pixel,
 			&app->image.line_length, &app->image.endian);
-	mlx_put_image_to_window(app->mlx_ptr, app->win_ptr, app->image.ptr, 100, 0);
+	if (app->image.bits_per_pixel != 32)
+		app_exit(app, "Require 32bit pixel");
+	if (app->image.endian != 0)
+		app_exit(app, "Require little endian, eg x86");
 	mlx_do_key_autorepeaton(app->mlx_ptr);
 	mlx_hook(app->win_ptr, 17, 1L << 17, gui_exit, app);
 	mlx_hook(app->win_ptr, 2, 1L << 0, gui_input, app);

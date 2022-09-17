@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/17 07:55:54 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/17 10:01:02 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,19 @@ static void	*gradient(t_app *app)
 	return (app->image.ptr);
 }
 
+// todo: not just x86 little-endian [b,g,r,a]
+static void	*ants(t_app *app)
+{
+	const int	fd = open("/dev/random", 0);
+	int			i;
+
+	ft_bzero(app->image.addr, app->width * app->height * 4);
+	i = app->width * app->height;
+	while (i--)
+		read(fd, (void *)app->image.c + i * 4, 3);
+	return (app->image.ptr);
+}
+
 int	gui_render(t_app *app)
 {
 	static unsigned int		last_updated = 0;
@@ -77,6 +90,11 @@ int	gui_render(t_app *app)
 		mlx_clear_window(app->mlx_ptr, app->win_ptr);
 		mlx_put_image_to_window(
 			app->mlx_ptr, app->win_ptr, gradient(app), app->x, app->y);
+	}
+	else if (tick % 1000 == 0)
+	{
+		mlx_put_image_to_window(
+			app->mlx_ptr, app->win_ptr, ants(app), app->x, app->y);
 	}
 	return (0);
 }

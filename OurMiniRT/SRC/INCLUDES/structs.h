@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/17 07:11:09 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/17 09:44:58 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,12 @@ typedef struct s_object
 typedef struct s_image
 {
 	void	*ptr;
-	int		*px;
+	union
+	{
+		void	*addr;
+		char	*c;
+		int		*px;
+	};
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
