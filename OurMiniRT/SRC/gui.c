@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/17 10:01:02 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/17 23:15:16 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ static inline int	color(double r, double g, double b)
 
 static void	*gradient(t_app *app)
 {
+	const int		img_width = app->image.line_length / 4;
 	const double	r = 255.999 / (app->width - 1);
 	const double	g = 255.999 / (app->height - 1);
 	const double	b = 255.999 * .25;
@@ -58,7 +59,7 @@ static void	*gradient(t_app *app)
 	{
 		size.w = -1;
 		while (++size.w < app->width)
-			app->image.px[size.h * app->width + size.w]
+			app->image.px[size.h * img_width + size.w]
 				= color(size.w * r, (app->height - 1 - size.h) * g, b);
 	}
 	return (app->image.ptr);
