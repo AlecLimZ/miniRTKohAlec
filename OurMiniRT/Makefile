@@ -6,7 +6,7 @@ LIBFT		= libft/libft.a
 MLXLINUX	= mlx_linux/libmlx.a
 MLXMETAL	= mlx_mms_20200219/libmlx.dylib
 MLXOPENGL	= minilibx_macos/libmlx.a
-LIBMLX		= $(MLXMETAL) # choose MLXOPENGL or MLXMETAL
+LIBMLX		= $(MLXOPENGL) # choose MLXOPENGL or MLXMETAL
 VPATH		= SRC # ./miniRT from ./SRC/miniRT.c
 
 ASAN		= -fsanitize=address
