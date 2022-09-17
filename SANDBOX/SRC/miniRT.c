@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/17 14:48:26 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/17 14:53:41 by leng-chu         ###   ########.fr       */
 /*   Updated: 2021/12/07 11:48:40 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -137,6 +137,7 @@ int	main(void)
 			dirr = new_minus2v(&dirr, &origin);
 
 			ray_init(&r, &origin, &dirr);
+//			fa = ray_color(&r);
 			fa = ray_color2(&r);
 			ft_pixel(&img, i, j, rgbtohex2(0.0, fa.rgb[0], fa.rgb[1], fa.rgb[2]));
 //			write_color(&fa);
