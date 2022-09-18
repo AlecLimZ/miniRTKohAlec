@@ -88,17 +88,19 @@ int	gui_render(t_app *app)
 	++tick;
 	if (last_updated < app->last_updated)
 	{
+		tick = 0;
 		printf("tick %lu\n", tick);
 		last_updated = app->last_updated;
 		mlx_clear_window(app->mlx_ptr, app->win_ptr);
 		mlx_put_image_to_window(
 			app->mlx_ptr, app->win_ptr, gradient(app), app->x, app->y);
+		printf("gradient %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 	}
-	else if (tick % 1000 == 0)
+	else if (tick > 9999 && tick % 100 == 0)
 	{
 		mlx_put_image_to_window(
 			app->mlx_ptr, app->win_ptr, ants(app), app->x, app->y);
+		printf("ants in %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 	}
-	printf("rendered in %fs\r", (double)(clock() - begin) / CLOCKS_PER_SEC);
 	return (0);
 }
