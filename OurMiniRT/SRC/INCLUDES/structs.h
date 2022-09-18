@@ -130,8 +130,9 @@ typedef struct s_image
 	int		width;
 }	t_image;
 
-// a scene only 1 ambient,camera,light
-// may be multiple sphere/plane/cylinder objects 
+// a scene has only 1 ambient, 1 camera, 1light
+// a scene has multiple sphere/plane/cylinder objects (malloc & linkedlist)
+// ++last_updated when user inputs, so render() may refresh accordingly
 typedef struct s_app
 {
 	unsigned int	last_updated;
