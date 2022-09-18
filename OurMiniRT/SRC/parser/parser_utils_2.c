@@ -6,16 +6,40 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 02:05:56 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 18:15:27 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/18 11:21:11 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <math.h>
 #include "parser.h"
 
 // todo string to double
-double	parse_double(const char *a)
+double	ft_strtod(const char *str, char **endptr)
 {
-	return (strtod(a, NULL));
+	double		value;
+	int			decimal_place;
+	const char	*c = str;
+	const int	is_neg = (*c == '+' || *c == '-') && (*c++ == '-');
+	int			has_digits;
+
+	has_digits = 0;
+	value = 0.0;
+	while (ft_isspace(*c))
+		++c;
+	while (ft_isdigit(*c) && ++has_digits)
+		value = value * 10 + (*c++ - '0');
+	decimal_place = 0;
+	if (*c == '.' && (ft_isdigit(c[1]) || has_digits) && *c++)
+		while (ft_isdigit(*c) && ++has_digits)
+			value += pow(.1, ++decimal_place) * (*c++ - '0');
+	if (endptr && has_digits)
+		*endptr = (char *)c;
+	else if (endptr)
+		*endptr = (char *)str;
+	if (is_neg)
+		return (-value);
+	else
+		return (value);
 }
 
 int	ft_isspace(int c)

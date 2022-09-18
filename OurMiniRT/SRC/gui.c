@@ -6,10 +6,11 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/18 00:04:25 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/18 11:37:55 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <time.h>
 #include "miniRT.h"
 
 int	gui_input(unsigned int key, t_app *app)
@@ -65,16 +66,16 @@ static void	*gradient(t_app *app)
 }
 
 // app->image.width instead of app->width, in case MLXMETAL wider image
-// todo: not just x86 little-endian [b,g,r,a]
 static void	*ants(t_app *app)
 {
 	const int	fd = open("/dev/random", 0);
 	int			i;
 
-	ft_bzero(app->image.addr, app->width * app->height * 4);
 	i = app->image.width * app->height;
+	read(fd, app->image.addr, i * 4);
+	close(fd);
 	while (i--)
-		read(fd, (void *)app->image.c + i * 4, 3);
+		app->image.px[i] &= 0xFFFFFF;
 	return (app->image.ptr);
 }
 
@@ -82,6 +83,7 @@ int	gui_render(t_app *app)
 {
 	static unsigned int		last_updated = 0;
 	static unsigned long	tick = 0;
+	const clock_t			begin = clock();
 
 	++tick;
 	if (last_updated < app->last_updated)
@@ -97,5 +99,6 @@ int	gui_render(t_app *app)
 		mlx_put_image_to_window(
 			app->mlx_ptr, app->win_ptr, ants(app), app->x, app->y);
 	}
+	printf("rendered in %fs\r", (double)(clock() - begin) / CLOCKS_PER_SEC);
 	return (0);
 }

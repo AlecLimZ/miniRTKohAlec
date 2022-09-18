@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/17 23:44:08 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/18 11:33:59 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ typedef struct s_object
 // MLX Metal buffer width may more than requested
 // eg request 800px width, but actual width is 832px
 // width = line_length / (bits_per_pixel / 8)
+// use t_image.px (update by int) (support both little(x86) and big endian)
+// t_image.c (update by char), either litte(x86) or big endian works, NOT BOTH
 typedef struct s_image
 {
 	void	*ptr;

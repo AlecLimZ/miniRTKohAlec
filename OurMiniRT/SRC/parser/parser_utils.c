@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 01:57:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 18:16:09 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/18 11:20:57 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int	trim_str(char **line, int (*f)(int))
 int	pull_nbr(char **line, double *d, double min, double max)
 {
 	const char	*begin = *line;
+	char		*endptr;
 
 	if (trim_chr(line, '-') <= 1
 		&& trim_str(line, ft_isdigit) >= 1
@@ -47,7 +48,9 @@ int	pull_nbr(char **line, double *d, double min, double max)
 		&& trim_str(line, ft_isdigit) >= 0
 	)
 	{
-		*d = parse_double(begin);
+		*d = ft_strtod(begin, &endptr);
+		if (endptr != *line)
+			ft_putendl_fd("warning: pls check ft_strtod@pull_nbr", 2);
 		return (*d >= min && *d <= max);
 	}
 	return (0);

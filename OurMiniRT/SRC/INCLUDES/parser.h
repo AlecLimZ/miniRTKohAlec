@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/16 16:56:33 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/18 11:18:10 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		pull_vec(char **line, t_vec3 *d, double min, double max);
 int		pull_rgb(char **line, t_vec3 *d);
 
 // parser_utils_2
-double	parse_double(const char *a);
+double	ft_strtod(const char *str, char **endptr);
 int		ft_isspace(int c);
 
 #endif

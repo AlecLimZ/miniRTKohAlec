@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/17 23:50:56 by Koh              ###   ########.fr       */
+/*   Updated: 2022/09/18 11:28:25 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	load_scene_or_exit(t_app *app, char *filepath)
 
 // why macOs API missing mlx_get_screen_size??
 // mlx_get_screen_size(app->mlx_ptr, &app->width, &app->height);
-// todo: support little-endian (x86), eg remove ants()
+// beware: color int(argb) on x86 little-endian is char[b,g,r,a]
 static void	start_gui(t_app *app)
 {
 	app->mlx_ptr = if_null_exit(mlx_init(), app);
@@ -38,10 +38,10 @@ static void	start_gui(t_app *app)
 	app->image.width = app->image.line_length / (app->image.bits_per_pixel / 8);
 	if (app->image.width != app->width)
 		printf("mlx image is %d px wider\n", app->image.width - app->width);
+	if (app->image.endian != 0)
+		ft_putendl_fd("Warning: Beware image is not little endian (x86)", 2);
 	if (app->image.bits_per_pixel != 32)
 		app_exit(app, "Require 32bit pixel");
-	if (app->image.endian != 0)
-		app_exit(app, "Require little endian, eg x86");
 	mlx_do_key_autorepeaton(app->mlx_ptr);
 	mlx_hook(app->win_ptr, 17, 1L << 17, gui_exit, app);
 	mlx_hook(app->win_ptr, 2, 1L << 0, gui_input, app);
