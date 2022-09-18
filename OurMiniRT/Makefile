@@ -4,7 +4,7 @@ OBJ			= $(SRC:%.c=%.o)
 HEADERDIR	= SRC/INCLUDES
 LIBFT		= libft/libft.a
 MLXLINUX	= mlx_linux/libmlx.a
-MLXMETAL	= mlx_mms_20191025/libmlx.dylib
+MLXMETAL	= mlx_mms_20200219/libmlx.dylib
 MLXOPENGL	= minilibx_macos/libmlx.a
 LIBMLX		= $(MLXOPENGL) # choose MLXOPENGL or MLXMETAL
 VPATH		= SRC # ./miniRT from ./SRC/miniRT.c
@@ -42,7 +42,7 @@ $(LIBFT) $(LIBMLX):
 clean	:
 		rm -rf $(OBJ) $(OBJC)
 		make clean -C $(dir $(LIBFT))
-		make clean -C $(dir $(LIBMLX))
+		# make clean -C $(dir $(LIBMLX))
 
 fclean	: clean
 		rm -rf $(NAME)
