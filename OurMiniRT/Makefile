@@ -33,7 +33,7 @@ endif
 
 all		: $(NAME)
 
-$(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT) #norm
+$(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT) norm
 
 $(LIBFT) $(LIBMLX):
 		make -C $(dir $@)
@@ -53,4 +53,4 @@ re		: fclean all
 .PHONY	: all clean fclean re
 
 norm	: $(SRC) $(wildcard $(HEADERDIR)/*)
-		- @ if [ "$@" == "norm" ]; then norminette $? && touch $@; fi
+		- @ norminette $? && touch $@
