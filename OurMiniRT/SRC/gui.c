@@ -26,6 +26,10 @@ int	gui_input(unsigned int key, t_app *app)
 	[KEY_U] = 'u', [KEY_V] = 'v', [KEY_W] = 'w', [KEY_X] = 'x', [KEY_Y] = 'y',
 	[KEY_Z] = 'z' };
 
+	if (key == KEY_W)
+		app->camera.origin.z+=.1;
+	if (key == KEY_S)
+		app->camera.origin.z-=.1;
 	if (key == KEY_ESC)
 		app_exit(app, NULL);
 	if (key == KEY_UP)
@@ -79,6 +83,8 @@ static void	*ants(t_app *app)
 	return (app->image.ptr);
 }
 
+void	*rt(t_app *app);
+
 int	gui_render(t_app *app)
 {
 	static unsigned int		last_updated = 0;
@@ -86,6 +92,13 @@ int	gui_render(t_app *app)
 	const clock_t			begin = clock();
 
 	++tick;
+	if (1)
+	{
+		mlx_put_image_to_window(
+			app->mlx_ptr, app->win_ptr, rt(app),  app->x, app->y);
+		printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
+		return (0);
+	}
 	if (last_updated < app->last_updated)
 	{
 		tick = 0;
