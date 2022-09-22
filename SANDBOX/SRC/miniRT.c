@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/17 14:53:41 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/22 17:11:55 by leng-chu         ###   ########.fr       */
 /*   Updated: 2021/12/07 11:48:40 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -14,7 +14,19 @@
 #include "miniRT.h"
 
 // hit on the sphere
-int hit_sphere(const t_point3 *center, double radius, const t_ray *r)
+//int hit_sphere(const t_point3 *center, double radius, const t_ray *r)
+//{
+//	t_vec3	oc;
+//
+//	oc = new_minus2v(&r->orig, center);
+//	double	a = ft_dot(&r->dir, &r->dir);
+//	double	b = 2.0 * ft_dot(&oc, &r->dir);
+//	double	c = ft_dot(&oc, &oc) - radius * radius;
+//	double	discriminant = b * b - 4 * a * c;
+//	return (discriminant > 0);
+//}
+
+double	hit_sphere(const t_point3 *center, double radius, const t_ray *r)
 {
 	t_vec3	oc;
 
@@ -23,12 +35,15 @@ int hit_sphere(const t_point3 *center, double radius, const t_ray *r)
 	double	b = 2.0 * ft_dot(&oc, &r->dir);
 	double	c = ft_dot(&oc, &oc) - radius * radius;
 	double	discriminant = b * b - 4 * a * c;
-	return (discriminant > 0);
+	if (discriminant < 0)
+		return - (1.0);
+	else
+		return ((-b - sqrt(discriminant)) / (2.0 * a));
 }
-
 t_color	ray_color2(t_ray *r)
 {
 	t_vec3	unit;
+	t_vec3	n;
 	double	t;
 	t_color	a;
 	t_color	b;
@@ -36,10 +51,22 @@ t_color	ray_color2(t_ray *r)
 	t_point3 p3;
 
 	v_init(&p3, 0, 0, -1);
-	if (hit_sphere(&p3, 0.5, r))
+	//if (hit_sphere(&p3, 0.5, r))
+	//{
+	//	v_init(&fa, 1, 0, 0);
+	//	return (fa);
+	//}
+	t = hit_sphere(&p3, 0.5, r);
+	if (t > 0.0)
 	{
-		v_init(&fa, 1, 0, 0);
-		return (fa);
+		t_point3 p3b = get_at(r, t);
+		t_vec3 newa;
+		v_init(&newa, 0, 0, -1);
+		n = new_minus2v(&p3b, &newa);
+		t_color warna;
+		v_init(&warna, n.rgb[0] + 1, n.rgb[1] + 1, n.rgb[2] + 1);
+		ft_multivec(&warna, 0.5);
+		return (warna);
 	}
 	unit = new_unitvector(&r->dir);
 	t = 0.5 * (unit.rgb[1] + 1.0);
