@@ -2,7 +2,7 @@
 A               0.2            0,255,0
 
 #camera     coor/x,y,z   orientation/x,y,z/-1,1  degree/0-180
-C           2,4,6           -1,0,1                  180
+C           0,0,0           -1,0,1                  180
 # C           2,4,6           -1,0,1                  180
 
 #light      coor/x,y,z      brightness/0.0-1.0      r,g,b

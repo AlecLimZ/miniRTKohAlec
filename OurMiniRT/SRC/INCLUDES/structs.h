@@ -26,6 +26,7 @@ enum e_object_type
 typedef union s_vec3
 {
 	double	e[3];
+	double	rgb[3];
 	struct
 	{
 		double	x;
@@ -85,7 +86,11 @@ typedef struct s_ambient
 typedef struct s_camera
 {
 	double	fov;
-	t_xyz	coor;
+	union
+	{
+		t_xyz	coor;
+		t_xyz	origin;
+	};
 	t_xyz	orientation;
 	int		is_configured;
 }	t_camera;

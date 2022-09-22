@@ -24,6 +24,7 @@
 # include "structs.h"
 # include "app.h"
 # include "parser.h"
+# include "vecray.h"
 
 int		gui_input(unsigned int key, t_app *app);
 int		gui_render(t_app *app);
