@@ -1,6 +1,7 @@
 NAME		= miniRT
 SRC			= $(wildcard SRC/*.c) $(wildcard SRC/*/*.c)
 OBJ			= $(SRC:%.c=%.o)
+DEP			= $(SRC:%.c=%.d)
 HEADERDIR	= SRC/INCLUDES
 LIBFT		= libft/libft.a
 MLXLINUX	= mlx_linux/libmlx.a
@@ -10,10 +11,12 @@ LIBMLX		= $(MLXOPENGL) # choose MLXOPENGL or MLXMETAL
 VPATH		= SRC # ./miniRT from ./SRC/miniRT.c
 
 ASAN		= -fsanitize=address
-CFLAGS		= -Wall -Werror -Wextra $(ASAN) #-g3
+CFLAGS		= -Wall -Werror -Wextra -MMD $(ASAN) #-g3
 CPPFLAGS	= $(addprefix -I, $(HEADERDIR) $(dir $(LIBFT) $(LIBMLX)))
 LDFLAGS		= $(ASAN)
 LDLIBS		= $(LIBFT) $(LIBMLX) -framework OpenGL -framework AppKit
+
+-include $(DEP)
 
 # WSL only
 ifeq ($(shell uname), Linux)
@@ -40,7 +43,7 @@ $(LIBFT) $(LIBMLX):
 		- @cp $(MLXMETAL) libmlx.dylib
 
 clean	:
-		rm -rf $(OBJ) $(OBJC)
+		rm -rf $(OBJ) $(DEP)
 		make clean -C $(dir $(LIBFT))
 		# make clean -C $(dir $(LIBMLX))
 
