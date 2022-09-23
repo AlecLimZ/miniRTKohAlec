@@ -15,15 +15,25 @@ CPPFLAGS	= $(addprefix -I, $(HEADERDIR) $(dir $(LIBFT) $(LIBMLX)))
 LDFLAGS		= $(ASAN)
 LDLIBS		= $(LIBFT) $(LIBMLX) -framework OpenGL -framework AppKit
 
+# WSL only
 ifeq ($(shell uname), Linux)
 	LIBMLX	= $(MLXLINUX)
 	LDLIBS	= $(LIBFT) $(LIBMLX) -lXext -lX11 -lm
-	WSL_MSG	= wsl
+wsl_run: all | wsl_pre
+	@if test -d /run/WSL; then \
+		export DISPLAY=$$(cat /etc/resolv.conf | grep nameserver | awk '{print $$2}'):0.0; \
+	else \
+		export DISPLAY=localhost:0.0; \
+	fi; \
+	echo export DISPLAY=$$DISPLAY; \
+	./$(NAME) scenes/sample.rt
+wsl_pre:
+	@echo \"sudo apt-get install gcc make xorg libxext-dev libbsd-dev\" if cannot compile
 endif
 
 all		: $(NAME)
 
-$(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT) $(WSL_MSG)
+$(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT)
 
 $(LIBFT) $(LIBMLX):
 		make -C $(dir $@)
@@ -40,15 +50,7 @@ fclean	: clean
 
 re		: fclean all
 
-.PHONY	: all clean fclean re info wsl
-
-wsl		:
-		@echo =====================================================================================
-		@echo \"sudo apt-get install gcc make xorg libxext-dev libbsd-dev\" if you have not done so
-		@if test -d /run/WSL; then echo export DISPLAY=$$(cat /etc/resolv.conf | grep nameserver | awk '{print $$2}'):0.0; fi
-		@if test ! -d /run/WSL; then echo export DISPLAY=localhost:0.0; fi
-		@echo =====================================================================================
-		- ./miniRT
+.PHONY	: all clean fclean re info
 
 info	:
 		: $(COMPILE.c) -o ".o" ".c"
