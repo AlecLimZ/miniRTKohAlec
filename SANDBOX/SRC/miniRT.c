@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/22 17:11:55 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/23 16:05:29 by leng-chu         ###   ########.fr       */
 /*   Updated: 2021/12/07 11:48:40 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -31,14 +31,18 @@ double	hit_sphere(const t_point3 *center, double radius, const t_ray *r)
 	t_vec3	oc;
 
 	oc = new_minus2v(&r->orig, center);
-	double	a = ft_dot(&r->dir, &r->dir);
-	double	b = 2.0 * ft_dot(&oc, &r->dir);
-	double	c = ft_dot(&oc, &oc) - radius * radius;
-	double	discriminant = b * b - 4 * a * c;
+//	double	a = ft_dot(&r->dir, &r->dir); // 6.1v
+//	double	b = 2.0 * ft_dot(&oc, &r->dir); // 6.1v
+//	double	c = ft_dot(&oc, &oc) - radius * radius; // 6.1v
+//	double	discriminant = b * b - 4 * a * c; // 6.1v
+	double a = ft_squared_len(&r->dir);
+	double half_b = ft_dot(&oc, &r->dir);
+	double c = ft_squared_len(&oc) - radius * radius;
+	double discriminant = half_b * half_b - a * c;
 	if (discriminant < 0)
 		return - (1.0);
 	else
-		return ((-b - sqrt(discriminant)) / (2.0 * a));
+		return ((-half_b - sqrt(discriminant)) / a);
 }
 t_color	ray_color2(t_ray *r)
 {

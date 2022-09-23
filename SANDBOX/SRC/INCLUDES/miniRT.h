@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 14:53:36 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/22 17:09:42 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/23 16:00:06 by leng-chu         ###   ########.fr       */
 /*   Updated: 2021/12/07 11:44:18 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -25,6 +25,7 @@
 # include <math.h>
 # include "ansi_colors.h"
 # include "vecray.h"
+# include "hittable.h"
 
 typedef struct s_data
 {
