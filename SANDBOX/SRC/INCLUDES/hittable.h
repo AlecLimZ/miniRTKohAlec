@@ -6,7 +6,7 @@
 /*   By: leng-chu <leng-chu@student.42kl.edu.m      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 16:01:03 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/23 16:59:35 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/23 19:58:48 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@ typedef struct s_hittable
 {
 	t_point3	p;
 	t_vec3		normal;
-	double		t;
 	t_sphere	sphere;
+	double		t;
+	int			is_frontface;
 }	t_hittable;
 
 int	ft_hitsphere(t_ray *r, double t_min, double t_max, t_hittable *hits);

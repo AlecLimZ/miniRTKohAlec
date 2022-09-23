@@ -6,7 +6,7 @@
 /*   By: leng-chu <leng-chu@student.42kl.edu.m      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 16:14:56 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/23 17:11:26 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/09/23 20:01:25 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,19 @@ int	ft_hitsphere(t_ray *r, double t_min, double t_max, t_hittable *hits)
 	hits->normal = new_minus2v(&hits->p, &hits->sphere.center);
 	hits->normal = new_dividev(&hits->normal, hits->sphere.radius);
 	return (1);
+}
+
+void	ft_setface(t_ray const *r, t_vec3 *outward_normal, t_hittable *hits)
+{
+	if (ft_dot(&r->dir, outward_normal) > 0.0)
+	{
+		hits->is_frontface = 0;
+		ft_cvntminus(outward_normal);
+		hits->normal = *outward_normal;
+	}
+	else
+	{
+		hits->is_frontface = 1;
+		hits->normal = *outward_normal;
+	}
 }
