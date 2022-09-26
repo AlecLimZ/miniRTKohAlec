@@ -11,7 +11,7 @@ struct hit_record
 	bool	front_face;
 
 	// remembering the side of the surface
-	inline void set_face_normal(const ray & r, const vec3 & outward_normal
+	inline void set_face_normal(const ray & r, const vec3 & outward_normal)
 			{
 				front_face = dot(r.getDirection(), outward_normal) < 0;
 				normal = front_face ? outward_normal : -outward_normal;
