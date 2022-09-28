@@ -1,3 +1,5 @@
+#ifndef VEC3_NOTES_H
+# define VEC3_NOTES_H
 
 // Vector is a direction in 3D space, represented by 3 numbers.
 template<typename T>
@@ -133,3 +135,5 @@ void normalize(Vec3<T> & v)
 		x *= invLen, y *= invLen, z *= invLen;
 	}
 }
+
+#endif
