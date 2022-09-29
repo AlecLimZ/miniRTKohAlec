@@ -147,4 +147,65 @@ Pt.z = P.x * 0 + P.y * -1 + P.z * 0;
 Pt.x = P.x * 0 + P.y * 0 + P.z * -1;
 Pt.y = P.x * 0 + P.y * 1 + P.z * 1;
 Pt.z = P.x * 1 + P.y * 0 + P.z * 0;
+
+// matrix rotation then translation
+p.x = p.x * m00 + p.y * m10 + p.z * m20 + Tx
+p.y = p.x * m01 + p.y * m11 + p.z * m21 + Ty
+p.z = p.x * m02 + p.y * m12 + p.z * m22 + Tz
+
+// if the column has four coefficients instead of 3, then
+// assuming the matrix is size 4 x 3
+p.x = p.x * m00 + p.y * m10 + p.z * m20 + m30
+p.y = p.x * m01 + p.y * m11 + p.z * m21 + m31
+p.z = p.x * m02 + p.y * m12 + p.z * m22 + m32
+
+// if 1 x 3 matrix with 4 x 3 matrix, theory tells this is not possible
+// but there is a simple solution is:
+// add one extra column to make 1x3 into 1x4, set the 4th as 1
+// (x, y, z, 1) is called as homogeneous point or homogeneous coordinate
+p.x = p.x * m00 + p.y * m10 + p.z * m20 + 1 * m30
+p.y = p.x * m01 + p.y * m11 + p.z * m21 + 1 * m31
+p.z = p.x * m02 + p.y * m12 + p.z * m22 + 1 * m32
+// because the fourth value is always 1 which is why coding didn't show the 1 while only define the x, y and z. 
+// therefore coding below is working same as the pervious coding above
+// for the 4th point formula...
+p.x = p.x * m00 + p.y * m10 + p.z * m20 + m30
+p.y = p.x * m01 + p.y * m11 + p.z * m21 + m31
+p.z = p.x * m02 + p.y * m12 + p.z * m22 + m32
+
+// if make a multiplicaton of an homogeneous point by [4x4] matrix
+// then 4th row is known as w coordinate of the transformed point
+// alway set to (0, 0, 0, 1) so w is 
+// w = x * 0 + y + 0 + z * 0 + w(=1) * 1 = 1
+// may not always to (0, 0, 0, 1) if deal with projecton matrices
+p.x = p.x * m00 + p.y * m10 + p.z * m20 + m30
+p.y = p.x * m01 + p.y * m11 + p.z * m21 + m31
+p.z = p.x * m02 + p.y * m12 + p.z * m22 + m32
+w	= p.x * m03 + p.y * m13 + p.z * m23 + m33;
+
+// normalize w back to the 1 if the result for w is not 1 or 0
+if (w != 1 && w != 0) {
+	p.x /= w, p.y /= w, p.z /= w;
+}
+// the homogeneous coordinates is not used in ray tracing..
+// but it is for the Perspective & Orthographic Projection Matrix
+
+
+/**Transforming Vectors**/
+
+// vector don't need to be translated coz their positon is meaningless
+// vector is in the directon which they point and their length is 
+// an information that we need to solve geometric or shading problem.
+
+V.x = V.x * M00 + V.y * M10 + V.z * M20;
+V.y = V.x * M01 + V.y * M11 + V.z * M21;
+V.z = V.x * M02 + V.y * M12 + V.z * M22;
+
+void multDirMatrix(const Vec3<T> & src, Vec3<T> & dst) const
+{
+	dst.x = src.x * m[0][0] + src.y * m[1][0] + src.z * m[2][0];
+	dst.y = src.x * m[0][1] + src.y * m[1][1] + src.z * m[2][1];
+	dst.z = src.x * m[0][2] + src.y * m[1][2] + src.z * m[2][2];
+}
+
 #endif
