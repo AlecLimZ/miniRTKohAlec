@@ -6,11 +6,11 @@
 #include <iostream>
 #include <cassert>
 
-#if defined __linux__ || defined __APPLE__
+#if defined _linux_ || defined _APPLE_
 #else
 // Windows doesn't define these values by default, Linux does
-//#define M_PI 3.141592653589793
-//#define INFINITY 1e8
+#define M_PI 3.141592653589793
+#define INFINITY 1e8
 #endif
 
 template<typename T>
@@ -147,7 +147,7 @@ Vec3f trace(
 	const Sphere *sphere = NULL;
 
 	// find intersection of this ray with the sphere in the scene
-	for (unsigned i = 0; i < spheres.size(); ++i){
+	for (unsigned i = 0; i < spheres.size(); ++i) {
 		float t0 = INFINITY, t1 = INFINITY;
 		if (spheres[i].intersect(rayorig, raydir, t0, t1)) {
 			if (t0 < 0)
@@ -196,11 +196,11 @@ Vec3f trace(
 		if (sphere->transparency)
 		{
 			float ior = 1.1, eta = (inside) ? ior : 1 / ior; // are we inside or outside the surface?
-		float cosi = -nhit.dot(raydir);
-		float k = 1 - eta * eta * (1 - cosi * cosi);
-		Vec3f refrdir = raydir * eta + nhit * (eta * cosi - sqrt(k));
-		refrdir.normalize();
-		refraction = trace(phit - nhit * bias, refrdir, spheres, depth + 1);
+			float cosi = -nhit.dot(raydir);
+			float k = 1 - eta * eta * (1 - cosi * cosi);
+			Vec3f refrdir = raydir * eta + nhit * (eta * cosi - sqrt(k));
+			refrdir.normalize();
+			refraction = trace(phit - nhit * bias, refrdir, spheres, depth + 1);
 		}
 
 		// the result is a mix of reflecton and refraction (if the sphere is transparent)
