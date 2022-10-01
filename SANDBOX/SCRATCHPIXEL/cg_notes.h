@@ -90,4 +90,6 @@ for (int i = 0; i < 8; ++i) {
 	return (0);
 }
 // however above do not output an image yet but only 8 dots within image's area
+//
+//
 #endif
