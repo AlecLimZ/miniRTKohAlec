@@ -16,7 +16,6 @@ CPPFLAGS	= $(addprefix -I, $(HEADERDIR) $(dir $(LIBFT) $(LIBMLX)))
 LDFLAGS		= $(ASAN)
 LDLIBS		= $(LIBFT) $(LIBMLX) -framework OpenGL -framework AppKit
 
--include $(DEP)
 
 # WSL only
 ifeq ($(shell uname), Linux)
@@ -35,6 +34,8 @@ wsl_pre:
 endif
 
 all		: $(NAME)
+
+-include $(DEP)
 
 $(NAME)	: $(OBJ) | $(LIBMLX) $(LIBFT) norm
 
