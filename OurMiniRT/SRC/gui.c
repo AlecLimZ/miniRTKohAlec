@@ -84,6 +84,7 @@ static void	*ants(t_app *app)
 }
 
 void	*rt(t_app *app);
+void	*rt2(t_app *app);
 
 int	gui_render(t_app *app)
 {
@@ -95,7 +96,7 @@ int	gui_render(t_app *app)
 	if (1)
 	{
 		mlx_put_image_to_window(
-			app->mlx_ptr, app->win_ptr, rt(app),  app->x, app->y);
+			app->mlx_ptr, app->win_ptr, rt2(app),  app->x, app->y);
 		printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 		return (0);
 	}
