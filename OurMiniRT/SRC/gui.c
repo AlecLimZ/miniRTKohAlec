@@ -26,20 +26,25 @@ int	gui_input(unsigned int key, t_app *app)
 	[KEY_U] = 'u', [KEY_V] = 'v', [KEY_W] = 'w', [KEY_X] = 'x', [KEY_Y] = 'y',
 	[KEY_Z] = 'z' };
 
-	if (key == KEY_W)
+	if (key == KEY_A)
 		app->camera.origin.z+=.1;
-	if (key == KEY_S)
+	if (key == KEY_Z)
 		app->camera.origin.z-=.1;
 	if (key == KEY_ESC)
 		app_exit(app, NULL);
 	if (key == KEY_UP)
-		app->y++;
+		app->camera.origin.y-=.1;
+
+		// app->y++;
 	else if (key == KEY_DOWN)
-		app->y--;
+		app->camera.origin.y+=.1;
+		// app->y--;
 	else if (key == KEY_LEFT)
-		app->x++;
+		app->camera.origin.x+=.1;
+		// app->x++;
 	else if (key == KEY_RIGHT)
-		app->x--;
+		app->camera.origin.x-=.1;
+		// app->x--;
 	else if (key < 127)
 		ft_putchar_fd(map[key], 1);
 	app->last_updated++;
@@ -84,7 +89,7 @@ static void	*ants(t_app *app)
 }
 
 void	*rt(t_app *app);
-void	*rt2(t_app *app);
+void	*rt2();
 
 int	gui_render(t_app *app)
 {

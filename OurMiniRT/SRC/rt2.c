@@ -13,7 +13,7 @@
 #define MAX(a, b) ((a) < (b)? (b) : (a))
 #define MIN(a, b) ((a) > (b)? (b) : (a))
 
-
+// typedef t_vec3 vec3;
 typedef struct s_xyz {
     float x, y, z;
     //       float& operator[](const int i)       { return i==0 ? x : (1==i ? y : z); }
@@ -92,17 +92,19 @@ typedef struct s_Sphere {
     Material material;
 } Sphere;
 
-//  Material      ivory = (Material){1.0, {0.9,  0.5, 0.1, 0.0}, {0.4, 0.4, 0.3},   50.};
-//  Material      glass = (Material){1.5, {0.0,  0.9, 0.1, 0.8}, {0.6, 0.7, 0.8},  125.};
-//  Material red_rubber = (Material){1.0, {1.4,  0.3, 0.0, 0.0}, {0.3, 0.1, 0.1},   10.};
-//  Material     mirror = (Material){1.0, {0.0, 16.0, 0.8, 0.0}, {1.0, 1.0, 1.0}, 1425.};
+ #define      IVORY {1.0, {0.9,  0.5, 0.1, 0.0}, {0.4, 0.4, 0.3},   50.}
+ #define      GLASS {1.5, {0.0,  0.9, 0.1, 0.8}, {0.6, 0.7, 0.8},  125.}
+ #define RED_RUBBER {1.0, {1.4,  0.3, 0.0, 0.0}, {0.3, 0.1, 0.1},   10.}
+ #define     MIRROR {1.0, {0.0, 16.0, 0.8, 0.0}, {1.0, 1.0, 1.0}, 1425.}
 
  Sphere spheres[] = {
-    {{-3,    0,   -16}, 2,      {1.0, {0.9,  0.5, 0.1, 0.0}, {0.4, 0.4, 0.3},   50.}}, //ivory},
-    {{-1.0, -1.5, -12}, 2,      {1.5, {0.0,  0.9, 0.1, 0.8}, {0.6, 0.7, 0.8},  125.}}, //glass},
-    {{ 1.5, -0.5, -18}, 3, {1.0, {1.4,  0.3, 0.0, 0.0}, {0.3, 0.1, 0.1},   10.}}, //red_rubber},
-    {{ 7,    5,   -18}, 4, {1.0, {0.0, 16.0, 0.8, 0.0}, {1.0, 1.0, 1.0}, 1425.}}//    mirror}
+    {{0, -1, -10}, .1, RED_RUBBER},
+    {{-3,    0,   -16}, 2, IVORY},
+    {{-1.0, -1.5, -12}, 2, RED_RUBBER},
+    {{ 1.5, -0.5, -18}, 3, RED_RUBBER},
+    {{ 7,    5,   -18}, 4, IVORY}
 };
+const size_t sphere_count = sizeof(spheres) / sizeof(*spheres);
 
  vec3 lights[] = {
     {-20, 20,  20},
@@ -123,12 +125,12 @@ vec3 refract(const vec3 I, const vec3 N, const float eta_t, const float eta_i) {
 }
 
 float ray_sphere_intersect(const vec3 orig, const vec3 dir, const Sphere s) { // ret value is a pair [intersection found, distance]
-    vec3 L = vsub(s.center, orig);
-    float tca = mulvv(L,dir);
-    float d2 = mulvv(L,L) - tca*tca;
+    const vec3 L = vsub(s.center, orig);
+    const float tca = mulvv(L,dir);
+    const float d2 = mulvv(L,L) - tca*tca;
     if (d2 > s.radius*s.radius) return INFINITY;
-    float thc = sqrt(s.radius*s.radius - d2);
-    float t0 = tca-thc, t1 = tca+thc;
+    const float thc = sqrt(s.radius*s.radius - d2);
+    const float t0 = tca-thc, t1 = tca+thc;
     if (t0>.001) return t0;  // offset the original point by .001 to avoid occlusion by the object itself
     if (t1>.001) return t1;
     return INFINITY;
@@ -150,7 +152,7 @@ hitpayload scene_intersect(const vec3 orig, const vec3 dir) {
         }
     }
 
-    for (int i =0; i < 4; ++i) { // intersect the ray with all spheres
+    for (size_t i =0; i < sphere_count; ++i) { // intersect the ray with all spheres
         const Sphere s = spheres[i];
         float d = ray_sphere_intersect(orig, dir, s);
         if (d > nearest_dist) continue;
@@ -166,12 +168,13 @@ vec3 cast_ray(const vec3 orig, const vec3 dir, const int depth) {
     // auto [hit, point, N, material] 
     hitpayload a = scene_intersect(orig, dir);
     if (depth>4 || !a.hit)
+        // return (vec3){0., 0., 0.}; // background color
         return (vec3){0.2, 0.7, 0.8}; // background color
 
-    vec3 reflect_dir = normalized(reflect(dir, a.N));
-    vec3 refract_dir = normalized(refract(dir, a.N, a.material.refractive_index, 1.f));
-    vec3 reflect_color = cast_ray(a.point, reflect_dir, depth + 1);
-    vec3 refract_color = cast_ray(a.point, refract_dir, depth + 1);
+    const vec3 reflect_dir = normalized(reflect(dir, a.N));
+    // const vec3 refract_dir = normalized(refract(dir, a.N, a.material.refractive_index, 1.f));
+    const vec3 reflect_color = cast_ray(a.point, reflect_dir, depth + 1);
+    // const vec3 refract_color = cast_ray(a.point, refract_dir, depth + 1);
 
     float diffuse_light_intensity = 0, specular_light_intensity = 0;
     for (int i =0; i < 3; ++i) { // checking if the point lies in the shadow of the light
@@ -185,12 +188,12 @@ vec3 cast_ray(const vec3 orig, const vec3 dir, const int depth) {
     }
     return 
     vadd(
-        vadd(
+        // vadd(
             vadd(
                 mulvf(a.material.diffuse_color, diffuse_light_intensity * a.material.albedo[0]),
                 mulvf((vec3){1., 1., 1.},specular_light_intensity * a.material.albedo[1])
             ) , mulvf(reflect_color,a.material.albedo[2])
-        ), mulvf(refract_color,a.material.albedo[3])
+        // ), mulvf(refract_color,a.material.albedo[3])
     );
     // return material.diffuse_color * diffuse_light_intensity * material.albedo[0] + vec3{1., 1., 1.}*specular_light_intensity * material.albedo[1] + reflect_color*material.albedo[2] + refract_color*material.albedo[3];
 }
@@ -232,11 +235,12 @@ int to_rgb(vec3 color)
         );
 }
 
-void	*rt2(t_app *app)
+void	*rt2(const t_app *app)
 {
 
      const int   width  = app->width;
      const int   height = app->height;
+     const vec3  camera = (vec3){app->camera.origin.x, app->camera.origin.y, app->camera.origin.z};
      float fov    = 1.05; // 60 degrees field of view in radians
     // vec3 *framebuffer = (vec3*)malloc(sizeof(vec3) * width*height);
 // #pragma omp parallel for
@@ -246,7 +250,7 @@ void	*rt2(t_app *app)
         float dir_z = -height/(2.*tan(fov/2.));
         // framebuffer[pix] = 
         app->image.px[pix] = to_rgb( 
-        cast_ray((vec3){0,0,1}, normalized((vec3){dir_x, dir_y, dir_z}), 0)
+        cast_ray(camera, normalized((vec3){dir_x, dir_y, dir_z}), 0)
         );
     }
     return app->image.ptr;
