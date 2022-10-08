@@ -235,6 +235,10 @@ int to_rgb(vec3 color)
         );
 }
 
+void	rotate_x(float *y, float *z, double angle_x);
+void	rotate_y(float *x, float *z, double angle_y);
+void	rotate_z(float *x, float *y, double angle_z);
+
 void	*rt2(const t_app *app)
 {
 
@@ -248,6 +252,9 @@ void	*rt2(const t_app *app)
         float dir_x =  (pix%width + 0.5) -  width/2.;
         float dir_y = -(pix/width + 0.5) + height/2.; // this flips the image at the same time
         float dir_z = -height/(2.*tan(fov/2.));
+rotate_x(&dir_y, &dir_z, app->camera.orientation.x);
+rotate_x(&dir_x, &dir_z, app->camera.orientation.y);
+rotate_x(&dir_x, &dir_y, app->camera.orientation.z);
         // framebuffer[pix] = 
         app->image.px[pix] = to_rgb( 
         cast_ray(camera, normalized((vec3){dir_x, dir_y, dir_z}), 0)

@@ -45,6 +45,22 @@ int	gui_input(unsigned int key, t_app *app)
 	else if (key == KEY_RIGHT)
 		app->camera.origin.x-=.1;
 		// app->x--;
+
+	else if (key == KEY_S)
+		app->camera.orientation.x += .01;
+	else if (key == KEY_X)
+		app->camera.orientation.x -= .01;
+
+	else if (key == KEY_D)
+		app->camera.orientation.y += .01;
+	else if (key == KEY_C)
+		app->camera.orientation.y -= .01;
+
+	else if (key == KEY_F)
+		app->camera.orientation.z += .01;
+	else if (key == KEY_V)
+		app->camera.orientation.z -= .01;
+
 	else if (key < 127)
 		ft_putchar_fd(map[key], 1);
 	app->last_updated++;
