@@ -27,9 +27,27 @@ int	gui_input(unsigned int key, t_app *app)
 	[KEY_Z] = 'z' };
 
 	if (key == KEY_A)
-		app->camera.origin.z+=.1;
+	{
+		float dir_x=0,dir_y=0,dir_z=1;
+		rotate_x(&dir_y, &dir_z, app->camera.orientation.x);
+		rotate_y(&dir_x, &dir_z, app->camera.orientation.y);
+		rotate_z(&dir_x, &dir_y, app->camera.orientation.z);
+		// app->camera.origin.z+=.1;
+		app->camera.origin.x += dir_x;
+		app->camera.origin.y += dir_y;
+		app->camera.origin.z += dir_z;
+	}
 	if (key == KEY_Z)
-		app->camera.origin.z-=.1;
+	{
+		float dir_x=0,dir_y=0,dir_z=-1;
+		rotate_x(&dir_y, &dir_z, app->camera.orientation.x);
+		rotate_y(&dir_x, &dir_z, app->camera.orientation.y);
+		rotate_z(&dir_x, &dir_y, app->camera.orientation.z);
+		// app->camera.origin.z-=.1;
+		app->camera.origin.x += dir_x;
+		app->camera.origin.y += dir_y;
+		app->camera.origin.z += dir_z;
+	}
 	if (key == KEY_ESC)
 		app_exit(app, NULL);
 	if (key == KEY_UP)

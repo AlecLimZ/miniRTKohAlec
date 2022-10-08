@@ -142,8 +142,8 @@ hitpayload scene_intersect(const vec3 orig, const vec3 dir) {
 
     float nearest_dist = 1e10;
     if (fabs(dir.y)>.001) { // intersect the ray with the checkerboard, avoid division by zero
-        float d = -(orig.y+4)/dir.y; // the checkerboard plane has equation y = -4
-        vec3 p = vadd(orig, mulvf(dir,d));
+        const float d = -(orig.y+4)/dir.y; // the checkerboard plane has equation y = -4
+        const vec3 p = vadd(orig, mulvf(dir,d));
         if (d>.001 && d<nearest_dist && fabs(p.x)<10 && p.z<-10 && p.z>-30) {
             nearest_dist = d;
             pt = p;
@@ -154,7 +154,7 @@ hitpayload scene_intersect(const vec3 orig, const vec3 dir) {
 
     for (size_t i =0; i < sphere_count; ++i) { // intersect the ray with all spheres
         const Sphere s = spheres[i];
-        float d = ray_sphere_intersect(orig, dir, s);
+        const float d = ray_sphere_intersect(orig, dir, s);
         if (d > nearest_dist) continue;
         nearest_dist = d;
         pt = vadd(orig, mulvf(dir,nearest_dist));
@@ -235,10 +235,6 @@ int to_rgb(vec3 color)
         );
 }
 
-void	rotate_x(float *y, float *z, double angle_x);
-void	rotate_y(float *x, float *z, double angle_y);
-void	rotate_z(float *x, float *y, double angle_z);
-
 void	*rt2(const t_app *app)
 {
 
@@ -253,8 +249,8 @@ void	*rt2(const t_app *app)
         float dir_y = -(pix/width + 0.5) + height/2.; // this flips the image at the same time
         float dir_z = -height/(2.*tan(fov/2.));
 rotate_x(&dir_y, &dir_z, app->camera.orientation.x);
-rotate_x(&dir_x, &dir_z, app->camera.orientation.y);
-rotate_x(&dir_x, &dir_y, app->camera.orientation.z);
+rotate_y(&dir_x, &dir_z, app->camera.orientation.y);
+rotate_z(&dir_x, &dir_y, app->camera.orientation.z);
         // framebuffer[pix] = 
         app->image.px[pix] = to_rgb( 
         cast_ray(camera, normalized((vec3){dir_x, dir_y, dir_z}), 0)
