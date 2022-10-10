@@ -31,7 +31,6 @@ int	mlx_destroy_display(void *mlx_ptr)
 // exit with/without error. free() before exit
 void	app_exit(t_app *app, const char *error)
 {
-	ft_lstclear(&app->objects, free);
 	if (app->image.ptr)
 		mlx_destroy_image(app->mlx_ptr, app->image.ptr);
 	if (app->win_ptr)
@@ -41,6 +40,7 @@ void	app_exit(t_app *app, const char *error)
 		mlx_destroy_display(app->mlx_ptr);
 		free(app->mlx_ptr);
 	}
+	ft_lstclear(&app->objects, free);
 	if (error)
 	{
 		ft_putstr_fd("Error\n", 2);

@@ -88,7 +88,7 @@ void	*rt(t_app *app)
 	double	viewport_width = aspect_ratio * viewport_height;
 	double	focal_length = 1.0;
 
-	t_point3	origin = app->camera.origin;
+	t_point3	origin = app->camera->coor;
 	// v_init(&origin, 0, 0, 0);
 
 	t_vec3	horizontal;

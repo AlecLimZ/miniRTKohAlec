@@ -14,6 +14,7 @@
 # define PARSER_H
 
 # include <fcntl.h>
+# include <stdbool.h>
 # include "miniRT.h"
 
 // parser
@@ -21,9 +22,11 @@
 void	parse_file(char *fp, t_app *app);
 
 // parser_types
-int		parse_sphere(char *line, t_app *app);
-int		parse_plane(char *line, t_app *app);
-int		parse_cylinder(char *line, t_app *app);
+bool	parse_sphere(char *line, t_app *app);
+bool	parse_plane(char *line, t_app *app);
+bool	parse_cylinder(char *line, t_app *app);
+bool	parse_cone_bonus(char *line, t_app *app);
+bool	parse_camera(char *line, t_app *app);
 
 // parser_utils
 int		trim_str(char **s, int (*f)(int));

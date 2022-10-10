@@ -15,13 +15,14 @@
 // app.last_updated = 1 to trigger first render
 static void	init_app(t_app *app)
 {
-	*app = (t_app){.last_updated = 1, .width = 800, .height = 600};
+	*app = (t_app){.last_updated = 1, .width = 1600, .height = 900, .render_mode = DEFAULT_RENDER};
 }
 
 static void	load_scene_or_exit(t_app *app, char *filepath)
 {
 	parse_file(filepath, app);
 	printf("lstsize %d\n", ft_lstsize(app->objects));
+	select_next(app);
 }
 
 // why macOs API missing mlx_get_screen_size??

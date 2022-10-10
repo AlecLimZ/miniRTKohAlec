@@ -18,67 +18,73 @@
 
 // a scene must have only 1 ambient, camera, light. they are stored in struct
 // "A <ratio> <r,g,b>" eg "A 0.2 255,255,25"
-static int	parse_ambient(char *line, t_app *app)
+static bool	parse_ambient(char *line, t_app *app)
 {
-	t_ambient *const	a = &app->ambient;
+	t_object *const	a = ft_calloc(1, sizeof(t_object));
 
-	return (
-		a->is_configured == 0
+	ft_lstadd_front(&app->objects, ft_lstnew(a));
+	if (a)
+		a->type = AMBIENT;
+	app->ambient = a;
+	++app->ambient_count;
+	return (a != NULL
 		&& trim_str(&line, ft_isalpha) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &a->ratio, 0, 1) == 1
+		&& pull_nbr(&line, &a->ambient_ratio, 0, 1) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_rgb(&line, &a->color) == 1
 		&& trim_str(&line, ft_isspace) >= 0
 		&& (*line == '#' || *line == '\0')
-		&& ++a->is_configured
-	);
-}
-
-// "C <x,y,z> <orientation:x,y,z> <FOV>" eg "C -50.0,0,20 0,0,1 70"
-static int	parse_camera(char *line, t_app *app)
-{
-	t_camera *const	a = &app->camera;
-
-	return (
-		a->is_configured == 0
-		&& trim_str(&line, ft_isalpha) == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_vec(&line, &a->coor, MIN_COOR, MAX_COOR) == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_vec(&line, &a->orientation, -1, 1) == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &a->fov, 0, 180) == 1
-		&& trim_str(&line, ft_isspace) >= 0
-		&& (*line == '#' || *line == '\0')
-		&& ++a->is_configured
 	);
 }
 
 // "L <x,y,z> <brightness> <r,g,b>" eg "L -40.0,50.0,0.0 0.6 10,0,255"
-static int	parse_light(char *line, t_app *app)
+static bool	parse_light(char *line, t_app *app)
 {
-	t_light *const	a = &app->light;
+	t_object *const	a = ft_calloc(1, sizeof(t_object));
 
-	return (
-		a->is_configured == 0
+	ft_lstadd_front(&app->objects, ft_lstnew(a));
+	if (a)
+		a->type = LIGHT;
+	++app->light_count;
+	return (a != NULL
 		&& trim_str(&line, ft_isalpha) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_vec(&line, &a->coor, MIN_COOR, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &a->brightness, 0, 1) == 1
+		&& pull_nbr(&line, &a->light_brightness, 0, 1) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_rgb(&line, &a->color) == 1
 		&& trim_str(&line, ft_isspace) >= 0
 		&& (*line == '#' || *line == '\0')
-		&& ++a->is_configured
+	);
+}
+
+// "li <x,y,z> <brightness> <r,g,b>" eg "L -40.0,50.0,0.0 0.6 10,0,255"
+static bool	parse_light_bonus(char *line, t_app *app)
+{
+	t_object *const	a = ft_calloc(1, sizeof(t_object));
+
+	ft_lstadd_front(&app->objects, ft_lstnew(a));
+	if (a)
+		a->type = LIGHT_BONUS;
+	return (a != NULL
+		&& trim_str(&line, ft_isalpha) == 2
+		&& trim_str(&line, ft_isspace) >= 1
+		&& pull_vec(&line, &a->coor, MIN_COOR, MAX_COOR) == 1
+		&& trim_str(&line, ft_isspace) >= 1
+		&& pull_nbr(&line, &a->light_brightness, 0, 1) == 1
+		&& trim_str(&line, ft_isspace) >= 1
+		&& pull_rgb(&line, &a->color) == 1
+		&& trim_str(&line, ft_isspace) >= 0
+		&& (*line == '#' || *line == '\0')
 	);
 }
 
 // parse value into struct
 // return 1 if empty/remark line or valid config line
 // return 0 if invalid/duplicate config
-static int	parse_line(char *line, t_app *app)
+static bool	parse_line(char *line, t_app *app)
 {
 	const void	*f[] = {
 		"A", &parse_ambient,
@@ -87,6 +93,8 @@ static int	parse_line(char *line, t_app *app)
 		"sp", &parse_sphere,
 		"pl", &parse_plane,
 		"cy", &parse_cylinder,
+		"li", &parse_light_bonus,
+		"co", &parse_cone_bonus,
 		NULL,
 	};
 	const void	**p = f;
@@ -123,10 +131,10 @@ void	parse_file(char *fp, t_app *app)
 	}
 	free(line);
 	close(fd);
-	if (!app->ambient.is_configured)
-		app_exit(app, "Ambient/Camera/Light is not configured");
-	if (!app->camera.is_configured)
-		app_exit(app, "Camera/Light is not configured");
-	if (!app->light.is_configured)
-		app_exit(app, "Light is not configured");
+	if (app->ambient_count != 1)
+		app_exit(app, "Ambient(A) must be configured and only once.");
+	if (app->camera_count != 1)
+		app_exit(app, "Camera(C) must be configured and only once.");
+	if (app->light_count != 1)
+		app_exit(app, "Light(L) must be configured and only once.");
 }

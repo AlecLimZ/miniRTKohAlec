@@ -29,8 +29,12 @@
 int		gui_input(unsigned int key, t_app *app);
 int		gui_render(t_app *app);
 
+// rotate.c
 void	rotate_x(float *y, float *z, double angle_x);
 void	rotate_y(float *x, float *z, double angle_y);
 void	rotate_z(float *x, float *y, double angle_z);
+
+// control.c
+void	select_next(t_app *app);
 
 #endif

@@ -18,9 +18,23 @@
 
 enum e_object_type
 {
-	CYLINDER,
+	AMBIENT,
+	CAMERA,
+	LIGHT,
+	LIGHT_BONUS,
+
 	SPHERE,
 	PLANE,	
+	CYLINDER,
+
+	CONE,
+};
+
+enum e_render_mode
+{
+	DEFAULT_RENDER,
+	BY_NORMAL,
+	RENDER_MODE_END,
 };
 
 typedef union s_vec3
@@ -107,13 +121,20 @@ typedef struct s_light
 // can be sphere/plane/cylinder (as linked-list content)
 typedef struct s_object
 {
-	double	diameter;
-	double	height;
+	int		type;
+	union
+	{
+		double	ambient_ratio;
+		double	light_brightness;
+		double	camera_fov;
+		double	height;
+	};
 	t_xyz	coor;
 	t_rgb	color;
 	t_xyz	orientation;
-	char	type;
+	double	diameter;
 }	t_object;
+
 
 // MLX Metal buffer width may more than requested
 // eg request 800px width, but actual width is 832px
@@ -143,15 +164,17 @@ typedef struct s_app
 	unsigned int	last_updated;
 	int				width;
 	int				height;
-	int				x;
-	int				y;
-	t_ambient		ambient;
-	t_camera		camera;
-	t_light			light;
 	t_list			*objects;
+	t_list			*selected_object;
+	t_object		*ambient;
+	t_object		*camera;
+	int				ambient_count;
+	int				camera_count;
+	int				light_count;
 	void			*mlx_ptr;
 	void			*win_ptr;
 	t_image			image;
+	int				render_mode;
 }	t_app;
 
 #endif

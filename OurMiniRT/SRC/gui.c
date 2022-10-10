@@ -13,9 +13,11 @@
 #include <time.h>
 #include "miniRT.h"
 
+
+
 int	gui_input(unsigned int key, t_app *app)
 {
-	static const char	map[127] = {
+	const char	map[127] = {
 	[KEY_ONE] = '1', [KEY_TWO] = '2', [KEY_THREE] = '3', [KEY_FOUR] = '4',
 	[KEY_FIVE] = '5', [KEY_SIX] = '6', [KEY_SEVEN] = '7', [KEY_EIGHT] = '8',
 	[KEY_NINE] = '9', [KEY_ZERO] = '0',
@@ -26,59 +28,60 @@ int	gui_input(unsigned int key, t_app *app)
 	[KEY_U] = 'u', [KEY_V] = 'v', [KEY_W] = 'w', [KEY_X] = 'x', [KEY_Y] = 'y',
 	[KEY_Z] = 'z' };
 
+printf("keycode %d\n", key);
+	if (app->selected_object == NULL || key == KEY_TAB)
+	{
+		printf("here %p\n", app->selected_object);
+		select_next(app);
+	}
+
 	if (key == KEY_A)
 	{
-		float dir_x=0,dir_y=0,dir_z=1;
-		rotate_x(&dir_y, &dir_z, app->camera.orientation.x);
-		rotate_y(&dir_x, &dir_z, app->camera.orientation.y);
-		rotate_z(&dir_x, &dir_y, app->camera.orientation.z);
-		// app->camera.origin.z+=.1;
-		app->camera.origin.x += dir_x;
-		app->camera.origin.y += dir_y;
-		app->camera.origin.z += dir_z;
+		((t_object*)app->selected_object->content)->coor.z += 1;
+		// float dir_x=0,dir_y=0,dir_z=1;
+		// rotate_x(&dir_y, &dir_z, app->camera->orientation.x);
+		// rotate_y(&dir_x, &dir_z, app->camera->orientation.y);
+		// rotate_z(&dir_x, &dir_y, app->camera->orientation.z);
+		// app->camera->coor.x += dir_x;
+		// app->camera->coor.y += dir_y;
+		// app->camera->coor.z += dir_z;
 	}
 	if (key == KEY_Z)
 	{
-		float dir_x=0,dir_y=0,dir_z=-1;
-		rotate_x(&dir_y, &dir_z, app->camera.orientation.x);
-		rotate_y(&dir_x, &dir_z, app->camera.orientation.y);
-		rotate_z(&dir_x, &dir_y, app->camera.orientation.z);
-		// app->camera.origin.z-=.1;
-		app->camera.origin.x += dir_x;
-		app->camera.origin.y += dir_y;
-		app->camera.origin.z += dir_z;
+		((t_object*)app->selected_object->content)->coor.z-=1;
+		// float dir_x=0,dir_y=0,dir_z = -1;
+		// rotate_x(&dir_y, &dir_z, app->camera->orientation.x);
+		// rotate_y(&dir_x, &dir_z, app->camera->orientation.y);
+		// rotate_z(&dir_x, &dir_y, app->camera->orientation.z);
+		// app->camera->coor.x += dir_x;
+		// app->camera->coor.y += dir_y;
+		// app->camera->coor.z += dir_z;
 	}
 	if (key == KEY_ESC)
 		app_exit(app, NULL);
-	if (key == KEY_UP)
-		app->camera.origin.y-=.1;
-
-		// app->y++;
 	else if (key == KEY_DOWN)
-		app->camera.origin.y+=.1;
-		// app->y--;
-	else if (key == KEY_LEFT)
-		app->camera.origin.x+=.1;
-		// app->x++;
+		((t_object*)app->selected_object->content)->coor.y-=1;
+	else if (key == KEY_UP)
+		((t_object*)app->selected_object->content)->coor.y+=1;
 	else if (key == KEY_RIGHT)
-		app->camera.origin.x-=.1;
-		// app->x--;
-
+		((t_object*)app->selected_object->content)->coor.x+=1;
+	else if (key == KEY_LEFT)
+		((t_object*)app->selected_object->content)->coor.x-=1;
 	else if (key == KEY_S)
-		app->camera.orientation.x += .01;
+		app->camera->orientation.x += 3.14159 * 2 / 8;
 	else if (key == KEY_X)
-		app->camera.orientation.x -= .01;
-
+		app->camera->orientation.x -= 3.14159 * 2 / 8;
 	else if (key == KEY_D)
-		app->camera.orientation.y += .01;
+		app->camera->orientation.y += 3.14159 * 2 / 8;
 	else if (key == KEY_C)
-		app->camera.orientation.y -= .01;
-
+		app->camera->orientation.y -= 3.14159 * 2 / 8;
 	else if (key == KEY_F)
-		app->camera.orientation.z += .01;
+		app->camera->orientation.z += 3.14159 * 2 / 8;
 	else if (key == KEY_V)
-		app->camera.orientation.z -= .01;
+		app->camera->orientation.z -= 3.14159 * 2 / 8;
 
+	else if (key == KEY_N)
+		app->render_mode = (app->render_mode + 1) % RENDER_MODE_END;
 	else if (key < 127)
 		ft_putchar_fd(map[key], 1);
 	app->last_updated++;
@@ -130,13 +133,29 @@ int	gui_render(t_app *app)
 	static unsigned int		last_updated = 0;
 	static unsigned long	tick = 0;
 	const clock_t			begin = clock();
+	const char	*const name[] = {
+			[CAMERA] = "Camera",
+			[LIGHT]	= "Light",
+			[LIGHT_BONUS] = "Light bonus",
+			[SPHERE] = "Sphere",
+			[PLANE] = "Plane",
+			[CYLINDER] = "Cylinder",
+			[CONE] = "Cone",
+		};
 
 	++tick;
 	if (1)
 	{
 		mlx_put_image_to_window(
-			app->mlx_ptr, app->win_ptr, rt2(app),  app->x, app->y);
+			app->mlx_ptr, app->win_ptr, rt2(app), 0, 0);
 		printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
+		
+		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, 24, 0XFFFF00,
+			(char *)name[((t_object *)app->selected_object->content)->type]);
+		
+		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, app->height - 30, 0xFFFF00,
+			"TAB=Next_Object  UP=Move_Y+  DOWN=Move_Y-  LEFT=Move_X-  RIGHT=Move_X+  A=Move_Z-  Z=Move_Z+  N=Toggle_Render");
+		
 		return (0);
 	}
 	if (last_updated < app->last_updated)
@@ -146,13 +165,13 @@ int	gui_render(t_app *app)
 		last_updated = app->last_updated;
 		mlx_clear_window(app->mlx_ptr, app->win_ptr);
 		mlx_put_image_to_window(
-			app->mlx_ptr, app->win_ptr, gradient(app), app->x, app->y);
+			app->mlx_ptr, app->win_ptr, gradient(app), 0, 0);
 		printf("gradient %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 	}
 	else if (tick > 9999 && tick % 100 == 0)
 	{
 		mlx_put_image_to_window(
-			app->mlx_ptr, app->win_ptr, ants(app), app->x, app->y);
+			app->mlx_ptr, app->win_ptr, ants(app), 0, 0);
 		printf("ants in %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 	}
 	return (0);
