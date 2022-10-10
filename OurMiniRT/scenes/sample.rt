@@ -65,11 +65,11 @@ sp		1,-1,0		1		255,255,255
 pl      0,0,100     0,0,0   140,118,206
 
 L		0,0,4		1		255,255,255
-C 		0,0,4		0,0,0	180
+C 		0,0,5		0,0,0	60
 
 ############################################
 
-# C           5,10,10           -0.5,0,0                  180
+# C           5,10,10           -0.5,0,0                  60
 # # camera position is usable,  but need work for orientation
 # # fov is usable just i am not sure is correct, have to compare other minirt
 # L             -1,3,5            0.5                 255,0,0

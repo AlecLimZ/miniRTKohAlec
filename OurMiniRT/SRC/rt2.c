@@ -381,7 +381,7 @@ void	*rt2(const t_app *app)
 	 const int   width  = app->width;
 	 const int   height = app->height;
 	 const vec3  camera = (vec3){app->camera->coor.x, app->camera->coor.y, app->camera->coor.z};
-	 float fov    = 1.05; // 60 degrees field of view in radians  it is there already,just to replace by .rt i will do
+	 float fov    = app->camera->camera_fov * PI /180 ; // 1.05 = 60 degrees field of view in radians  it is there already,just to replace by .rt i will do
 // #pragma omp parallel for
 	for (int pix = 0; pix<width*height; pix++) { // actual rendering loop
 		float dir_x =  (pix%width + 0.5) -  width/2.;

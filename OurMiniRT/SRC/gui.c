@@ -68,17 +68,17 @@ printf("keycode %d\n", key);
 	else if (key == KEY_LEFT)
 		((t_object*)app->selected_object->content)->coor.x-=1;
 	else if (key == KEY_S)
-		app->camera->orientation.x += 3.14159 * 2 / 8;
+		app->camera->orientation.x += PI * 2 / 8;
 	else if (key == KEY_X)
-		app->camera->orientation.x -= 3.14159 * 2 / 8;
+		app->camera->orientation.x -= PI * 2 / 8;
 	else if (key == KEY_D)
-		app->camera->orientation.y += 3.14159 * 2 / 8;
+		app->camera->orientation.y += PI * 2 / 8;
 	else if (key == KEY_C)
-		app->camera->orientation.y -= 3.14159 * 2 / 8;
+		app->camera->orientation.y -= PI * 2 / 8;
 	else if (key == KEY_F)
-		app->camera->orientation.z += 3.14159 * 2 / 8;
+		app->camera->orientation.z += PI * 2 / 8;
 	else if (key == KEY_V)
-		app->camera->orientation.z -= 3.14159 * 2 / 8;
+		app->camera->orientation.z -= PI * 2 / 8;
 
 	else if (key == KEY_N)
 		app->render_mode = (app->render_mode + 1) % RENDER_MODE_END;
@@ -154,7 +154,7 @@ int	gui_render(t_app *app)
 			(char *)name[((t_object *)app->selected_object->content)->type]);
 		
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, app->height - 30, 0xFFFF00,
-			"TAB=Next_Object  UP=Move_Y+  DOWN=Move_Y-  LEFT=Move_X-  RIGHT=Move_X+  A=Move_Z-  Z=Move_Z+  N=Toggle_Render");
+			"TAB=Next_Object  UP=Move_Y+  DOWN=Move_Y-  LEFT=Move_X-  RIGHT=Move_X+  A=Move_Z+  Z=Move_Z-  N=Toggle_Render");
 		
 		return (0);
 	}

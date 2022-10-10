@@ -16,6 +16,8 @@
 # define MIN_COOR -999
 # define MAX_COOR 999
 
+# define PI 3.14159
+
 enum e_object_type
 {
 	AMBIENT,
