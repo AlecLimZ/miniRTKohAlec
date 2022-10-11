@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/11 16:46:15 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:24:23 by leng-chu         ###   ########.fr       */
 /*   Updated: 2021/12/07 11:48:40 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -132,6 +132,27 @@ t_color	cast_ray(t_setting *set)
 	{
 		light_dir = new_minus2v(&set->lights[i].position, &set->ray.pthit);
 		light_dir = new_unitvector(&light_dir);
+
+		//shadow
+		double light_distance = sqrt(ft_squared_len(&light_dir));
+		t_setting shadow;
+		if (ft_dot(&light_dir, &set->ray.norm) < 0)
+		{
+			shadow.ray.ori = new_xv(1e-3, &set->ray.norm);
+			shadow.ray.ori = new_minus2v(&set->ray.pthit, &shadow.ray.ori);
+		}
+		else
+		{
+			shadow.ray.ori = new_xv(1e-3, &set->ray.norm);
+			shadow.ray.ori = new_plus2v(&set->ray.pthit, &shadow.ray.ori);
+		}
+		t_material tmpshadow;
+		t_vec3	tmp;
+		int status = scene_intersect(&shadow, &tmpshadow);
+		tmp = new_minus2v(&shadow.ray.pthit, &shadow.ray.ori);
+		if (status && sqrt(ft_squared_len(&tmp)) < light_distance)
+			continue;
+
 		dot = ft_dot(&light_dir, &set->ray.norm);
 		if (0.0 < dot)
 			diffuse_light_intensity += set->lights[i].intensity * dot;

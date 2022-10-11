@@ -69,6 +69,13 @@ Vec3f cast_ray(const Vec3f & orig, const Vec3f &dir, const std::vector<Sphere> &
 	float diffuse_light_intensity = 0, specular_light_intensity = 0;
 	for (size_t i = 0; i < lights.size(); i++) {
 		Vec3f light_dir = (lights[i].position - point).normalize();
+		float light_distance = (lights[i].position - point).norm();
+
+		Vec3f shadow_orig = light_dir * N < 0 ? point - N * 1e-3 : point + N * 1e-3;
+		Vec3f shadow_pt, shadow_N;
+		Material tmpmaterial;
+		if (scene_intersect(shadow_orig, light_dir, spheres, shadow_pt, shadow_N, tmpmaterial) && (shadow_pt-shadow_orig).norm() < light_distance)
+			continue;
 
 		diffuse_light_intensity += lights[i].intensity * std::max(0.f, light_dir * N);
 		specular_light_intensity += powf(std::max(0.f, -reflect(-light_dir, N) * dir), material.specular_exponent) * lights[i].intensity;
@@ -82,7 +89,7 @@ void render(const std::vector<Sphere> &spheres, const std::vector<Light> & light
 	const int fov = M_PI / 2.;
 	std::vector<Vec3f> framebuffer(width * height);
 
-	#pragma omp parallel for
+
 	for (size_t j = 0; j < height; j++) {
 		for (size_t i = 0; i < width; i++) {
 			float x = (2 * (i + 0.5) / (float)width - 1) * tan(fov/2.) * width / (float)height;
