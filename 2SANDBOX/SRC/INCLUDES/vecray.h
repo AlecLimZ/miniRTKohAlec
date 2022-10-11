@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 18:29:08 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/23 15:59:33 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/11 14:14:44 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 
 # include <math.h>
 
-typedef struct s_vec3
+typedef union	s_vec3
 {
 	double	rgb[3];
+	double	xyz[3];
 }	t_vec3;
 
 typedef t_vec3	t_point3;
@@ -25,9 +26,36 @@ typedef t_vec3	t_color;
 
 typedef struct s_ray
 {
-	t_point3	orig;
+	t_point3	ori;
 	t_vec3		dir;
+	t_vec3		norm;
 }	t_ray;
+
+typedef struct	s_material
+{
+	t_color	diffuse_color;
+}	t_material;
+
+typedef struct s_sphere
+{
+	t_vec3		center;
+	double		radius;
+	t_material	material;
+}	t_sphere;
+
+typedef struct s_light
+{
+	t_vec3f	position;
+	double	intensity;
+};
+
+typedef struct s_setting
+{
+	int			fov;
+	t_ray		ray;
+	t_sphere	*splist;
+	t_color		colorout;
+}	t_setting;
 
 double		ft_squared_len(const t_vec3 *v);
 void		ft_cvntminus(t_vec3 *v);

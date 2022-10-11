@@ -6,31 +6,14 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/10 15:08:49 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/11 13:40:54 by leng-chu         ###   ########.fr       */
 /*   Updated: 2021/12/07 11:48:40 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
 
-# define WIN_W 1024
-# define WIN_H 768
-# define IMG_W 1024
-# define IMG_H 768
-
-typedef struct s_mlx
-{
-	void	*mlx;
-	void	*mlx_win;
-	t_data	img;
-} t_mlx;
-
-typedef struct s_sphere2
-{
-	t_vec3 center;
-	double radius;
-	t_color color;
-} t_sphere2;
+#define SPSIZE	4
 
 int	deal_key(int key, void *param)
 {
@@ -53,113 +36,167 @@ void	display(t_vec3 *v)
 
 void	write_color(t_color *pixel)
 {
-	printf("%d %d %d\n", (int)(pixel->rgb[0] * 255.999), (int)(pixel->rgb[1] * 255.999), (int)(pixel->rgb[2] * 255.999));
+	printf("%d %d %d\n",
+		(int)(pixel->rgb[0] * 255.999),
+		(int)(pixel->rgb[1] * 255.999),
+		(int)(pixel->rgb[2] * 255.999));
 }
 
-void sandbox(void)
+//len is between origin & object center
+//sp is pointing one of spheres
+int	ray_intersect(t_vec3 *orig, t_vec3 *dir, double *t0, t_sphere *sp)
 {
-	t_mlx	m;
-	t_data	*iptr;
-	t_vec3	origin;
-//	t_vec3	dir;
-	t_color	color;
-//	t_sphere2 *sbox;
+	t_vec3	len;
+	double	tca;
+	double	d2;
+	double	thc;
+	double	t1;
 
-//	sbox = malloc(sizeof(t_sphere2) * 3);
-	//initsphere2(sbox);
-	v_init(&origin, 0, 0, 0);
-	iptr = &m.img;
-	m.mlx = mlx_init();
-	m.mlx_win = mlx_new_window(m.mlx, WIN_W, WIN_H, "HELLO");
-	iptr->img = mlx_new_image(m.mlx, IMG_W, IMG_H);
-	iptr->addr = mlx_get_data_addr(iptr->img, &iptr->px, &iptr->len, &iptr->end);
-	(void)color;
-	for (int i = 0; i < IMG_W; i++)
-	{
-		for (int j = 0; j < IMG_H; j++)
-		{
-			ft_pixel(iptr, i, j, rgbtohex2(0, 0.25, 0.25, 0.25));
-		}
-	}
-	mlx_put_image_to_window(m.mlx, m.mlx_win, iptr->img, 0, 0);
-	mlx_key_hook(m.mlx_win, deal_key, &m);
-	mlx_loop(m.mlx);
-}
-
-int	ray_intersect(t_vec3 *orig, t_vec3 *dir, double *t0, t_sphere2 *sp)
-{
-	t_vec3 L;
-
-	L = new_minus2v(&sp->center, orig);
-	display(&L);
-	double tca = ft_dot(&L, dir);
-	double d2 = ft_dot(&L, &L) - tca * tca;
+	len = new_minus2v(&sp->center, orig);
+	tca = ft_dot(&len, dir);
+	d2 = ft_dot(&len, &len) - tca * tca;
 	if (d2 > sp->radius * sp->radius)
-		return 0;
-	double thc = sqrt(sp->radius * sp->radius - d2);
+		return (0);
+	thc = sqrt(sp->radius * sp->radius - d2);
 	*t0 = tca - thc;
-	double t1 = tca + thc;
+	t1 = tca + thc;
 	if (*t0 < 0)
 		*t0 = t1;
 	if (*t0 < 0)
-		return 0;
-	return 1;
-}
-	
-t_color cast_ray(t_vec3 *orig, t_vec3 *dir, t_sphere2 *sp)
-{
-	t_color bg;
-	
-	v_init(&bg, 0.2, 0.7, 0.8);
-	double sphere_dist = INFINITY; // to be used as t0 later
-	if (!ray_intersect(orig, dir, &sphere_dist, sp))
-		return (bg);
-	printf("get sp color\n");
-	return (sp->color);
+		return (0);
+	return (1);
 }
 
-void	render(void)
+// point & N for vectors?
+// point = hit
+// you need to look for a way to count the total of spheres to be
+// used for the loop
+int	scene_intersect(t_ray *ray, t_color *clr, t_sphere *splist)
 {
-	t_mlx	m;
-	t_data	*iptr;
+	double	spheres_dist;
+	double	dist_i;
+	t_vec3	hit;
 
-	// new ori, dir, color & sphere, fov(depth)
-	t_vec3 ori; // init with 0,0,0
-	t_color	c; // inside loop
-	t_vec3 dir; // inside loop // normalized by using unit_vector fct
-	t_sphere2 sp; // set -3, 0, 16 for center | radius 2 | color 0.4, 0.4, 0.3
-	int	fov; // fov = M_PI / 2
-
-	fov = M_PI / 2.;
-	v_init(&ori, 0, 0, 0);
-	v_init(&sp.center, -3, 0, -16);
-	v_init(&sp.color, 0.4, 0.4, 0.3);
-	sp.radius = 2;
-
-	iptr = &m.img;
-	m.mlx = mlx_init();
-	m.mlx_win = mlx_new_window(m.mlx, WIN_W, WIN_H, "HELLO");
-	iptr->img = mlx_new_image(m.mlx, IMG_W, IMG_H);
-	iptr->addr = mlx_get_data_addr(iptr->img, &iptr->px, &iptr->len, &iptr->end);
-	for (int i = 0; i < IMG_H; i++)
+	v_init(&hit, 0, 0, 0);
+	spheres_dist = INFINITY;
+	for (size_t i = 0; i < SPSIZE; i++)
 	{
-		for (int j = 0; j < IMG_W; j++)
+		if (ray_intersect(&ray->ori, &ray->dir, &dist_i, &splist[i])
+			&& dist_i < spheres_dist)
 		{
-			double x = (2 * (j + 0.5) / (double)IMG_W - 1) * tan(fov/2.) * IMG_W / (double)IMG_H;
-			double y = (2 * (i + 0.5) / (double)IMG_H - 1) * tan(fov/2.);
-			v_init(&dir, x, y, -1);
-			dir = new_unitvector(&dir);
-			c = cast_ray(&ori, &dir, &sp);
-			ft_pixel(iptr, j, i, rgbtohex2(0, c.rgb[0], c.rgb[1], c.rgb[2]));
+			spheres_dist = dist_i;
+			hit = new_xv(dist_i, &ray->dir);
+			hit = new_plus2v(&ray->ori, &hit);
+			ray->norm = new_minus2v(&hit, &splist[i].center);
+			ray->norm = new_unitvector(&ray->norm);
+			*clr = splist[i].material.diffuse_color;
 		}
 	}
-	mlx_put_image_to_window(m.mlx, m.mlx_win, iptr->img, 0, 0);
-	mlx_key_hook(m.mlx_win, deal_key, &m);
-	mlx_loop(m.mlx);
+	return (spheres_dist < 1000);
 }
 
-int main(void)
+// spere_dist to be used as t0 inside the ray_intersect fct
+t_color	cast_ray(t_ray *ray, t_sphere *splist)
 {
-	render();
+	t_color		bg;
+	t_color		clr;
+
+	v_init(&bg, 0.2, 0.7, 0.8);
+	if (!scene_intersect(ray, &clr, splist))
+		return (bg);
+	return (clr);
+}
+
+void	mlx_action(t_mlx *m)
+{
+	mlx_put_image_to_window(m->mlx, m->mlx_win, m->img.img, 0, 0);
+	mlx_key_hook(m->mlx_win, deal_key, m);
+	mlx_loop(m->mlx);
+}
+
+void	loop_action(t_setting *set, int i, int j)
+{
+	double	x;
+	double	y;
+
+	x = (2 * (j + 0.5) / (double)IMG_W - 1)
+		* tan(set->fov / 2.) * IMG_W / (double)IMG_H;
+	y = (2 * (i + 0.5) / (double)IMG_H - 1) * tan(set->fov / 2.);
+	v_init(&set->ray.dir, x, y, -1);
+	set->ray.dir = new_unitvector(&set->ray.dir);
+	set->colorout = cast_ray(&set->ray, set->splist);
+}
+
+void	render(t_mlx *m, t_setting *set)
+{
+	int	i;
+	int	j;
+
+	i = -1;
+	while (++i < IMG_H)
+	{
+		j = -1;
+		while (++j < IMG_W)
+		{
+			loop_action(set, i, j);
+			ft_pixel(&m->img, j, i, rgbtohex2(0, set->colorout.rgb[0],
+					set->colorout.rgb[1], set->colorout.rgb[2]));
+		}
+	}
+	mlx_action(m);
+}
+
+// setup for spheres
+// currently material contains diffuse vector
+void	ft_initsp(t_sphere *splist)
+{
+	t_material	ivory;
+	t_material	red_rubber;
+
+	v_init(&ivory.diffuse_color, 0.4, 0.4, 0.3);
+	v_init(&red_rubber.diffuse_color, 0.3, 0.1, 0.1);
+	v_init(&splist[3].center, 7, 5, -18);
+	splist[3].material = ivory;
+	splist[3].radius = 4;
+	v_init(&splist[2].center, 1.5, -0.5, -18);
+	splist[2].material = red_rubber;
+	splist[2].radius = 3;
+	v_init(&splist[1].center, -1.0, -1.5, -12);
+	splist[1].material = red_rubber;
+	splist[1].radius = 2;
+	v_init(&splist[0].center, -3, 0, -16);
+	splist[0].material = ivory;
+	splist[0].radius = 2;
+}
+
+// setting for new ori, dir, colorout, fov
+// fov 1 == (int)MP_PI / 2
+// setup the sphere objects
+void	ft_init(t_mlx *m, t_setting *set)
+{
+	t_data	*iptr;
+
+	iptr = &m->img;
+	m->mlx = mlx_init();
+	m->mlx_win = mlx_new_window(m->mlx, WIN_W, WIN_H, "HELLO");
+	iptr->img = mlx_new_image(m->mlx, IMG_W, IMG_H);
+	iptr->addr = mlx_get_data_addr(iptr->img,
+			&iptr->px, &iptr->len, &iptr->end);
+	set->fov = 1;
+	v_init(&set->ray.ori, 0, 0, 0);
+	v_init(&set->ray.dir, 0, 0, 0);
+	v_init(&set->ray.norm, 0, 0, 0);
+	v_init(&set->colorout, 0, 0, 0);
+	set->splist = malloc(sizeof(t_sphere) * SPSIZE);
+	ft_initsp(set->splist);
+}
+
+int	main(void)
+{
+	t_mlx		m;
+	t_setting	set;
+
+	ft_init(&m, &set);
+	render(&m, &set);
 	return (0);
 }
