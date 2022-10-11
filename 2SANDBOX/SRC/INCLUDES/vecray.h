@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 18:29:08 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/11 14:14:44 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/11 14:54:36 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_ray
 	t_point3	ori;
 	t_vec3		dir;
 	t_vec3		norm;
+	t_vec3		pthit;
 }	t_ray;
 
 typedef struct	s_material
@@ -45,15 +46,16 @@ typedef struct s_sphere
 
 typedef struct s_light
 {
-	t_vec3f	position;
+	t_vec3	position;
 	double	intensity;
-};
+}	t_light;
 
 typedef struct s_setting
 {
 	int			fov;
 	t_ray		ray;
 	t_sphere	*splist;
+	t_light		*lights;
 	t_color		colorout;
 }	t_setting;
 
