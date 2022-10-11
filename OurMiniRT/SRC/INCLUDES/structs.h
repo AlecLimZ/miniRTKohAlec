@@ -15,7 +15,6 @@
 
 # define MIN_COOR -999
 # define MAX_COOR 999
-
 # define PI 3.14159
 
 enum e_object_type
@@ -24,11 +23,9 @@ enum e_object_type
 	CAMERA,
 	LIGHT,
 	LIGHT_BONUS,
-
 	SPHERE,
 	PLANE,	
 	CYLINDER,
-
 	CONE,
 };
 
@@ -60,67 +57,7 @@ typedef union s_vec3
 typedef t_vec3	t_rgb;
 typedef t_vec3	t_xyz;
 
-typedef union s_wh
-{
-	int	e[2];
-	struct
-	{
-		int	width;
-		int	height;
-	};
-	struct
-	{
-		int	w;
-		int	h;
-	};
-	struct
-	{
-		int	col;
-		int	row;
-	};
-	struct
-	{
-		int	c;
-		int	r;
-	};
-	struct
-	{
-		int	x;
-		int	y;
-	};
-}	t_wh;
-
-// only 1 ambient-light allowed (check "is_configured") 
-typedef struct s_ambient
-{
-	double	ratio;
-	t_rgb	color;
-	int		is_configured;
-}	t_ambient;
-
-// only 1 camera allowed (check "is_configured") 
-typedef struct s_camera
-{
-	double	fov;
-	union
-	{
-		t_xyz	coor;
-		t_xyz	origin;
-	};
-	t_xyz	orientation;
-	int		is_configured;
-}	t_camera;
-
-// only 1 light allowed (check "is_configured") 
-typedef struct s_light
-{
-	double	brightness;
-	t_xyz	coor;
-	t_rgb	color;
-	int		is_configured;
-}	t_light;
-
-// can be sphere/plane/cylinder (as linked-list content)
+// raytracing objects ambient,camera,light,sphere,plane,cylinder (as linked-list content)
 typedef struct s_object
 {
 	int		type;
@@ -180,3 +117,63 @@ typedef struct s_app
 }	t_app;
 
 #endif
+
+// typedef union s_wh
+// {
+// 	int	e[2];
+// 	struct
+// 	{
+// 		int	width;
+// 		int	height;
+// 	};
+// 	struct
+// 	{
+// 		int	w;
+// 		int	h;
+// 	};
+// 	struct
+// 	{
+// 		int	col;
+// 		int	row;
+// 	};
+// 	struct
+// 	{
+// 		int	c;
+// 		int	r;
+// 	};
+// 	struct
+// 	{
+// 		int	x;
+// 		int	y;
+// 	};
+// }	t_wh;
+
+// only 1 ambient-light allowed (check "is_configured") 
+// typedef struct s_ambient
+// {
+// 	double	ratio;
+// 	t_rgb	color;
+// 	int		is_configured;
+// }	t_ambient;
+
+// only 1 camera allowed (check "is_configured") 
+// typedef struct s_camera
+// {
+// 	double	fov;
+// 	union
+// 	{
+// 		t_xyz	coor;
+// 		t_xyz	origin;
+// 	};
+// 	t_xyz	orientation;
+// 	int		is_configured;
+// }	t_camera;
+
+// only 1 light allowed (check "is_configured") 
+// typedef struct s_light
+// {
+// 	double	brightness;
+// 	t_xyz	coor;
+// 	t_rgb	color;
+// 	int		is_configured;
+// }	t_light;
