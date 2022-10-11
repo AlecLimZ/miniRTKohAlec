@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/18 11:28:25 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/11 23:20:41 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,12 @@
 // app.last_updated = 1 to trigger first render
 static void	init_app(t_app *app)
 {
-	*app = (t_app){.last_updated = 1, .width = 1600, .height = 900, .render_mode = DEFAULT_RENDER};
+	*app = (t_app){
+		.last_updated = 1,
+		.width = 1600,
+		.height = 900,
+		.render_mode = DEFAULT_RENDER,
+	};
 }
 
 static void	load_scene_or_exit(t_app *app, char *filepath)

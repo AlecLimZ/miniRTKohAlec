@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/18 11:37:55 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/11 23:26:47 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,14 @@ int	gui_input(unsigned int key, t_app *app)
 	else if (key == KEY_TAB)
 		select_next(app);
 	else if (key == KEY_A || key == KEY_Z)
-		((t_object*)app->selected_object->content)->coor.z += pow(-1, key != KEY_A);
+		((t_object *)app->selected_object->content)->coor.z
+			+= pow(-1, key != KEY_A);
 	else if (key == KEY_UP || key == KEY_DOWN)
-		((t_object *)app->selected_object->content)->coor.y += pow(-1, key != KEY_UP);
+		((t_object *)app->selected_object->content)->coor.y
+			+= pow(-1, key != KEY_UP);
 	else if (key == KEY_RIGHT || key == KEY_LEFT)
-		((t_object*)app->selected_object->content)->coor.x += pow(-1, key != KEY_RIGHT);
+		((t_object *)app->selected_object->content)->coor.x
+			+= pow(-1, key != KEY_RIGHT);
 	else if (key == KEY_S || key == KEY_X)
 		app->camera->orientation.x += pow(-1, key != KEY_S) * PI * 2 / 8;
 	else if (key == KEY_D || key == KEY_C)
@@ -45,17 +48,16 @@ int	gui_input(unsigned int key, t_app *app)
 // app->camera->coor.y += dir_y;
 // app->camera->coor.z += dir_z;
 
-void	*rt2();
+void	*rt2(t_app *app);
 
 int	gui_render(t_app *app)
 {
 	static unsigned int		last_updated = 0;
 	const clock_t			begin = clock();
 	const char *const		name[] = {
-		[CAMERA] = "Camera", [LIGHT] = "Light",
-		[SPHERE] = "Sphere", [PLANE] = "Plane", [CYLINDER] = "Cylinder",
-		[CONE] = "Cone", [LIGHT_BONUS] = "Light bonus",
-	};
+	[CAMERA] = "Camera", [LIGHT] = "Light",
+	[SPHERE] = "Sphere", [PLANE] = "Plane", [CYLINDER] = "Cylinder",
+	[CONE] = "Cone", [LIGHT_BONUS] = "Light bonus"};
 
 	if (last_updated < app->last_updated)
 	{
@@ -65,7 +67,8 @@ int	gui_render(t_app *app)
 		printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, 24, 0XFFFF00,
 			(char *)name[((t_object *)app->selected_object->content)->type]);
-		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, app->height - 30, 0xFFFF00,
+		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, app->height - 30,
+			0xFFFF00,
 			"TAB=Next_Object  UP=Move_Y+  DOWN=Move_Y-  LEFT=Move_X-  "
 			"RIGHT=Move_X+  A=Move_Z+  Z=Move_Z-  N=Toggle_Render");
 	}

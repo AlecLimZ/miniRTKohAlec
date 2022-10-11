@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/18 11:33:59 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/11 23:15:52 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef union s_vec3
 typedef t_vec3	t_rgb;
 typedef t_vec3	t_xyz;
 
-// raytracing objects ambient,camera,light,sphere,plane,cylinder (as linked-list content)
+// all raytracing objects as linked-list content
 typedef struct s_object
 {
 	int		type;
@@ -73,7 +73,6 @@ typedef struct s_object
 	t_xyz	orientation;
 	double	diameter;
 }	t_object;
-
 
 // MLX Metal buffer width may more than requested
 // eg request 800px width, but actual width is 832px
