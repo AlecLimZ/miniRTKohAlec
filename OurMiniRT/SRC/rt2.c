@@ -7,20 +7,6 @@
 #define MAX(a, b) ((a) < (b)? (b) : (a))
 #define MIN(a, b) ((a) > (b)? (b) : (a))
 
-// typedef struct s_xyz {
-// 	float x, y, z;
-// 	// float& operator[](const int i)       { return i==0 ? x : (1==i ? y : z); }
-// 	// const float& operator[](const int i) const { return i==0 ? x : (1==i ? y : z); }
-// 	// vec3  operator*(const float v) const { return {x*v, y*v, z*v};       }
-// 	// float operator*(const vec3& v) const { return x*v.x + y*v.y + z*v.z; }
-// 	// vec3  operator+(const vec3& v) const { return {x+v.x, y+v.y, z+v.z}; }
-// 	// vec3  operator-(const vec3& v) const { return {x-v.x, y-v.y, z-v.z}; }
-// 	// vec3  operator-()              const { return {-x, -y, -z};          }
-// 	// float norm() const { return sqrt(x*x+y*y+z*z); }
-// 	// vec3 normalized() const { return (*this)*(1.f/norm(*this)); }
-// } vec3;
-
-
 typedef struct s_Material {
 	float refractive_index;
 	float albedo[4]; //diffuse, specular, reflect, refract
@@ -111,14 +97,6 @@ typedef struct s_hitpayload {
 	Material material;
 } hitpayload;
 
-//  Sphere spheres[] = {
-//     {{0, -1, -10}, .1, RED_RUBBER},
-//     {{-3,    0,   -16}, 2, IVORY},
-//     {{-1.0, -1.5, -12}, 2, RED_RUBBER},
-//     {{ 1.5, -0.5, -18}, 3, RED_RUBBER},
-//     {{ 7,    5,   -18}, 4, IVORY}
-// };
-
 Obj all_objects[100] = {
 	{.type = PLANE, .pl = {{{.3,.3,.3}}, {{.3,.2,.1}} }},
 	{.type = SPHERE, .sp = {{{0, -1, -10}}, .1, RED_RUBBER}},
@@ -207,11 +185,7 @@ static hitpayload scene_intersect(const t_vec3 orig, const t_vec3 dir, const Obj
 		[SPHERE] = nearest_sphere,
 		[PLANE] = nearest_plane,
 	};
-	// hitpayload payload = {0, 1e10, {0,0,0}, {0,0,0}, {1, {2,0,0,0}, {0,0,0}, 0}};
 	hitpayload payload = {0, 1e10, {{0,0,0}}, {{0,0,0}}, {1, {1,0,0,0}, {{0,0,0}}, 0}};
-	// t_vec3 pt, N;
-	// Material material = {1, {2,0,0,0}, {0,0,0}, 0};
-	// float nearest_dist = 1e10;
 
 	while (count && objs)
 	{
@@ -221,45 +195,18 @@ static hitpayload scene_intersect(const t_vec3 orig, const t_vec3 dir, const Obj
 	}
 	payload.hit = payload.nearest_dist < 1000;
 	return payload;
-
-	// if (fabs(dir.y)>.001) { // intersect the ray with the checkerboard, avoid division by zero
-	//     const float d = -(orig.y+4)/dir.y; // the checkerboard plane has equation y = -4
-	//     const t_vec3 p = vadd(orig, mulvf(dir,d));
-	//     if (d>.001 && d<nearest_dist && fabs(p.x)<10 && p.z<-10 && p.z>-30) {
-	//         nearest_dist = d;
-	//         pt = p;
-	//         N = (t_vec3){0,1,0};
-	//         material.diffuse_color = ((int)(.5*pt.x+1000) + (int)(.5*pt.z)) & 1 ? (t_vec3){.3, .3, .3} : (t_vec3){.3, .2, .1};
-	//     }
-	// }
-
-	// for (size_t i =0; i < sphere_count; ++i) { // intersect the ray with all spheres
-	//     const Sphere s = spheres[i];
-	//     const float d = ray_sphere_intersect(orig, dir, s);
-	//     if (d > nearest_dist) continue;
-	//     nearest_dist = d;
-	//     pt = vadd(orig, mulvf(dir,nearest_dist));
-	//     N = normalized(vsub(pt, s.center));
-	//     material = s.material;
-	// }
-	// return (hitpayload){ nearest_dist<1000, pt, N, material };
 }
 
 int _mode = 0;
 // the ray tracer getting final color per pixel
 static t_vec3 cast_ray(const t_vec3 orig, const t_vec3 dir, const int depth, const Obj *objs, const int obj_count) {
-	// auto [hit, point, N, material] 
 	hitpayload a = scene_intersect(orig, dir, objs, obj_count);
 	if (depth>4 || !a.hit)
 		return g_background; // background color
-
-if (_mode == BY_NORMAL) return mulvf(vadd(a.N, (t_vec3){{1,1,1}}), 0.5);
-// if (_mode == BY_NORMAL) return mulvf(vadd(a.N, a.material.diffuse_color), 0.5);
+	if (_mode == BY_NORMAL) return mulvf(vadd(a.N, (t_vec3){{1,1,1}}), 0.5);
 
 	const t_vec3 reflect_dir = normalized(reflect(dir, a.N));
 	const t_vec3 reflect_color = cast_ray(a.point, reflect_dir, depth + 1, objs, obj_count);
-
-	// t_vec3 diffuse_light_itensity_by_color = {1,1,1};
 
 	// i expect the ambient customization around this.
 	// this is the light source codes
@@ -269,36 +216,19 @@ if (_mode == BY_NORMAL) return mulvf(vadd(a.N, (t_vec3){{1,1,1}}), 0.5);
 	for (size_t i =0; i < light_count; ++i) { // checking if the point lies in the shadow of the light
 		const Light light = _lights[i];
 		t_vec3 light_dir = normalized(vsub(light.coor, a.point));
-		// auto [hit, shadow_pt, trashnrm, trashmat] 
 		hitpayload b = scene_intersect(a.point, light_dir, objs, obj_count);
 		if (b.hit && norm(vsub(b.point, a.point)) < norm(vsub(light.coor, a.point))) continue;
 		diffuse_light_intensity  += MAX(0.f, mulvv(light_dir,a.N));
 		intensity = vadd(intensity, mulvf(light.color, MAX(0.f, mulvv(light_dir,a.N))));
 		specular_light_intensity += pow(MAX(0.f, mulvv(negate(reflect(negate(light_dir), a.N)),dir)), a.material.specular_exponent);
 	}
-
-
-	// t_vec3 c = (t_vec3) {
-	// 	a.material.diffuse_color.x * diffuse_light_itensity_by_color.x * diffuse_light_intensity *  a.material.albedo[0],
-	// 	a.material.diffuse_color.y * diffuse_light_itensity_by_color.y * diffuse_light_intensity *  a.material.albedo[0],
-	// 	a.material.diffuse_color.z * diffuse_light_itensity_by_color.z * diffuse_light_intensity *  a.material.albedo[0],
-	// };
-	t_vec3 c =
-	vadd(
+	return vadd(
 		vadd(
-			// mulvf(a.material.diffuse_color, diffuse_light_intensity * a.material.albedo[0]), //object color with intensity/light
 			vmul(a.material.diffuse_color, intensity),
 			mulvf((t_vec3){{1., 1., 1.}},specular_light_intensity * a.material.albedo[1]) //spark/white-spot effect
 		),
-			mulvf(reflect_color,a.material.albedo[2]) // reflection 
+		mulvf(reflect_color,a.material.albedo[2]) // reflection 
 	);
-	return c;
-	// refraction removed, this is for transparent eg glass. is not needed by subject, to skip processing
-	// const t_vec3 refract_dir = normalized(refract(dir, a.N, a.material.refractive_index, 1.f));
-	// const t_vec3 refract_color = cast_ray(a.point, refract_dir, depth + 1, objs, obj_count);
-	// c = vadd(c, mulvf(refract_color,a.material.albedo[3]));
-	// return vadd(c, (t_vec3){ c.x * g_background.x, c.y * g_background.y, c.z * g_background.z});
-	// return material.diffuse_color * diffuse_light_intensity * material.albedo[0] + t_vec3{1., 1., 1.}*specular_light_intensity * material.albedo[1] + reflect_color*material.albedo[2] + refract_color*material.albedo[3];
 }
 
 static int to_rgb(t_vec3 color)
@@ -363,9 +293,7 @@ static int load_rt_objects(const t_app *app)
 
 void	*rt2(const t_app *app)
 {
-	// static int run_once = 0; //set 1 to disable rt file
-	// if (!run_once) run_once = 
-		load_rt_objects(app);
+	load_rt_objects(app);
 	_mode = app->render_mode;
 
 	 const int   width  = app->width;
@@ -386,11 +314,3 @@ rotate_z(&dir_x, &dir_y, app->camera->orientation.z);
 	}
 	return app->image.ptr;
 }
-
-// t_vec3 refract(const t_vec3 I, const t_vec3 N, const float eta_t, const float eta_i) { // Snell's law
-//     float cosi = - MAX(-1.f, MIN(1.f, mulvv(I, N)));
-//     if (cosi<0) return refract(I, negate(N), eta_i, eta_t); // if the ray comes from the inside the object, swap the air and the media
-//     float eta = eta_i / eta_t;
-//     float k = 1 - eta*eta*(1 - cosi*cosi);
-//     return k<0 ? (t_vec3){1,0,0} : vadd(mulvf(I,eta), mulvf(N, eta*cosi - sqrt(k))); // k<0 = total reflection, no ray to refract. I refract it anyways, this has no physical meaning
-// }
