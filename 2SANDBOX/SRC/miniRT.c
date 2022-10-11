@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/11 15:14:47 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/11 16:46:15 by leng-chu         ###   ########.fr       */
 /*   Updated: 2021/12/07 11:48:40 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -14,7 +14,7 @@
 #include "miniRT.h"
 
 #define SPSIZE	4
-#define LGSIZE	1
+#define LGSIZE	3
 
 int	deal_key(int key, void *param)
 {
@@ -41,6 +41,17 @@ void	write_color(t_color *pixel)
 		(int)(pixel->rgb[0] * 255.999),
 		(int)(pixel->rgb[1] * 255.999),
 		(int)(pixel->rgb[2] * 255.999));
+}
+
+t_vec3	reflect(t_vec3 *I, t_vec3 *N)
+{
+	t_vec3	tmp;
+
+	tmp = new_x2v(I, N);
+	tmp = new_xv(2., &tmp);
+	tmp = new_x2v(N, &tmp);
+	tmp = new_minus2v(I, &tmp);
+	return (tmp);
 }
 
 //len is between origin & object center
@@ -105,12 +116,18 @@ t_color	cast_ray(t_setting *set)
 	t_vec3		light_dir;
 	double		dot;
 	double		diffuse_light_intensity;
+	double		specular_light_intensity;
+	t_vec3		ref;
+	t_vec3		dlight;
+	t_vec3		slight;
 
 	v_init(&bg, 0.2, 0.7, 0.8);
 	//if (!scene_intersect(&set->ray, &clr, set->splist))
 	if (!scene_intersect(set, &clr))
 		return (bg);
 	diffuse_light_intensity = 0;
+	specular_light_intensity = 0;
+	//powf(std::max(0.f, -reflect(-light_dir, N)*dir), material.specular_exponent)*lights[i].intensity;
 	for (size_t i = 0; i < LGSIZE; i++)
 	{
 		light_dir = new_minus2v(&set->lights[i].position, &set->ray.pthit);
@@ -120,8 +137,21 @@ t_color	cast_ray(t_setting *set)
 			diffuse_light_intensity += set->lights[i].intensity * dot;
 		else
 			diffuse_light_intensity += set->lights[i].intensity * 0.0;
+
+		// reflect & specular_light_intensity
+		ft_cvntminus(&light_dir);
+		ref = reflect(&light_dir, &set->ray.norm);
+		if (0.0 < dot)
+			specular_light_intensity = pow(dot, clr.specular_exponent) * set->lights[i].intensity;
+		else
+			specular_light_intensity = pow(0.0, clr.specular_exponent) * set->lights[i].intensity;
 	}
-	return (new_xv(diffuse_light_intensity, &clr.diffuse_color));
+	dlight = new_xv(diffuse_light_intensity, &clr.diffuse_color);
+	dlight = new_xv(clr.albedo.rgb[0], &dlight);
+	v_init(&slight, 1., 1., 1.);
+	slight = new_xv(specular_light_intensity, &slight);
+	slight = new_xv(clr.albedo.rgb[1], &slight);
+	return (new_plus2v(&dlight, &slight));
 }
 
 void	mlx_action(t_mlx *m)
@@ -142,6 +172,20 @@ void	loop_action(t_setting *set, int i, int j)
 	v_init(&set->ray.dir, x, y, -1);
 	set->ray.dir = new_unitvector(&set->ray.dir);
 	set->colorout = cast_ray(set);
+	double max;
+	if (set->colorout.rgb[1] < set->colorout.rgb[2])
+	{
+		if (set->colorout.rgb[0] < set->colorout.rgb[2])
+			max = set->colorout.rgb[2];
+		else
+			max = set->colorout.rgb[0];
+	}
+	else if (set->colorout.rgb[0] < set->colorout.rgb[1])
+		max = set->colorout.rgb[1];
+	else
+		max = set->colorout.rgb[0];
+	if (max > 1)
+		set->colorout = new_xv(1. / max, &set->colorout);
 }
 
 void	render(t_mlx *m, t_setting *set)
@@ -167,6 +211,12 @@ void	ft_initlg(t_light *lights)
 {
 	v_init(&lights[0].position, -20, 20, 20);
 	lights[0].intensity = 1.5;
+	
+	v_init(&lights[1].position, 30, 50, -25);
+	lights[1].intensity = 1.8;
+	
+	v_init(&lights[2].position, 30, 20, 30);
+	lights[2].intensity = 1.7;
 }
 
 // setup for spheres
@@ -177,16 +227,25 @@ void	ft_initsp(t_sphere *splist)
 	t_material	red_rubber;
 
 	v_init(&ivory.diffuse_color, 0.4, 0.4, 0.3);
+	v_init(&ivory.albedo, 0.6, 0.3, 0);
+	ivory.specular_exponent = 50.;
+
 	v_init(&red_rubber.diffuse_color, 0.3, 0.1, 0.1);
+	v_init(&red_rubber.albedo, 0.9, 0.1, 0);
+	red_rubber.specular_exponent = 10.;
+	
 	v_init(&splist[3].center, 7, 5, -18);
 	splist[3].material = ivory;
 	splist[3].radius = 4;
+	
 	v_init(&splist[2].center, 1.5, -0.5, -18);
 	splist[2].material = red_rubber;
 	splist[2].radius = 3;
+	
 	v_init(&splist[1].center, -1.0, -1.5, -12);
 	splist[1].material = red_rubber;
 	splist[1].radius = 2;
+	
 	v_init(&splist[0].center, -3, 0, -16);
 	splist[0].material = ivory;
 	splist[0].radius = 2;

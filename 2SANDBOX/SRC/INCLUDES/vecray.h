@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 18:29:08 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/11 14:54:36 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/11 15:52:17 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef union	s_vec3
 
 typedef t_vec3	t_point3;
 typedef t_vec3	t_color;
+typedef t_vec3	t_vec2;
 
 typedef struct s_ray
 {
@@ -35,6 +36,8 @@ typedef struct s_ray
 typedef struct	s_material
 {
 	t_color	diffuse_color;
+	t_vec3	albedo;
+	double	specular_exponent;
 }	t_material;
 
 typedef struct s_sphere
