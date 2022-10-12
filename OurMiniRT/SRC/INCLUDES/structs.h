@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/11 23:15:52 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/12 17:09:51 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ typedef struct s_material {
 	float	albedo[3];
 	float	specular_exponent;
 	t_vec3	diffuse_color;
-} t_material;
+}	t_material;
 
 // all raytracing objects as linked-list content
 typedef struct s_object
