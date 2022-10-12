@@ -21,64 +21,85 @@
 static bool	parse_ambient(char *line, t_app *app)
 {
 	t_object *const	a = ft_calloc(1, sizeof(t_object));
+	double			ratio;
 
 	ft_lstadd_front(&app->objects, ft_lstnew(a));
 	if (a)
 		a->type = AMBIENT;
 	app->ambient = a;
 	++app->ambient_count;
-	return (a != NULL
+	if (a != NULL
 		&& trim_str(&line, ft_isalpha) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &a->ambient_ratio, 0, 1) == 1
+		&& pull_nbr(&line, &ratio, 0, 1) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_rgb(&line, &a->color) == 1
 		&& trim_str(&line, ft_isspace) >= 0
-		&& (*line == '#' || *line == '\0')
-	);
+		&& (*line == '#' || *line == '\0'))
+	{
+		a->color.r *= ratio;
+		a->color.g *= ratio;
+		a->color.b *= ratio;
+		return (true);
+	}
+	return (false);
 }
 
 // "L <x,y,z> <brightness> <r,g,b>" eg "L -40.0,50.0,0.0 0.6 10,0,255"
 static bool	parse_light(char *line, t_app *app)
 {
 	t_object *const	a = ft_calloc(1, sizeof(t_object));
+	double			brightness;
 
 	ft_lstadd_front(&app->objects, ft_lstnew(a));
 	if (a)
 		a->type = LIGHT;
 	++app->light_count;
-	return (a != NULL
+	if (a != NULL
 		&& trim_str(&line, ft_isalpha) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_vec(&line, &a->coor, MIN_COOR, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &a->light_brightness, 0, 1) == 1
+		&& pull_nbr(&line, &brightness, 0, 1) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_rgb(&line, &a->color) == 1
 		&& trim_str(&line, ft_isspace) >= 0
-		&& (*line == '#' || *line == '\0')
-	);
+		&& (*line == '#' || *line == '\0'))
+	{
+		a->color.r *= brightness;
+		a->color.g *= brightness;
+		a->color.b *= brightness;
+		return (true);
+	}
+	return (false);
 }
 
 // "li <x,y,z> <brightness> <r,g,b>" eg "L -40.0,50.0,0.0 0.6 10,0,255"
 static bool	parse_light_bonus(char *line, t_app *app)
 {
 	t_object *const	a = ft_calloc(1, sizeof(t_object));
+	double			brightness;
 
 	ft_lstadd_front(&app->objects, ft_lstnew(a));
 	if (a)
 		a->type = LIGHT_BONUS;
-	return (a != NULL
+	if (a != NULL
 		&& trim_str(&line, ft_isalpha) == 2
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_vec(&line, &a->coor, MIN_COOR, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &a->light_brightness, 0, 1) == 1
+		&& pull_nbr(&line, &brightness, 0, 1) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_rgb(&line, &a->color) == 1
 		&& trim_str(&line, ft_isspace) >= 0
-		&& (*line == '#' || *line == '\0')
-	);
+		&& (*line == '#' || *line == '\0'))
+	{
+		a->color.r *= brightness;
+		a->color.g *= brightness;
+		a->color.b *= brightness;
+		return (true);
+	}
+	return (false);
 }
 
 // parse value into struct

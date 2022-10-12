@@ -32,7 +32,9 @@ enum e_object_type
 enum e_render_mode
 {
 	DEFAULT_RENDER,
+	BY_DISTANCE,
 	BY_NORMAL,
+	BY_OBJECT,
 	RENDER_MODE_END,
 };
 
@@ -57,21 +59,27 @@ typedef union s_vec3
 typedef t_vec3	t_rgb;
 typedef t_vec3	t_xyz;
 
+// tinyraytracer: albedo[diffuse, specular, reflect]
+typedef struct s_material {
+	float	albedo[3];
+	float	specular_exponent;
+	t_vec3	diffuse_color;
+} t_material;
+
 // all raytracing objects as linked-list content
 typedef struct s_object
 {
-	int		type;
+	int			type;
+	t_xyz		coor;
+	t_rgb		color;
+	t_xyz		orientation;
+	double		radius;
+	t_material	material;
 	union
 	{
-		double	ambient_ratio;
-		double	light_brightness;
 		double	camera_fov;
 		double	height;
 	};
-	t_xyz	coor;
-	t_rgb	color;
-	t_xyz	orientation;
-	double	diameter;
 }	t_object;
 
 // MLX Metal buffer width may more than requested
