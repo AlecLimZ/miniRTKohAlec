@@ -48,8 +48,6 @@ int	gui_input(unsigned int key, t_app *app)
 // app->camera->coor.y += dir_y;
 // app->camera->coor.z += dir_z;
 
-void	*rt2(t_app *app);
-
 int	gui_render(t_app *app)
 {
 	static unsigned int		last_updated = 0;
@@ -63,7 +61,7 @@ int	gui_render(t_app *app)
 	{
 		last_updated = app->last_updated;
 		mlx_put_image_to_window(
-			app->mlx_ptr, app->win_ptr, rt2(app), 0, 0);
+			app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
 		printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, 24, 0XFFFF00,
 			(char *)name[((t_object *)app->selected_object->content)->type]);

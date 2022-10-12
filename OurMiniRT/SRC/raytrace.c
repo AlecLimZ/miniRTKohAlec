@@ -7,31 +7,6 @@
 #define MAX(a, b) ((a) < (b)? (b) : (a))
 #define MIN(a, b) ((a) > (b)? (b) : (a))
 
-// typedef struct s_Sphere {
-// 	t_vec3 center;
-// 	float radius;
-// 	Material material;
-// } Sphere;
-
-// typedef struct s_Plane {
-// 	t_vec3 diffuse_color;
-// 	t_vec3 alternate_color;
-// } Plane;
-
-// typedef struct s_Light {
-// 	t_vec3	coor;
-// 	t_vec3	color;
-// } Light;
-
-// typedef struct s_obj {
-// 	int type;
-// 	union
-// 	{
-// 		Sphere sp;
-// 		Plane pl;
-// 	};
-// } Obj;
-
 int g_mode = DEFAULT_RENDER;
 t_vec3 g_background = (t_vec3){{0.2, 0.7, 0.8}};
 
@@ -87,28 +62,9 @@ t_vec3	vmul(t_vec3 a, t_vec3 b)
 	return (t_vec3){{a.x * b.x, a.y * b.y, a.z * b.z}};
 }
 
-// Obj all_objects[100] = {
-// 	{.type = PLANE, .pl = {{{.3,.3,.3}}, {{.3,.2,.1}} }},
-// 	{.type = SPHERE, .sp = {{{0, -1, -10}}, .1, RED_RUBBER}},
-// 	{.type = SPHERE, .sp = {{{-3,    0,   -16}}, 2, IVORY}},
-// 	{.type = SPHERE, .sp = {{{-1.0, -1.5, -12}}, 2, RED_RUBBER}},
-// 	{.type = SPHERE, .sp = {{{ 1.5, -0.5, -18}}, 3, RED_RUBBER}},
-// 	{.type = SPHERE, .sp = {{{ 7,    5,   -18}}, 4, IVORY}}
-// };
-// size_t obj_count = 6; //pls manual, do not auto count!! sizeof(all_objects) / sizeof(*all_objects);
-
-//  Light _lights[] = {
-// 	{{{ 30, 50, -25}}, {{1,1,1}}},
-// 	{{{-20, 20,  20}}, {{1,1,1}}},
-// 	{{{ 30, 20,  30}}, {{1,1,1}}},
-// };
-// size_t light_count = sizeof(_lights) / sizeof(*_lights);
-
-
 static t_vec3 reflect(const t_vec3 I, const t_vec3 N) {
 	return vsub(I, mulvf(N,2.f*mulvv(I, N)));
 }
-
 
 static float ray_sphere_intersect(const t_vec3 orig, const t_vec3 dir, const t_object *s)
 {
@@ -116,11 +72,10 @@ static float ray_sphere_intersect(const t_vec3 orig, const t_vec3 dir, const t_o
 	const float tca = mulvv(L,dir); // => L * dir
 	const float d2 = mulvv(L,L) - tca*tca;
 
-	if (d2 > s->radius*s->radius) return INFINITY; // within the sphere range
+	if (d2 > s->radius*s->radius) return INFINITY;
 	const float thc = sqrt(s->radius*s->radius - d2);
 	const float t0 = tca-thc;
 	const float t1 = tca+thc;
-	// the 2 hit points
 	if (t0>.001) return t0;  // offset the original point by .001 to avoid occlusion by the object itself
 	if (t1>.001) return t1;
 	return INFINITY;
@@ -196,9 +151,8 @@ static t_vec3 cast_ray(const t_vec3 orig, const t_vec3 dir, const int depth, t_l
 	const t_vec3 reflect_color = cast_ray(a.point, reflect_dir, depth + 1, list);
 
 	// todo specular with colored light
-	t_vec3 intensity = g_background;
-	// float diffuse_light_intensity = 0;  // this is the light intensity. for bonus colored light, will have to use t_vec3 instead of single float
 	float specular_light_intensity = 0;  // this is the spark(the white-spot) effect for bonus
+	t_vec3 diffuse_light_intensity = g_background;
 	// checking if the point lies in the shadow of the light
 	while (lights)
 	{
@@ -209,8 +163,7 @@ static t_vec3 cast_ray(const t_vec3 orig, const t_vec3 dir, const int depth, t_l
 			hitpayload b = scene_intersect(a.point, light_dir, list);
 			if (!(b.hit && norm(vsub(b.point, a.point)) < norm(vsub(light->coor, a.point))))
 			{
-				// diffuse_light_intensity  += MAX(0.f, mulvv(light_dir,a.N));
-				intensity = vadd(intensity, mulvf(light->color, MAX(0.f, mulvv(light_dir,a.N))));
+				diffuse_light_intensity = vadd(diffuse_light_intensity, mulvf(light->color, MAX(0.f, mulvv(light_dir,a.N))));
 				specular_light_intensity += pow(MAX(0.f, mulvv(negate(reflect(negate(light_dir), a.N)),dir)), a.material.specular_exponent);
 			}
 		}
@@ -218,7 +171,7 @@ static t_vec3 cast_ray(const t_vec3 orig, const t_vec3 dir, const int depth, t_l
 	}
 	return vadd(
 		vadd(
-			vmul(a.material.diffuse_color, intensity),
+			vmul(a.material.diffuse_color, diffuse_light_intensity),
 			mulvf((t_vec3){{1., 1., 1.}},specular_light_intensity * a.material.albedo[1]) //spark/white-spot effect
 		),
 		mulvf(reflect_color,a.material.albedo[2]) // reflection 
@@ -234,52 +187,7 @@ static int to_rgb(t_vec3 color)
 		+  (int)(255 *  color.z/max));
 }
 
-// temporary code i customize tinyraytracer data to use .rt file
-// static int load_rt_objects(const t_app *app)
-// {
-// 	t_object *obj;
-// 	Obj *dst;
-// 	obj_count = 0;
-// 	light_count = 0;
-// 	t_list *node = app->objects;
-// 	while (node)
-// 	{
-// 		obj = node->content;
-// 		if (obj->type == SPHERE)
-// 		{
-// 			++obj_count;
-// 			dst = all_objects + obj_count - 1;
-// 			dst->type = obj->type;
-// 			dst->sp.center = (t_vec3) {{obj->coor.x, obj->coor.y, obj->coor.z}};
-// 			dst->sp.radius = obj->diameter / 2;
-// 			dst->sp.material = (Material)IVORY;
-// 			dst->sp.material.diffuse_color = (t_vec3) {{obj->color.x, obj->color.y, obj->color.z}};
-// 		}
-// 		else if (obj->type == PLANE)
-// 		{
-// 			++obj_count;
-// 			dst = all_objects + obj_count - 1;
-// 			dst->type = obj->type;
-// 			dst->pl.diffuse_color = (t_vec3) {{obj->color.x, obj->color.y, obj->color.z}};
-// 			dst->pl.alternate_color = (t_vec3) {{obj->color.x, obj->color.y, obj->color.z}};
-// 		}
-// 		else if (obj->type == LIGHT || obj->type == LIGHT_BONUS)
-// 		{
-// 			++light_count;
-// 			_lights[light_count - 1].coor = (t_vec3) {{ obj->coor.x, obj->coor.y, obj->coor.z}};
-// 			_lights[light_count - 1].color = (t_vec3) {{
-// 				obj->color.x * obj->light_brightness,
-// 				obj->color.y * obj->light_brightness,
-// 				obj->color.z * obj->light_brightness
-// 			}};
-// 		}
-// 		node = node->next;
-// 	}
-// 	g_background = app->ambient->color;
-// 	return (1);
-// }
-
-void	*rt2(const t_app *app)
+void	*raytrace(const t_app *app)
 {
 	g_background = app->ambient->color;
 	g_mode = app->render_mode;

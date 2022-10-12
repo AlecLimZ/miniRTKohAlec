@@ -37,4 +37,7 @@ void	rotate_z(float *x, float *y, double angle_z);
 // control.c
 void	select_next(t_app *app);
 
+// raytrace.c
+void	*raytrace(const t_app *app);
+
 #endif
