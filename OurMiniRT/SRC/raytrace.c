@@ -100,7 +100,7 @@ static void nearest_sphere(const t_vec3 orig, const t_vec3 dir, const t_object *
 //	t_material material;
 
 
-static void ray_cylinder_intersect(t_ray *ray, t_object *cy)
+static void ray_cylinder_intersect(t_ray *ray, const t_object *cy)
 {
 //	float a = (dir.x * dir.x) + (dir.z * dir.z);
 //	float b = 2 * (dir.x * (orig.x - cy->coor.x) + dir.z * (orig.z - cy->coor.z));
@@ -111,13 +111,14 @@ static void ray_cylinder_intersect(t_ray *ray, t_object *cy)
 	t_vec3	nori;
 	t_vec3	ndir;
 	t_vec3	len;
+	t_vec3	nrot;
 
 	nori = ray->orig;
-	cy->orientation = normalized(cy->orientation);
-	ndir = cross(ray->dir, cy->orientation);
+	nrot = normalized(cy->orientation);
+	ndir = cross(ray->dir, nrot);
 	len = vsub(ray->orig, cy->coor);
 
-	t_vec3 tmp = cross(len, cy->orientation);
+	t_vec3 tmp = cross(len, nrot);
 	double a = ft_dot(&ndir, &ndir);
 	double b = 2 * ft_dot(&ndir, &tmp);
 	double c = ft_dot(&tmp, &tmp)
@@ -139,15 +140,15 @@ static void ray_cylinder_intersect(t_ray *ray, t_object *cy)
 	if (norm(vsub(ray->norm, cy->coor)) > cy->height)
 		ray->hit = 0;
 	tmp = vsub(ray->norm, cy->coor);
-	double ax = ft_dot(&cy->orientation, &tmp);
-	tmp = mulvf(cy->orientation, ax);
+	double ax = ft_dot(&nrot, &tmp);
+	tmp = mulvf(nrot, ax);
 	tmp = vadd(cy->coor, tmp);
 	ray->norm = normalized(vsub(ray->norm, tmp));
 	ray->hit = 1;
 	ray->t = ax;
 }
 
-static void nearest_cylinder(const t_vec3 orig, const t_vec3 dir, t_object *cy, hitpayload *payload)
+static void nearest_cylinder(const t_vec3 orig, const t_vec3 dir, const t_object *cy, hitpayload *payload)
 {
 	t_ray	ray;
 
@@ -157,7 +158,7 @@ static void nearest_cylinder(const t_vec3 orig, const t_vec3 dir, t_object *cy, 
 	ray.t = INFINITY;
 	ray.norm = (t_vec3){{cy->coor.x, 0, cy->coor.z}};
 	ray_cylinder_intersect(&ray, cy);
-	if (ray.hit == 1)
+	if (ray.t < payload->nearest_dist)
 	{
 		payload->nearest_dist = ray.t;
 		payload->point = vadd(orig, mulvf(dir,payload->nearest_dist));
