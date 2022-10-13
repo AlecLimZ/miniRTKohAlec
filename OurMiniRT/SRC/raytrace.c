@@ -93,6 +93,79 @@ static void nearest_sphere(const t_vec3 orig, const t_vec3 dir, const t_object *
 	}
 }
 
+//	bool hit;
+//	float nearest_dist;
+//	t_vec3 point;
+//	t_vec3 N;
+//	t_material material;
+
+
+static void ray_cylinder_intersect(t_ray *ray, t_object *cy)
+{
+//	float a = (dir.x * dir.x) + (dir.z * dir.z);
+//	float b = 2 * (dir.x * (orig.x - cy->coor.x) + dir.z * (orig.z - cy->coor.z));
+//	float c = (orig.x - cy->coor.x) * (orig.x - cy->coor.x) + (orig.z - cy->coor.z) * (orig.z - cy->coor.z) - (cy->radius * cy->radius);
+//	here norm version is dot version...
+
+	// try https://stackoverflow.com/questions/65566282/cylinder-intersection-with-ray-tracing
+	t_vec3	nori;
+	t_vec3	ndir;
+	t_vec3	len;
+
+	nori = ray->orig;
+	cy->orientation = normalized(cy->orientation);
+	ndir = cross(ray->dir, cy->orientation);
+	len = vsub(ray->orig, cy->coor);
+
+	t_vec3 tmp = cross(len, cy->orientation);
+	double a = ft_dot(&ndir, &ndir);
+	double b = 2 * ft_dot(&ndir, &tmp);
+	double c = ft_dot(&tmp, &tmp)
+		- (cy->radius / 2) * (cy->radius / 2);
+
+	float delta = b * b - 4 * a * c;
+	if (delta < 0)
+		ray->hit = 0;
+
+	float t1 = (-b - sqrt(delta)) / (2 * a);
+	float t2 = (-b + sqrt(delta)) / (2 * a);
+	if (t2 < 0)
+		ray->hit = 0;
+	if (t1 > 0)
+		ray->t = t1;
+	else
+		ray->t = t2;
+
+	if (norm(vsub(ray->norm, cy->coor)) > cy->height)
+		ray->hit = 0;
+	tmp = vsub(ray->norm, cy->coor);
+	double ax = ft_dot(&cy->orientation, &tmp);
+	tmp = mulvf(cy->orientation, ax);
+	tmp = vadd(cy->coor, tmp);
+	ray->norm = normalized(vsub(ray->norm, tmp));
+	ray->hit = 1;
+	ray->t = ax;
+}
+
+static void nearest_cylinder(const t_vec3 orig, const t_vec3 dir, t_object *cy, hitpayload *payload)
+{
+	t_ray	ray;
+
+	ray.orig = orig;
+	ray.dir = dir;
+	ray.hit = 0;
+	ray.t = INFINITY;
+	ray.norm = (t_vec3){{cy->coor.x, 0, cy->coor.z}};
+	ray_cylinder_intersect(&ray, cy);
+	if (ray.hit == 1)
+	{
+		payload->nearest_dist = ray.t;
+		payload->point = vadd(orig, mulvf(dir,payload->nearest_dist));
+		payload->N = ray.norm;
+		payload->material = cy->material;
+	}
+}
+
 // this is the plane intersect
 // yes plane is object and can have many planes.
 static void nearest_plane(const t_vec3 orig, const t_vec3 dir, const t_object *plane, hitpayload *payload)
@@ -130,6 +203,8 @@ static hitpayload scene_intersect(const t_vec3 orig, const t_vec3 dir, const t_l
 			nearest_sphere(orig, dir, list->content, &payload);
 		else if (((t_object *)list->content)->type == PLANE)
 			nearest_plane(orig, dir, list->content, &payload);
+		else if (((t_object *)list->content)->type == CYLINDER)
+			nearest_cylinder(orig, dir, list->content, &payload);
 		list = list->next;
 	}
 	payload.hit = payload.nearest_dist < 1000;

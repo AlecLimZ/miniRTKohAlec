@@ -6,7 +6,7 @@
 /*   By: leng-chu <-chu@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 18:29:08 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/16 16:26:56 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/13 20:00:09 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ typedef struct s_ray
 {
 	t_point3	orig;
 	t_vec3		dir;
+	t_vec3		norm;
+	int			hit;
+	double		t;
 }	t_ray;
 
 double		ft_squared_len(const t_vec3 *v);
