@@ -28,7 +28,7 @@ t_vec3    vsub(t_vec3 a, t_vec3 b)
 	return (t_vec3){{a.x - b.x, a.y - b.y, a.z - b.z}};
 }
 
-float    mulvv(t_vec3 a, t_vec3 b)
+float    mulvv(t_vec3 a, t_vec3 b) // same as dot
 {
 	return a.x * b.x + a.y * b.y + a.z * b.z;
 }
@@ -100,7 +100,7 @@ static void nearest_sphere(const t_vec3 orig, const t_vec3 dir, const t_object *
 //	t_material material;
 
 
-static void ray_cylinder_intersect(t_ray *ray, const t_object *cy)
+static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy)
 {
 //	float a = (dir.x * dir.x) + (dir.z * dir.z);
 //	float b = 2 * (dir.x * (orig.x - cy->coor.x) + dir.z * (orig.z - cy->coor.z));
@@ -108,63 +108,104 @@ static void ray_cylinder_intersect(t_ray *ray, const t_object *cy)
 //	here norm version is dot version...
 
 	// try https://stackoverflow.com/questions/65566282/cylinder-intersection-with-ray-tracing
-	t_vec3	nori;
-	t_vec3	ndir;
-	t_vec3	len;
-	t_vec3	nrot;
+//	t_vec3	nori;
+//	t_vec3	ndir;
+//	t_vec3	len;
+//	t_vec3	nrot;
 
-	nori = ray->orig;
-	nrot = normalized(cy->orientation);
-	ndir = cross(ray->dir, nrot);
-	len = vsub(ray->orig, cy->coor);
+//	nori = ray->orig;
+//	nrot = normalized(cy->orientation);
+//	ndir = cross(ray->dir, nrot);
+//	len = vsub(ray->orig, cy->coor);
 
-	t_vec3 tmp = cross(len, nrot);
-	double a = ft_dot(&ndir, &ndir);
-	double b = 2 * ft_dot(&ndir, &tmp);
-	double c = ft_dot(&tmp, &tmp)
-		- (cy->radius / 2) * (cy->radius / 2);
+//	t_vec3 tmp = cross(len, nrot);
+//	double a = ft_dot(&ndir, &ndir);
+//	double b = 2 * ft_dot(&ndir, &tmp);
+//	double c = ft_dot(&tmp, &tmp)
+//		- (cy->radius / 2) * (cy->radius / 2);
 
-	float delta = b * b - 4 * a * c;
-	if (delta < 0)
-		ray->hit = 0;
+//	float delta = b * b - 4 * a * c;
+//	if (delta < 0)
+//		ray->hit = 0;
 
-	float t1 = (-b - sqrt(delta)) / (2 * a);
-	float t2 = (-b + sqrt(delta)) / (2 * a);
-	if (t2 < 0)
-		ray->hit = 0;
-	if (t1 > 0)
-		ray->t = t1;
-	else
-		ray->t = t2;
+//	float t1 = (-b - sqrt(delta)) / (2 * a);
+//	float t2 = (-b + sqrt(delta)) / (2 * a);
+//	if (t2 < 0)
+//		ray->hit = 0;
+//	if (t1 > 0)
+//		ray->t = t1;
+//	else
+//		ray->t = t2;
 
-	if (norm(vsub(ray->norm, cy->coor)) > cy->height)
-		ray->hit = 0;
-	tmp = vsub(ray->norm, cy->coor);
-	double ax = ft_dot(&nrot, &tmp);
-	tmp = mulvf(nrot, ax);
-	tmp = vadd(cy->coor, tmp);
-	ray->norm = normalized(vsub(ray->norm, tmp));
-	ray->hit = 1;
-	ray->t = ax;
+//	if (norm(vsub(ray->norm, cy->coor)) > cy->height)
+//		ray->hit = 0;
+//	tmp = vsub(ray->norm, cy->coor);
+//	double ax = ft_dot(&nrot, &tmp);
+//	tmp = mulvf(nrot, ax);
+//	tmp = vadd(cy->coor, tmp);
+//	ray->norm = normalized(vsub(ray->norm, tmp));
+//	ray->hit = 1;
+//	ray->t = ax;
+//
+//	sphere testing
+//	t_vec3 oc = vsub(orig, cy->coor);
+//	float	b = mulvv(oc, dir);
+//	float	c = mulvv(oc, oc) - cy->radius * cy->radius;
+//	float	h = b * b - c;
+//	if (h < 0.0)
+//		return INFINITY;
+//	h = sqrt(h);
+//	float t0 = -b-h;
+//	float t1 = -b+h;
+//	if (t0 > .001) return t0;
+//	if (t1 > .001) return t1;
+//	return INFINITY;
+	//cy->coor is the coordination center of the cylinder right?
+	//just need to understand ur object coorA
+	// vec3 ba is height
+	// vec3 oc is 
+	// if we decide coor as point A, we can add height to the point A to get point B vector right?
+	t_vec3 pa = cy->coor;
+	t_vec3 pb = t_vec3{{cy->coor.x, cy->coor.y - cy->height, cy->coor.z}};
+	t_vec3 ca = vsub(pb, pa);
+	t_vec3 oc = vsub(orig, pa);
+
+	float caca = mlvv(ca, ca);
+	float card = mlvv(ca, dir);
+	float caoc = mlvv(ca, orig);
+
+	float a = caca - card * card;
+	float b = caca * mlvv(oc, dir) - caoc * card;
+	float c = caca * mlvv(oc, oc) - caoc * caoc - cy->radius * cy->radius * caca;
+	float h = b * b - a * c;
+
+	if (h < 0.001)
+		return INFINITY;
+	h = sqrt(h);
+	float d = (-b-h)/a;
+	float y = caoc + d * card;
+	if (y > 0.001 && y < caca)
+		t_vec3 normal = 
 }
 
 static void nearest_cylinder(const t_vec3 orig, const t_vec3 dir, const t_object *cy, hitpayload *payload)
 {
-	t_ray	ray;
-
-	ray.orig = orig;
-	ray.dir = dir;
-	ray.hit = 0;
-	ray.t = INFINITY;
-	ray.norm = (t_vec3){{cy->coor.x, 0, cy->coor.z}};
-	ray_cylinder_intersect(&ray, cy);
-	if (ray.t < payload->nearest_dist)
+	float d = ray_cylinder_intersect(orig, dir, cy);
+	if (d < payload->nearest_dist)
 	{
-		payload->nearest_dist = ray.t;
+		payload->nearest_dist = d; // i got it
+
+		// this formula how u know for sphere's case?
+		// this formula applied to all primitives?
+		// it gives no hint hmm
 		payload->point = vadd(orig, mulvf(dir,payload->nearest_dist));
-		payload->N = ray.norm;
-		payload->material = cy->material;
+
+		payload->N = normalized(vsub(payload->point, cy->coor));
+		//payload->N = normalized(payload->point);
+
+		payload->material = cy->material; // i got it
 	}
+
 }
 
 // this is the plane intersect
