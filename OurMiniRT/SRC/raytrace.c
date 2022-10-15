@@ -100,7 +100,7 @@ static void nearest_sphere(const t_vec3 orig, const t_vec3 dir, const t_object *
 //	t_material material;
 
 
-static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy)
+static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy, t_vec3 *normal)
 {
 //	float a = (dir.x * dir.x) + (dir.z * dir.z);
 //	float b = 2 * (dir.x * (orig.x - cy->coor.x) + dir.z * (orig.z - cy->coor.z));
@@ -166,44 +166,64 @@ static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy)
 	// vec3 oc is 
 	// if we decide coor as point A, we can add height to the point A to get point B vector right?
 	t_vec3 pa = cy->coor;
-	t_vec3 pb = t_vec3{{cy->coor.x, cy->coor.y - cy->height, cy->coor.z}};
+	t_vec3 pb = (t_vec3){{cy->coor.x, fabs(cy->coor.y - cy->height), cy->coor.z}};
+//	printf("height: %f\n", cy->height);
+//	printf("height: %f\n", pb.y);
+//	exit(0);
 	t_vec3 ca = vsub(pb, pa);
 	t_vec3 oc = vsub(orig, pa);
 
-	float caca = mlvv(ca, ca);
-	float card = mlvv(ca, dir);
-	float caoc = mlvv(ca, orig);
+	float caca = mulvv(ca, ca);
+	float card = mulvv(ca, dir);
+	float caoc = mulvv(ca, orig);
 
 	float a = caca - card * card;
-	float b = caca * mlvv(oc, dir) - caoc * card;
-	float c = caca * mlvv(oc, oc) - caoc * caoc - cy->radius * cy->radius * caca;
+	float b = caca * mulvv(oc, dir) - caoc * card;
+	float c = caca * mulvv(oc, oc) - caoc * caoc - cy->radius * cy->radius * caca;
 	float h = b * b - a * c;
 
 	if (h < 0.001)
 		return INFINITY;
 	h = sqrt(h);
 	float d = (-b-h)/a;
+
+	// body
 	float y = caoc + d * card;
-	if (y > 0.001 && y < caca)
-		t_vec3 normal = 
+	if (y > 0. && y < caca)
+	{
+		*normal = mulvf(ca, y);
+		*normal = new_dividev(normal, caca);
+		*normal = vsub(vadd(oc, mulvf(dir, d)), *normal);
+		*normal = new_dividev(normal, cy->radius);
+		return d;
+	}
+
+	// caps circle
+	d = ((y < 0. ? 0. : caca) - caoc) / card;
+	if (fabs(b + a * d) < h)
+	{
+		y = (y > 0) ? 1 : ((y < 0) ? -1 : 0);
+		*normal =	mulvf(ca, y);
+	   *normal = normalized(new_dividev(normal, caca));
+//	   *normal = new_dividev(normal, caca);
+	   return (d);
+	}
+
+	return INFINITY;
 }
 
 static void nearest_cylinder(const t_vec3 orig, const t_vec3 dir, const t_object *cy, hitpayload *payload)
 {
-	float d = ray_cylinder_intersect(orig, dir, cy);
-	if (d < payload->nearest_dist)
+	t_vec3	normal;
+	float d = ray_cylinder_intersect(orig, dir, cy, &normal);
+	if (d < payload->nearest_dist && d > 0.001)
 	{
-		payload->nearest_dist = d; // i got it
-
-		// this formula how u know for sphere's case?
-		// this formula applied to all primitives?
-		// it gives no hint hmm
-		payload->point = vadd(orig, mulvf(dir,payload->nearest_dist));
-
+		payload->nearest_dist = d;
+		payload->point = normal;
+	//	payload->N = normalized(payload->point); // no shadow on top
 		payload->N = normalized(vsub(payload->point, cy->coor));
-		//payload->N = normalized(payload->point);
-
-		payload->material = cy->material; // i got it
+		//payload->N = normalized(vsub(payload->point, s->coor));
+		payload->material = cy->material;
 	}
 
 }
