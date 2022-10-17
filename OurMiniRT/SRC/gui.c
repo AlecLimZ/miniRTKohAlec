@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/11 23:26:47 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/17 12:40:31 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,18 @@ int	gui_input(unsigned int key, t_app *app)
 // app->camera->coor.y += dir_y;
 // app->camera->coor.z += dir_z;
 
+void	display(void *content)
+{
+	t_object *c = content;
+	const char *const		name[] = {
+	[CAMERA] = "Camera", [LIGHT] = "Light",
+	[SPHERE] = "Sphere", [PLANE] = "Plane", [CYLINDER] = "Cylinder",
+	[CONE] = "Cone", [LIGHT_BONUS] = "Light bonus"};
+
+	printf("type: %s\n", name[c->type]);
+	printf("x: %f\t y: %f\t z: %f\n", c->coor.x, c->coor.y, c->coor.z);
+}
+
 int	gui_render(t_app *app)
 {
 	static unsigned int		last_updated = 0;
@@ -61,10 +73,11 @@ int	gui_render(t_app *app)
 	{
 		last_updated = app->last_updated;
 		mlx_put_image_to_window(
-			app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
-		printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
+		app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
+		//printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
+		display(app->selected_object->content);
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, 24, 0XFFFF00,
-			(char *)name[((t_object *)app->selected_object->content)->type]);
+		(char *)name[((t_object *)app->selected_object->content)->type]);
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, app->height - 30,
 			0xFFFF00,
 			"TAB=Next_Object  UP=Move_Y+  DOWN=Move_Y-  LEFT=Move_X-  "

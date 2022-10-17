@@ -8,7 +8,7 @@
 #define MIN(a, b) ((a) > (b)? (b) : (a))
 
 int g_mode = DEFAULT_RENDER;
-t_vec3 g_background = (t_vec3){{0.2, 0.7, 0.8}};
+t_vec3 g_background = (t_vec3){{255, 255, 255}};
 
 typedef struct s_hitpayload {
 	bool hit;
@@ -208,7 +208,6 @@ static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy,
 //	   *normal = new_dividev(normal, caca);
 	   return (d);
 	}
-
 	return INFINITY;
 }
 
@@ -225,7 +224,6 @@ static void nearest_cylinder(const t_vec3 orig, const t_vec3 dir, const t_object
 		//payload->N = normalized(vsub(payload->point, s->coor));
 		payload->material = cy->material;
 	}
-
 }
 
 // this is the plane intersect
