@@ -8,7 +8,7 @@
 #define MIN(a, b) ((a) > (b)? (b) : (a))
 
 int g_mode = DEFAULT_RENDER;
-t_vec3 g_background = (t_vec3){{255, 255, 255}};
+t_vec3 g_background = (t_vec3){{0, 0, 0}};
 
 typedef struct s_hitpayload {
 	bool hit;
@@ -66,6 +66,11 @@ static t_vec3 reflect(const t_vec3 I, const t_vec3 N) {
 	return vsub(I, mulvf(N,2.f*mulvv(I, N)));
 }
 
+float	vlenf(t_vec3 v)
+{
+	return (v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
 static float ray_sphere_intersect(const t_vec3 orig, const t_vec3 dir, const t_object *s)
 {
 	const t_vec3 L = vsub(s->coor, orig);
@@ -99,131 +104,122 @@ static void nearest_sphere(const t_vec3 orig, const t_vec3 dir, const t_object *
 //	t_vec3 N;
 //	t_material material;
 
-
-static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy, t_vec3 *normal)
+static void	bhaskara(float a, float b, float c, float *res)
 {
-//	float a = (dir.x * dir.x) + (dir.z * dir.z);
-//	float b = 2 * (dir.x * (orig.x - cy->coor.x) + dir.z * (orig.z - cy->coor.z));
-//	float c = (orig.x - cy->coor.x) * (orig.x - cy->coor.x) + (orig.z - cy->coor.z) * (orig.z - cy->coor.z) - (cy->radius * cy->radius);
-//	here norm version is dot version...
+	float	sqrt_discriminant;
+	float	aux[2];
 
-	// try https://stackoverflow.com/questions/65566282/cylinder-intersection-with-ray-tracing
-//	t_vec3	nori;
-//	t_vec3	ndir;
-//	t_vec3	len;
-//	t_vec3	nrot;
-
-//	nori = ray->orig;
-//	nrot = normalized(cy->orientation);
-//	ndir = cross(ray->dir, nrot);
-//	len = vsub(ray->orig, cy->coor);
-
-//	t_vec3 tmp = cross(len, nrot);
-//	double a = ft_dot(&ndir, &ndir);
-//	double b = 2 * ft_dot(&ndir, &tmp);
-//	double c = ft_dot(&tmp, &tmp)
-//		- (cy->radius / 2) * (cy->radius / 2);
-
-//	float delta = b * b - 4 * a * c;
-//	if (delta < 0)
-//		ray->hit = 0;
-
-//	float t1 = (-b - sqrt(delta)) / (2 * a);
-//	float t2 = (-b + sqrt(delta)) / (2 * a);
-//	if (t2 < 0)
-//		ray->hit = 0;
-//	if (t1 > 0)
-//		ray->t = t1;
-//	else
-//		ray->t = t2;
-
-//	if (norm(vsub(ray->norm, cy->coor)) > cy->height)
-//		ray->hit = 0;
-//	tmp = vsub(ray->norm, cy->coor);
-//	double ax = ft_dot(&nrot, &tmp);
-//	tmp = mulvf(nrot, ax);
-//	tmp = vadd(cy->coor, tmp);
-//	ray->norm = normalized(vsub(ray->norm, tmp));
-//	ray->hit = 1;
-//	ray->t = ax;
-//
-//	sphere testing
-//	t_vec3 oc = vsub(orig, cy->coor);
-//	float	b = mulvv(oc, dir);
-//	float	c = mulvv(oc, oc) - cy->radius * cy->radius;
-//	float	h = b * b - c;
-//	if (h < 0.0)
-//		return INFINITY;
-//	h = sqrt(h);
-//	float t0 = -b-h;
-//	float t1 = -b+h;
-//	if (t0 > .001) return t0;
-//	if (t1 > .001) return t1;
-//	return INFINITY;
-	//cy->coor is the coordination center of the cylinder right?
-	//just need to understand ur object coorA
-	// vec3 ba is height
-	// vec3 oc is 
-	// if we decide coor as point A, we can add height to the point A to get point B vector right?
-	t_vec3 pa = cy->coor;
-	t_vec3 pb = (t_vec3){{cy->coor.x, fabs(cy->coor.y - cy->height), cy->coor.z}};
-//	printf("height: %f\n", cy->height);
-//	printf("height: %f\n", pb.y);
-//	exit(0);
-	t_vec3 ca = vsub(pb, pa);
-	t_vec3 oc = vsub(orig, pa);
-
-	float caca = mulvv(ca, ca);
-	float card = mulvv(ca, dir);
-	float caoc = mulvv(ca, orig);
-
-	float a = caca - card * card;
-	float b = caca * mulvv(oc, dir) - caoc * card;
-	float c = caca * mulvv(oc, oc) - caoc * caoc - cy->radius * cy->radius * caca;
-	float h = b * b - a * c;
-
-	if (h < 0.001)
-		return INFINITY;
-	h = sqrt(h);
-	float d = (-b-h)/a;
-
-	// body
-	float y = caoc + d * card;
-	if (y > 0. && y < caca)
+	sqrt_discriminant = sqrt(pow(b, 2) - 4 * a * c);
+	aux[0] = (-b - sqrt_discriminant) / (2 * a);
+	aux[1] = (-b + sqrt_discriminant) / (2 * a);
+	if (aux[0] < aux[1])
 	{
-		*normal = mulvf(ca, y);
-		*normal = new_dividev(normal, caca);
-		*normal = vsub(vadd(oc, mulvf(dir, d)), *normal);
-		*normal = new_dividev(normal, cy->radius);
-		return d;
+		res[0] = aux[0];
+		res[1] = aux[1];
 	}
-
-	// caps circle
-	d = ((y < 0. ? 0. : caca) - caoc) / card;
-	if (fabs(b + a * d) < h)
+	else
 	{
-		y = (y > 0) ? 1 : ((y < 0) ? -1 : 0);
-		*normal =	mulvf(ca, y);
-	   *normal = normalized(new_dividev(normal, caca));
-//	   *normal = new_dividev(normal, caca);
-	   return (d);
+		res[0] = aux[1];
+		res[1] = aux[0];
 	}
-	return INFINITY;
 }
 
-static void nearest_cylinder(const t_vec3 orig, const t_vec3 dir, const t_object *cy, hitpayload *payload)
+static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy, t_vec3 *normal, float *y, bool ret[2])
+{
+	// try https://stackoverflow.com/questions/65566282/cylinder-intersection-with-ray-tracing
+//rotate_x(&dir_y, &dir_z, app->camera->orientation.x);
+//rotate_y(&dir_x, &dir_z, app->camera->orientation.y);
+//rotate_z(&dir_x, &dir_y, app->camera->orientation.z);
+//	t_vec3 pa = cy->coor;
+//	t_vec3 pb = (t_vec3){{cy->coor.x, fabs(cy->coor.y + cy->height), cy->coor.z}};
+//	t_vec3 ca = vsub(pb, pa);
+//	t_vec3 oc = vsub(orig, pa);
+//
+//	float caca = mulvv(ca, ca);
+//	float card = mulvv(ca, dir);
+//	float caoc = mulvv(ca, orig);
+//
+//	float a = caca - card * card;
+//	float b = caca * mulvv(oc, dir) - caoc * card;
+//	float c = caca * mulvv(oc, oc) - caoc * caoc - cy->radius * cy->radius * caca;
+//	float h = b * b - a * c;
+//
+//	if (h < 0.001)
+//		return INFINITY;
+//	h = sqrt(h);
+//	float d = (-b-h)/a;
+//
+//	// body
+//	float y = caoc + d * card;
+//	if (y > 0. && y < caca)
+//	{
+//		*normal = mulvf(ca, y);
+//		*normal = new_dividev(normal, caca);
+//		*normal = vsub(vadd(oc, mulvf(dir, d)), *normal);
+//		*normal = new_dividev(normal, cy->radius);
+//		return d;
+//	}
+//
+//	// caps circle
+//	d = ((y < 0. ? 0. : caca) - caoc) / card;
+//	if (fabs(b + a * d) < h)
+//	{
+//		y = (y > 0) ? 1 : ((y < 0) ? -1 : 0);
+//		*normal =	mulvf(ca, y);
+//		*normal = normalized(new_dividev(normal, caca));
+////	   *normal = new_dividev(normal, caca);
+//	   return (d);
+//	}
+	normal = NULL;
+	t_vec3 v[2];
+	t_vec3 v_cy2ray;
+	float time[2];
+	float dist[2];
+
+	// cy->orientation is normalized at parser_types.c
+	v[0] = vsub(dir, mulvf(cy->orientation, mulvv(dir, cy->orientation)));
+	v[1] = vsub(vsub(orig, cy->coor), mulvf(cy->orientation, mulvv(vsub(orig, cy->coor), cy->orientation)));
+	bhaskara(vlenf(v[0]), 2 * mulvv(v[0], v[1]), vlenf(v[1]) - pow(cy->radius / 2, 2), time);
+	v_cy2ray = vsub(cy->coor, orig);
+	dist[0] = mulvv(cy->orientation, vsub(mulvf(dir, time[0]), v_cy2ray));
+	dist[1] = mulvv(cy->orientation, vsub(mulvf(dir, time[1]), v_cy2ray));
+	ret[0] = (dist[0] >= 0 && dist[0] <= cy->height && time[0] > 0.001);
+	ret[1] = (dist[1] >= 0 && dist[1] <= cy->height && time[1] > 0.001);
+	if (ret[0] == false & ret[1] == true)
+	{
+		*y = dist[1];
+		return (time[1]);
+	}
+	*y = dist[0];
+	return (time[0]);
+}
+
+static void nearest_cylinder(const t_vec3 orig, t_vec3 dir, const t_object *cy, hitpayload *payload)
 {
 	t_vec3	normal;
-	float d = ray_cylinder_intersect(orig, dir, cy, &normal);
-	if (d < payload->nearest_dist && d > 0.001)
+	bool ret[2];
+	float y;
+//	rotate_dx(&dir.y, &dir.z, cy->orientation.x);
+//	rotate_dy(&dir.x, &dir.z, cy->orientation.y);
+//	rotate_dz(&dir.x, &dir.y, cy->orientation.z);
+	float d = ray_cylinder_intersect(orig, dir, cy, &normal, &y, ret);
+	if ((ret[0] || ret[1]) && payload->nearest_dist > d && d > 0.001)
 	{
 		payload->nearest_dist = d;
-		payload->point = normal;
-	//	payload->N = normalized(payload->point); // no shadow on top
-		payload->N = normalized(vsub(payload->point, cy->coor));
-		//payload->N = normalized(vsub(payload->point, s->coor));
+		payload->point = vadd(orig, mulvf(dir,payload->nearest_dist));
+		if (ret[0] == false && ret[1] == true)
+			payload->N = mulvf(payload->N, -1);
+		else
+			payload->N = normalized(vsub(payload->point, vadd(mulvf(cy->orientation, y), cy->coor)));
 		payload->material = cy->material;
 	}
+//	if (d < payload->nearest_dist && d > 0.001)
+//	{
+//		payload->nearest_dist = d;
+//		payload->point = normal;
+//		payload->N = normalized(vsub(payload->point, cy->coor));
+//		payload->material = cy->material;
+//	}
 }
 
 // this is the plane intersect
@@ -272,7 +268,7 @@ static hitpayload scene_intersect(const t_vec3 orig, const t_vec3 dir, const t_l
 }
 
 // the ray tracer getting final color per pixel
-static t_vec3 cast_ray(const t_vec3 orig, const t_vec3 dir, const int depth, t_list *list)
+static t_vec3 cast_ray(const t_vec3 orig, t_vec3 dir, const int depth, t_list *list)
 {
 	const t_list	*lights = list;
 	const hitpayload a = scene_intersect(orig, dir, list);
