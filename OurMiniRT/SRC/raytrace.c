@@ -126,6 +126,7 @@ static void	quadratic(float a, float b, float c, float *res)
 
 static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy, t_vec3 *normal, float *y, bool ret[2])
 {
+	(void) normal;
 	// try https://stackoverflow.com/questions/65566282/cylinder-intersection-with-ray-tracing
 //rotate_x(&dir_y, &dir_z, app->camera->orientation.x);
 //rotate_y(&dir_x, &dir_z, app->camera->orientation.y);
@@ -185,7 +186,7 @@ static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy,
 	dist[1] = mulvv(cy->orientation, vsub(mulvf(dir, time[1]), v_cy2ray));
 	ret[0] = (dist[0] >= 0 && dist[0] <= cy->height && time[0] > 0.001);
 	ret[1] = (dist[1] >= 0 && dist[1] <= cy->height && time[1] > 0.001);
-	if (ret[0] == false & ret[1] == true)
+	if (ret[0] == false && ret[1] == true)
 	{
 		*y = dist[1];
 		return (time[1]);
