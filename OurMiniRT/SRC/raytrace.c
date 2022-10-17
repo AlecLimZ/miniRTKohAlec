@@ -104,7 +104,7 @@ static void nearest_sphere(const t_vec3 orig, const t_vec3 dir, const t_object *
 //	t_vec3 N;
 //	t_material material;
 
-static void	bhaskara(float a, float b, float c, float *res)
+static void	quadratic(float a, float b, float c, float *res)
 {
 	float	sqrt_discriminant;
 	float	aux[2];
@@ -179,7 +179,7 @@ static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy,
 	// cy->orientation is normalized at parser_types.c
 	v[0] = vsub(dir, mulvf(cy->orientation, mulvv(dir, cy->orientation)));
 	v[1] = vsub(vsub(orig, cy->coor), mulvf(cy->orientation, mulvv(vsub(orig, cy->coor), cy->orientation)));
-	bhaskara(vlenf(v[0]), 2 * mulvv(v[0], v[1]), vlenf(v[1]) - pow(cy->radius / 2, 2), time);
+	quadratic(vlenf(v[0]), 2 * mulvv(v[0], v[1]), vlenf(v[1]) - pow(cy->radius / 2, 2), time);
 	v_cy2ray = vsub(cy->coor, orig);
 	dist[0] = mulvv(cy->orientation, vsub(mulvf(dir, time[0]), v_cy2ray));
 	dist[1] = mulvv(cy->orientation, vsub(mulvf(dir, time[1]), v_cy2ray));
