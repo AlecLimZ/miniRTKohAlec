@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/17 12:56:44 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/18 11:27:34 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ void	display(void *content)
 	[CAMERA] = "Camera", [LIGHT] = "Light",
 	[SPHERE] = "Sphere", [PLANE] = "Plane", [CYLINDER] = "Cylinder",
 	[CONE] = "Cone", [LIGHT_BONUS] = "Light bonus"};
+	printf("type: %s\n", name[c->type]);
+	printf("x: %f\t y: %f\t z: %f\n", c->coor.x, c->coor.y, c->coor.z);
 }
 
 int	gui_render(t_app *app)
@@ -73,6 +75,7 @@ int	gui_render(t_app *app)
 		mlx_put_image_to_window(
 		app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
 		//printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
+		display(app->selected_object->content);
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, 24, 0XFFFF00,
 		(char *)name[((t_object *)app->selected_object->content)->type]);
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, app->height - 30,

@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/17 18:34:12 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/18 11:25:20 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ typedef struct s_object
 	t_xyz		coor;
 	t_rgb		color;
 	t_xyz		orientation;
-	t_xyz		normal;
 	double		radius;
 	t_material	material;
 	union
