@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/18 11:27:34 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/18 14:52:22 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ int	gui_render(t_app *app)
 		mlx_put_image_to_window(
 		app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
 		//printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
-		display(app->selected_object->content);
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, 24, 0XFFFF00,
 			(char *)get_object_typename(app->selected_object->content));
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, app->height - 30,

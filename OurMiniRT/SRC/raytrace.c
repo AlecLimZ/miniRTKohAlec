@@ -126,7 +126,6 @@ static void	quadratic(float a, float b, float c, float *res)
 
 static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy, t_vec3 *normal, float *y, bool ret[2])
 {
-	(void) normal;
 	// try https://stackoverflow.com/questions/65566282/cylinder-intersection-with-ray-tracing
 //rotate_x(&dir_y, &dir_z, app->camera->orientation.x);
 //rotate_y(&dir_x, &dir_z, app->camera->orientation.y);
@@ -171,7 +170,6 @@ static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy,
 ////	   *normal = new_dividev(normal, caca);
 //	   return (d);
 //	}
-	normal = NULL;
 	t_vec3 v[2];
 	t_vec3 v_cy2ray;
 	float time[2];
@@ -192,6 +190,33 @@ static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy,
 		return (time[1]);
 	}
 	*y = dist[0];
+
+	// caps circle
+	t_vec3 pa = cy->coor;
+	t_vec3 pb = (t_vec3){{cy->coor.x, fabs(cy->coor.y + cy->height), cy->coor.z}};
+	t_vec3 ca = vsub(pb, pa);
+	t_vec3 oc = vsub(orig, pa);
+	float caca = mulvv(ca, ca);
+	float card = mulvv(ca, dir);
+	float caoc = mulvv(ca, orig);
+	float a = caca - card * card;
+	float b = caca * mulvv(oc, dir) - caoc * card;
+	float c = caca * mulvv(oc, oc) - caoc * caoc - cy->radius * cy->radius * caca;
+	float h = b * b - a * c;
+	h = sqrt(h);
+	float d = (-b-h) / a;
+	float yy = caoc + d * card;
+	d = ((yy < 0. ? 0. : caca) - caoc) / card;
+	if (fabs(b + a * d) < h)
+	{
+		yy = (yy > 0) ? 1 : ((yy < 0) ? -1 : 0);
+		*normal = mulvf(ca, yy);
+		*normal = normalized(new_dividev(normal, caca));
+		*normal = new_dividev(normal, caca);
+		return (d);
+	}
+
+	// default correct
 	return (time[0]);
 }
 
@@ -214,13 +239,6 @@ static void nearest_cylinder(const t_vec3 orig, t_vec3 dir, const t_object *cy, 
 			payload->N = normalized(vsub(payload->point, vadd(mulvf(cy->orientation, y), cy->coor)));
 		payload->material = cy->material;
 	}
-//	if (d < payload->nearest_dist && d > 0.001)
-//	{
-//		payload->nearest_dist = d;
-//		payload->point = normal;
-//		payload->N = normalized(vsub(payload->point, cy->coor));
-//		payload->material = cy->material;
-//	}
 }
 
 // this is the plane intersect
