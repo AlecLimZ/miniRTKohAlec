@@ -33,6 +33,16 @@ void	export_scene(t_list *object)
 			(int)(as_object(object)->color.x * 255.999),
 			(int)(as_object(object)->color.y * 255.999),
 			(int)(as_object(object)->color.z * 255.999));
+	else if (as_object(object)->type == LIGHT_BONUS)
+		printf("li	%.2f,%.2f,%.2f		%.2f	%d,%d,%d"
+			"	# center brightness color\n",
+			as_object(object)->coor.x,
+			as_object(object)->coor.y,
+			as_object(object)->coor.z,
+			as_object(object)->light_brightness,
+			(int)(as_object(object)->color.x * 255.999),
+			(int)(as_object(object)->color.y * 255.999),
+			(int)(as_object(object)->color.z * 255.999));
 	else if (as_object(object)->type == CAMERA)
 		printf("C	%.2f,%.2f,%.2f		%.2f,%.2f,%.2f	%f"
 			"	# center orientation fov\n",
