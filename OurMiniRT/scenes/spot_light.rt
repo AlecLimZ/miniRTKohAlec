@@ -1,0 +1,15 @@
+A       0.25    255,255,255     # ratio color
+sp      -1.00,1.00,0.00         1.00    255,255,0       # center diameter color
+sp      0.00,-0.50,4.00         1.00    255,0,255       # center diameter color
+sp      1.00,1.00,0.00          1.00    0,255,255       # center diameter color
+sp      0.00,-1.50,4.00         26.00   255,0,0 # center diameter color
+sp      0.00,0.00,0.00          1.00    0,255,0 # center diameter color
+sp      0.00,10.50,4.00         1.00    0,0,255 # center diameter color
+sp      -1.00,-1.00,0.00                1.00    0,0,0   # center diameter color
+sp      0.00,-1.00,0.00         1.00    127,127,127     # center diameter color
+sp      1.00,-1.00,0.00         1.00    255,255,255     # center diameter color
+pl      0.00,-1.50,0.00         0.00,1.00,0.00  140,118,206     # center orientation color
+# pl      0.00,-1.50,-20.00               0.00,-0.45,0.89 255,0,0 # center orientation color
+L       0.00,6.50,4.00          0.80    255,255,255     # center brightness color
+C       8.00,0.00,13.50         0.39,0.79,0.00  60.000000       # center orientation fov
+cy      0.00,6.00,4.00          0.00,1.00,0.00          1.00    3.50    255,255,255     # center orientation diameter height color
