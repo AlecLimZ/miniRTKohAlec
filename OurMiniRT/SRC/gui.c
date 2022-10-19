@@ -6,12 +6,46 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/19 13:14:02 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/19 14:21:38 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <time.h>
 #include "miniRT.h"
+
+static const char	*get_object_typename(t_object *object)
+{
+	const char *const		name[] = {
+	[CAMERA] = "Camera", [LIGHT] = "Light",
+	[SPHERE] = "Sphere", [PLANE] = "Plane", [CYLINDER] = "Cylinder",
+	[CONE] = "Cone", [LIGHT_BONUS] = "Light bonus"};
+
+	if (object != NULL && object->type < END_OF_OBJECT_TYPE && name[object->type])
+		return (name[object->type]);
+	return "Unknown";
+}
+
+void	gui_orientation(unsigned int key, t_object *c)
+{
+	if (c->type == CAMERA && (key == KEY_S || key == KEY_X))
+		c->orientation.x += pow(-1, key != KEY_S) * PI * 2 / 8;
+	if (c->type == CAMERA && (key == KEY_D || key == KEY_C))
+		c->orientation.y += pow(-1, key != KEY_D) * PI * 2 / 8;
+	if (c->type == CAMERA && (key == KEY_F || key == KEY_V))
+		c->orientation.z += pow(-1, key != KEY_F) * PI * 2 / 8;
+	if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_S)
+		c->orientation.x += pow(0.1, 1) * PI * 2 / 8;
+	if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_X)
+		c->orientation.x -= pow(0.1, 1) * PI * 2 / 8;
+	if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_D)
+		c->orientation.y += pow(0.1, 1) * PI * 2 / 8;
+	if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_C)
+		c->orientation.y -= pow(0.1, 1) * PI * 2 / 8;
+	if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_F)
+		c->orientation.z += pow(0.1, 1) * PI * 2 / 8;
+	if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_V)
+		c->orientation.z -= pow(0.1, 1) * PI * 2 / 8;
+}
 
 int	gui_input(unsigned int key, t_app *app)
 {
@@ -28,14 +62,10 @@ int	gui_input(unsigned int key, t_app *app)
 	else if (key == KEY_RIGHT || key == KEY_LEFT)
 		((t_object *)app->selected_object->content)->coor.x
 			+= pow(-1, key != KEY_RIGHT);
-	else if (key == KEY_S || key == KEY_X)
-		app->camera->orientation.x += pow(-1, key != KEY_S) * PI * 2 / 8;
-	else if (key == KEY_D || key == KEY_C)
-		app->camera->orientation.y += pow(-1, key != KEY_D) * PI * 2 / 8;
-	else if (key == KEY_F || key == KEY_V)
-		app->camera->orientation.z += pow(-1, key != KEY_F) * PI * 2 / 8;
 	else if (key == KEY_N)
 		app->render_mode = (app->render_mode + 1) % RENDER_MODE_END;
+	else
+		gui_orientation(key, (t_object *)app->selected_object->content);
 	++app->last_updated;
 	return (0);
 }
@@ -47,18 +77,6 @@ int	gui_input(unsigned int key, t_app *app)
 // app->camera->coor.x += dir_x;
 // app->camera->coor.y += dir_y;
 // app->camera->coor.z += dir_z;
-
-static const char	*get_object_typename(t_object *object)
-{
-	const char *const		name[] = {
-	[CAMERA] = "Camera", [LIGHT] = "Light",
-	[SPHERE] = "Sphere", [PLANE] = "Plane", [CYLINDER] = "Cylinder",
-	[CONE] = "Cone", [LIGHT_BONUS] = "Light bonus"};
-
-	if (object != NULL && object->type < END_OF_OBJECT_TYPE && name[object->type])
-		return (name[object->type]);
-	return "Unknown";
-}
 
 static void	display(t_object *c)
 {

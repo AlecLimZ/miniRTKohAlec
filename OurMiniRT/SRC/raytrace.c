@@ -152,7 +152,7 @@ static float	ray_cylinder_intersect(t_ray *r,
 }
 
 static void	nearest_cylinder(const t_vec3 orig, t_vec3 dir,
-		t_object *cy, hitpayload *payload)
+		const t_object *cy, hitpayload *payload)
 {
 	t_ray	r;
 	bool	ret[2];
