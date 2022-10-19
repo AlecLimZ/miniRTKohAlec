@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/19 16:56:53 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/19 18:20:03 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,6 +263,27 @@ static void nearest_plane2(const t_vec3 orig, const t_vec3 dir, const t_object *
 	}
 }
 
+static void nearest_plane3(const t_vec3 orig, const t_vec3 dir, t_object *plane, hitpayload *payload)
+{
+	// noted that plane->orientation is normalized
+	float	den;
+	float	d;
+
+	den = mulvv(normalized(dir), plane->orientation);
+	if (!den)
+		d = INFINITY;
+	d = mulvv(vsub(plane->coor, orig), plane->orientation) / den;
+	if (payload->nearest_dist > d && d > 0.001)
+	{
+		payload->nearest_dist = d;
+		payload->point = vadd(orig, mulvf(dir, payload->nearest_dist));
+		if (mulvv(dir, plane->orientation) > 0)
+			plane->orientation = mulvf(plane->orientation, -1);
+		payload->N = plane->orientation;
+		payload->material = plane->material;
+		//payload->material.diffuse_color = plane->color; 
+	}
+}
 // void	nearest_plane2( t_vec3 orig, const t_vec3 dir, const t_object *plane, hitpayload *payload)
 // {
 // 	// -(dot(ro, p.xyz) + 1.0) / dot(rd, p.xyz);
@@ -286,11 +307,14 @@ static hitpayload scene_intersect(const t_vec3 orig, const t_vec3 dir, const t_l
 		if (as_object(list)->type == SPHERE)
 			nearest_sphere(orig, dir, list->content, &payload);
 		else if (as_object(list)->type == PLANE)
-			nearest_plane2(orig, dir, list->content, &payload);
+			//nearest_plane2(orig, dir, list->content, &payload);
+			nearest_plane3(orig, dir, list->content, &payload);
 		else if (((t_object *)list->content)->type == CYLINDER)
 			nearest_cylinder(orig, dir, list->content, &payload);
 		if (0)
 			nearest_plane(orig, dir, list->content, &payload);
+		if (0)
+			nearest_plane2(orig, dir, list->content, &payload);
 		list = list->next;
 	}
 	payload.hit = payload.nearest_dist < 1000;
