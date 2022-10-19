@@ -269,7 +269,7 @@ static void nearest_plane3(const t_vec3 orig, const t_vec3 dir, t_object *plane,
 	float	den;
 	float	d;
 
-	den = mulvv(normalized(dir), plane->orientation);
+	den = mulvv(dir, plane->orientation);
 	if (!den)
 		d = INFINITY;
 	d = mulvv(vsub(plane->coor, orig), plane->orientation) / den;
