@@ -64,9 +64,9 @@ int	main(int argc, char **argv)
 {
 	t_app		app;
 
+	init_app(&app);
 	if (argc != 2)
 		app_exit(&app, "Require 1 rt file");
-	init_app(&app);
 	load_scene_or_exit(&app, argv[1]);
 	start_gui(&app, 1600, 900);
 	app_exit(&app, "Unexpected GUI failure");
