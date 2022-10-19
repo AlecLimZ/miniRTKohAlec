@@ -62,7 +62,7 @@ t_object	parse_sphere(char *line)
 	{
 		a.type = SPHERE;
 		a.radius /= 2;
-		a.material = (t_material){{0.9,  0.5, 0.1}, 50, a.color};
+		a.material = (t_material){{0.9, 0.5, 0.1}, 50, a.color};
 	}
 	return (a);
 }
@@ -92,7 +92,7 @@ t_object	parse_cylinder(char *line)
 	{
 		a.type = CYLINDER;
 		a.radius /= 2;
-		a.material = (t_material){{0.9,  0.5, 0.1}, 50, a.color};
+		a.material = (t_material){{0.9, 0.5, 0.1}, 50, a.color};
 	}
 	return (a);
 }
@@ -122,7 +122,7 @@ t_object	parse_cone_bonus(char *line)
 	{
 		a.type = CONE;
 		a.radius /= 2;
-		a.material = (t_material){{0.9,  0.5, 0.1}, 50, a.color};
+		a.material = (t_material){{0.9, 0.5, 0.1}, 50, a.color};
 	}
 	return (a);
 }

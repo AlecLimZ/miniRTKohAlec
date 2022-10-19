@@ -81,25 +81,20 @@ static t_object	parse_light_bonus(char *line)
 // parse value into struct
 // return 1 if empty/remark line or valid config line
 // return 0 if invalid/duplicate config
+	// (t_object (*[])(char *)){
 static bool	parse_line(char *line, t_app *app)
 {
-	t_object (* const *f)(char *) =
-	// const void	**f = 
-	// (const void *[]){
-	(t_object (*[])(char *)) {
-		&parse_ambient, &parse_camera, &parse_light, &parse_sphere,
-		&parse_plane, &parse_cylinder, &parse_light_bonus, &parse_cone_bonus,
-		NULL,
-	};
-	t_object	object;
-	t_object	*content;
-
+	t_object		object;
+	t_object		*content;
+	t_object (*const *f)(char *) = (t_object (*[])(char *)){
+	parse_ambient, parse_camera, parse_light, parse_sphere,
+	parse_plane, parse_cylinder, parse_light_bonus, parse_cone_bonus,
+	NULL};
 	trim_str(&line, ft_isspace);
 	if (*line == '#' || *line == '\0')
 		return (1);
 	while (*f)
 	{
-		// object = ((t_object (*)(char *))*f)(line);
 		object = (**f)(line);
 		if (object.type < END_OF_OBJECT_TYPE)
 		{
@@ -120,14 +115,13 @@ static bool	parse_line(char *line, t_app *app)
 // if any error, it will app_exit() which includes cleanup
 void	parse_file(const char *fp, t_app *app)
 {
+	const int	fd = if_errno_exit(open(fp, 0), app);
 	const char	*file_ext = ft_strrchr(fp, '.');
-	int			fd;
 	char		*line;
 	t_object	rt_object;
 
 	if (file_ext == NULL || ft_strncmp(file_ext, ".rt", 4) != 0)
 		app_exit(app, "Incorrect file extension");
-	fd = if_errno_exit(open(fp, 0), app);
 	while (get_next_line(fd, &line) > 0)
 	{
 		if (!parse_line(line, app))

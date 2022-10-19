@@ -16,9 +16,9 @@
 static const char	*get_object_typename(t_object *object)
 {
 	const char *const		name[OBJECT_TYPE_COUNT] = {
-	[AMBIENT] = "Ambient (ratio)", [CAMERA] = "Camera (FOV)", [LIGHT] = "Light (ratio)",
-	[SPHERE] = "Sphere (radius)", [PLANE] = "Plane", [CYLINDER] = "Cylinder (radius, height)",
-	[CONE] = "Cone (radius, height)", [LIGHT_BONUS] = "Light bonus (ratio)"};
+		[AMBIENT] = "Ambient (ratio)", [CAMERA] = "Camera (FOV)", [LIGHT] = "Light (ratio)",
+		[SPHERE] = "Sphere (radius)", [PLANE] = "Plane", [CYLINDER] = "Cylinder (radius, height)",
+		[CONE] = "Cone (radius, height)", [LIGHT_BONUS] = "Light bonus (ratio)"};
 
 	if (object != NULL && object->type < END_OF_OBJECT_TYPE && name[object->type])
 		return (name[object->type]);
@@ -81,7 +81,7 @@ int	gui_input(unsigned int key, t_app *app)
 	else if (key == KEY_R)
 		reload_scene(app);
 	else if (key == KEY_W && ++app->mini)
-		start_gui(app, 600 + (app->mini & 1) * 1000, 340 + (app->mini & 1) * 560);
+		create_window(app, 600 + (app->mini & 1) * 1000, 340 + (app->mini & 1) * 560);
 	else if (key == KEY_E)
 		return (export_scene(app->objects), 0);
 	else if (key == KEY_TAB)

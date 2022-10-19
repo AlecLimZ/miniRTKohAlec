@@ -82,18 +82,18 @@ typedef struct s_object
 	};
 	union
 	{
-		float	param1;
-		float	ambient_ratio;
-		float	light_brightness;
-		float	camera_fov;
-		float	radius;
+		float		param1;
+		float		ambient_ratio;
+		float		light_brightness;
+		float		camera_fov;
+		float		radius;
 	};
 	union
 	{
-		float	param2;
-		float	height;
+		float		param2;
+		float		height;
 	};
-	t_material	material;
+	t_material		material;
 }	t_object;
 
 typedef struct s_object_params

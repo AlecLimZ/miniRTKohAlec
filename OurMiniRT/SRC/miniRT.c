@@ -15,7 +15,7 @@
 // app.last_updated = 1 to trigger first render
 static void	init_app(t_app *app)
 {
-	*app = (t_app){.mini = 1 };
+	*app = (t_app){.mini = 1};
 }
 
 static void	load_scene_or_exit(t_app *app, char *filepath)
@@ -25,16 +25,14 @@ static void	load_scene_or_exit(t_app *app, char *filepath)
 	select_next(app);
 }
 
-// why macOs API missing mlx_get_screen_size??
-// mlx_get_screen_size(app->mlx_ptr, &app->width, &app->height);
-// beware: color int(argb) on x86 little-endian is char[b,g,r,a]
-// mlxmetal may increase image-width somehow
-void	start_gui(t_app *app, int width, int height)
+// https://harm-smits.github.io/42docs/libs/minilibx/events.html#x11-interface
+void	create_window(t_app *app, int width, int height)
 {
-	const int	is_first = (app->mlx_ptr == NULL);
+	char *const	title = "miniRT" \
+		"  [TAB]=NextObject  [Arrows]/[I]n/[O]ut=Movement" \
+		"  [1/2/3/4]=-Param1/+Param1/-Param2/+Param2" \
+		"  [G]ammaCorrection  [W]indowSize  [R]eload  [E]xport";
 
-	if (is_first)
-		app->mlx_ptr = if_null_exit(mlx_init(), app);
 	if (app->win_ptr)
 		mlx_destroy_window(app->mlx_ptr, app->win_ptr);
 	if (app->image.ptr)
@@ -49,15 +47,22 @@ void	start_gui(t_app *app, int width, int height)
 	if (app->image.bits_per_pixel != 32 || app->image.endian != 0)
 		app_exit(app, "Require 32bit color and little-endian (x86) platform");
 	app->win_ptr = mlx_new_window(
-		app->mlx_ptr, app->image.width, app->image.height, WIN_TITLE);
-	mlx_hook(app->win_ptr, KEY_PRESS_EVENT, KEY_PRESS_MASK, gui_input, app);
-	mlx_hook(app->win_ptr, DESTROY_NOTIFY_EVENT, STRUCTURE_NOTIFY_MASK, gui_exit, app);
-	if (is_first)
-	{
-		mlx_do_key_autorepeaton(app->mlx_ptr);
-		mlx_loop_hook(app->mlx_ptr, gui_render, app);
-		mlx_loop(app->mlx_ptr);
-	}
+			app->mlx_ptr, app->image.width, app->image.height, title);
+	mlx_hook(app->win_ptr, 2, 1L << 0, gui_input, app);
+	mlx_hook(app->win_ptr, 17, 1L << 17, gui_exit, app);
+}
+
+// why macOs API missing mlx_get_screen_size??
+// mlx_get_screen_size(app->mlx_ptr, &app->width, &app->height);
+// beware: color int(argb) on x86 little-endian is char[b,g,r,a]
+// mlxmetal may increase image-width somehow
+static void	start_gui(t_app *app, int width, int height)
+{
+	app->mlx_ptr = if_null_exit(mlx_init(), app);
+	create_window(app, width, height);
+	mlx_do_key_autorepeaton(app->mlx_ptr);
+	mlx_loop_hook(app->mlx_ptr, gui_render, app);
+	mlx_loop(app->mlx_ptr);
 }
 
 int	main(int argc, char **argv)

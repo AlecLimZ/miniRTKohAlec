@@ -1,11 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
+/*   Updated: 2022/09/18 11:18:10 by Koh              ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "miniRT.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define MAX(a, b) ((a) < (b)? (b) : (a))
-// #define MIN(a, b) ((a) > (b)? (b) : (a))
+// float fmax(float a, float b)
+// {
+// 	if (a < b)
+// 		return (b);
+// 	else
+// 		return (a);
+// }
 
 int g_mode = DEFAULT_RENDER;
 t_vec3 g_background = (t_vec3){{0, 0, 0}};
@@ -287,7 +304,7 @@ static t_vec3 cast_ray(const t_vec3 orig, t_vec3 dir, const int depth, t_list *l
 	const hitpayload a = scene_intersect(orig, dir, list);
 	if (depth>4 || !a.hit)
 		return g_background; // background color
-	if (g_mode == BY_DISTANCE) return mulvf((t_vec3) {{1,1,1}}, (MAX(0,16- a.nearest_dist))/16);
+	if (g_mode == BY_DISTANCE) return mulvf((t_vec3) {{1,1,1}}, (fmax(0,16- a.nearest_dist))/16);
 	if (g_mode == BY_NORMAL) return mulvf(vadd(a.N, (t_vec3){{1,1,1}}), 0.5);
 	if (g_mode == BY_OBJECT) return a.material.diffuse_color;
 
@@ -307,8 +324,8 @@ static t_vec3 cast_ray(const t_vec3 orig, t_vec3 dir, const int depth, t_list *l
 			hitpayload b = scene_intersect(a.point, light_dir, list);
 			if (!(b.hit && norm(vsub(b.point, a.point)) < norm(vsub(light->coor, a.point))))
 			{
-				diffuse_light_intensity = vadd(diffuse_light_intensity, mulvf(light->light_color, MAX(0.f, mulvv(light_dir,a.N))));
-				specular_light_intensity += pow(MAX(0.f, mulvv(negate(reflect(negate(light_dir), a.N)),dir)), a.material.specular_exponent);
+				diffuse_light_intensity = vadd(diffuse_light_intensity, mulvf(light->light_color, fmax(0.f, mulvv(light_dir,a.N))));
+				specular_light_intensity += pow(fmax(0.f, mulvv(negate(reflect(negate(light_dir), a.N)),dir)), a.material.specular_exponent);
 			}
 		}
 		lights = lights->next;
@@ -333,7 +350,7 @@ static int to_rgb(t_vec3 color, bool use_gamma_correction)
 		color.y = pow(color.y, 0.4545);
 		color.z = pow(color.z, 0.4545);
 	}
-	max = MAX(1.f, MAX(color.x, MAX(color.y, color.z)));
+	max = fmax(1.f, fmax(color.x, fmax(color.y, color.z)));
 
 	return (((int)(255.999 *  color.x/max) << 16 )
 		+  ((int)(255.999 *  color.y/max) << 8)
