@@ -174,7 +174,7 @@ static float	ray_cylinder_intersect(t_ray *r,
 	p[1] = vsub(vsub(r->orig, cy->coor),
 			mulvf(r->norm, mulvv(vsub(r->orig, cy->coor), r->norm)));
 	quadratic(vlenf(p[0]), 2 * mulvv(p[0], p[1]),
-		vlenf(p[1]) - pow(cy->radius / 2, 2), t);
+		vlenf(p[1]) - pow(cy->radius, 2), t);
 	cyry = vsub(cy->coor, r->orig);
 	dist[0] = mulvv(r->norm, vsub(mulvf(r->dir, t[0]), cyry));
 	dist[1] = mulvv(r->norm, vsub(mulvf(r->dir, t[1]), cyry));
