@@ -40,6 +40,7 @@ static void	display(t_object *c)
 		c->orientation.x, c->orientation.y, c->orientation.z);
 }
 
+// todo: confusing when waiting slow-render to replace help 
 static int	gui_render(t_app *app)
 {
 	static unsigned int		last_invalidated = 0;
@@ -65,11 +66,11 @@ static int	gui_render(t_app *app)
 	return (0);
 }
 
+// macOs OpenGL API missing mlx_get_screen_size
+// mlx_get_screen_size(app->mlx_ptr, &app->width, &app->height);
+// beware: color int(argb) on x86 little-endian is char[b,g,r,a]
+// mlxmetal may increase image-width somehow
 // https://harm-smits.github.io/42docs/libs/minilibx/events.html#x11-interface
-// "  [TAB]NextObject  [ARROWS]movement  [I]Back  [O]Forward"
-// "  [1]Light++  [2]Light--  [3]radius++"
-// "  [4]radius--  [5]height++  [6]height--"
-// "  [G]ammaCorrection  [W]indowSize  [R]eload  [E]xport";
 void	create_window(t_app *app, int width, int height)
 {
 	char *const	title = "miniRT (Press H for Help)";
@@ -84,21 +85,17 @@ void	create_window(t_app *app, int width, int height)
 			&app->image.line_length, &app->image.endian);
 	app->image.width = app->image.line_length / (app->image.bits_per_pixel / 8);
 	app->image.height = height;
-	printf("resolution %d %d\n", app->image.width, app->image.height);
+	printf("Resolution %d %d\n", app->image.width, app->image.height);
 	if (app->image.bits_per_pixel != 32 || app->image.endian != 0)
 		app_exit(app, "Require 32bit color and little-endian (x86) platform");
 	app->win_ptr = mlx_new_window(
 			app->mlx_ptr, app->image.width, app->image.height, title);
 	mlx_hook(app->win_ptr, 2, 1L << 0, gui_keydown, app);
 	mlx_hook(app->win_ptr, 3, 1L << 1, gui_keyup, app);
-	mlx_hook(app->win_ptr, 4, 1L << 2, gui_mouseup, app);
+	mlx_hook(app->win_ptr, 4, 1L << 2, gui_mousedown, app);
 	mlx_hook(app->win_ptr, 17, 1L << 17, gui_exit, app);
 }
 
-// why macOs API missing mlx_get_screen_size??
-// mlx_get_screen_size(app->mlx_ptr, &app->width, &app->height);
-// beware: color int(argb) on x86 little-endian is char[b,g,r,a]
-// mlxmetal may increase image-width somehow
 void	start_gui(t_app *app, int width, int height)
 {
 	app->mlx_ptr = if_null_exit(mlx_init(), app);

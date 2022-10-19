@@ -12,6 +12,32 @@
 
 #include "miniRT.h"
 #include "key_codes.h"
+#include <math.h>
+
+static bool	gui_orientation(unsigned int key, t_object *c)
+{
+	if (c->type == CAMERA && (key == KEY_S || key == KEY_X))
+		c->orientation.x += pow(-1, key != KEY_S) * PI * 2 / 8;
+	else if (c->type == CAMERA && (key == KEY_D || key == KEY_C))
+		c->orientation.y += pow(-1, key != KEY_D) * PI * 2 / 8;
+	else if (c->type == CAMERA && (key == KEY_F || key == KEY_V))
+		c->orientation.z += pow(-1, key != KEY_F) * PI * 2 / 8;
+	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_S)
+		c->orientation.x += pow(0.1, 1) * PI * 2 / 8;
+	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_X)
+		c->orientation.x -= pow(0.1, 1) * PI * 2 / 8;
+	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_D)
+		c->orientation.y += pow(0.1, 1) * PI * 2 / 8;
+	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_C)
+		c->orientation.y -= pow(0.1, 1) * PI * 2 / 8;
+	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_F)
+		c->orientation.z += pow(0.1, 1) * PI * 2 / 8;
+	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_V)
+		c->orientation.z -= pow(0.1, 1) * PI * 2 / 8;
+	else
+		return (false);
+	return (true);
+}
 
 static bool	control_object(unsigned int key, t_object *object)
 {
@@ -33,23 +59,16 @@ static bool	control_object(unsigned int key, t_object *object)
 	else if (object->type == CAMERA && (key == KEY_SEVEN || key == KEY_EIGHT))
 		adjust_val(&object->camera_fov,
 			add_or_minus(key == KEY_SEVEN, 10.0f), 0.0f, 180.0f);
+	else if (key == KEY_ZERO)
+		object->hide = !object->hide;
 	else
-		return (false);
+		return (gui_orientation(key, object));
 	return (true);
 }
 
 static bool	invalidate_input2(unsigned int key, t_app *app)
 {
-	if (key == KEY_S || key == KEY_X)
-		app->object[CAMERA]->orientation.x
-			+= add_or_minus(key == KEY_S, PI / 8);
-	else if (key == KEY_D || key == KEY_C)
-		app->object[CAMERA]->orientation.y
-			+= add_or_minus(key == KEY_D, PI / 8);
-	else if (key == KEY_F || key == KEY_V)
-		app->object[CAMERA]->orientation.z
-			+= add_or_minus(key == KEY_F, PI / 8);
-	else if (app->keypressed & KEY_SHIFT_FLAG
+	if (app->keypressed & KEY_SHIFT_FLAG
 		&& control_object(key, app->object[CAMERA]))
 		;
 	else if (app->keypressed & KEY_CTRL_FLAG
@@ -62,6 +81,7 @@ static bool	invalidate_input2(unsigned int key, t_app *app)
 	return (true);
 }
 
+// todo: toggle FEATURE_CAPTION, should redraw instead of re-render
 static void	invalidate_input(unsigned int key, t_app *app)
 {
 	const int	toggles[] = {
@@ -78,7 +98,7 @@ static void	invalidate_input(unsigned int key, t_app *app)
 	{
 		app->features ^= FEATURE_SMALLER_WINDOW;
 		if (app->features & FEATURE_SMALLER_WINDOW)
-			create_window(app, SMALL_WINDOW_WIDTH, SMALL_WINDOW_HEIGHT);
+			create_window(app, ALT_WINDOW_WIDTH, ALT_WINDOW_HEIGHT);
 		else
 			create_window(app, WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
@@ -101,13 +121,7 @@ int	gui_keydown(unsigned int key, t_app *app)
 	else if (key == KEY_CTRL)
 		app->keypressed |= KEY_CTRL_FLAG;
 	else if (key == KEY_TAB)
-	{
-		select_next(app);
-		mlx_put_image_to_window(
-			app->mlx_ptr, app->win_ptr, app->image.ptr, 0, 0);
-		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, 24, 0XFFFF00,
-			(char *)get_object_typename(app->selected_object->content));
-	}
+		select_next(app, NULL);
 	else
 		invalidate_input(key, app);
 	return (0);

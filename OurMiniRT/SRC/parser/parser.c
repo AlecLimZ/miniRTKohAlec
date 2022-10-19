@@ -12,91 +12,46 @@
 
 #include "parser.h"
 
-// a scene must have only 1 ambient, camera, light. they are stored in struct
-// "A <ratio> <r,g,b>" eg "A 0.2 255,255,25"
-static t_object	parse_ambient(char *line)
+static bool	are_valid_objects(t_app *app)
 {
-	t_object	a;
+	bool	is_valid;
 
-	a.type = OBJECT_TYPE_ERROR;
-	if (line != NULL
-		&& trim_chr(&line, 'A') == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &a.ambient_ratio, 0, 1) == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_rgb(&line, &a.color) == 1
-		&& trim_str(&line, ft_isspace) >= 0
-		&& (*line == '#' || *line == '\0'))
+	is_valid = true;
+	if (app->object_count[AMBIENT] != 1)
 	{
-		a.type = AMBIENT;
+		is_valid = false;
+		ft_putendl_fd("Ambient(A) must be configured and only once.", 2);
 	}
-	return (a);
-}
-
-// "L <x,y,z> <brightness> <r,g,b>" eg "L -40.0,50.0,0.0 0.6 10,0,255"
-static t_object	parse_light(char *line)
-{
-	t_object	a;
-
-	a.type = OBJECT_TYPE_ERROR;
-	if (line != NULL
-		&& trim_chr(&line, 'L') == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_vec(&line, &a.coor, MIN_COOR, MAX_COOR) == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &a.light_brightness, 0, 1) == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_rgb(&line, &a.color) == 1
-		&& trim_str(&line, ft_isspace) >= 0
-		&& (*line == '#' || *line == '\0'))
+	if (app->object_count[CAMERA] != 1)
 	{
-		a.type = LIGHT;
+		is_valid = false;
+		ft_putendl_fd("Camera(C) must be configured and only once.", 2);
 	}
-	return (a);
-}
-
-// "li <x,y,z> <brightness> <r,g,b>" eg "L -40.0,50.0,0.0 0.6 10,0,255"
-static t_object	parse_light_bonus(char *line)
-{
-	t_object	a;
-
-	a.type = OBJECT_TYPE_ERROR;
-	if (line != NULL
-		&& trim_chr(&line, 'l') == 1
-		&& trim_chr(&line, 'i') == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_vec(&line, &a.coor, MIN_COOR, MAX_COOR) == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &a.light_brightness, 0, 1) == 1
-		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_rgb(&line, &a.color) == 1
-		&& trim_str(&line, ft_isspace) >= 0
-		&& (*line == '#' || *line == '\0'))
+	if (app->object_count[LIGHT] != 1)
 	{
-		a.type = LIGHT_BONUS;
+		is_valid = false;
+		ft_putendl_fd("Light(L) must be configured and only once.", 2);
 	}
-	return (a);
+	return (is_valid);
 }
 
 // parse value into struct
 // return 1 if empty/remark line or valid config line
 // return 0 if invalid/duplicate config
-	// (t_object (*[])(char *)){
-	// t_object (*const *f)(char *) 
 static bool	parse_line(char *line, t_app *app)
 {
-	t_object		object;
-	t_object		*content;
-	const void		**p = (const void *[]){
+	t_object				object;
+	t_object				*content;
+	const t_object_parser 	*pfunc = (t_object_parser[]){
 		parse_ambient, parse_camera, parse_light, parse_sphere, parse_plane,
 		parse_cylinder, parse_light_bonus, parse_cone_bonus, NULL};
 
 	trim_str(&line, ft_isspace);
 	if (*line == '#' || *line == '\0')
-		return (1);
-	while (*p)
+		return (true);
+	while (*pfunc)
 	{
-		object = ((t_object (*)(char *))*p)(line);
+		object = (*pfunc)(line);
 		if (object.type < END_OF_OBJECT_TYPE)
 		{
 			content = if_null_exit(ft_calloc(1, sizeof(t_object)), app);
@@ -107,7 +62,7 @@ static bool	parse_line(char *line, t_app *app)
 				if_null_exit(ft_lstnew(content), app));
 			return (true);
 		}
-		++p;
+		++pfunc;
 	}
 	return (false);
 }
@@ -117,29 +72,28 @@ static bool	parse_line(char *line, t_app *app)
 // if any error, it will app_exit() which includes cleanup
 void	parse_file(const char *fp, t_app *app)
 {
-	const int	fd = if_errno_exit(open(fp, 0), app);
-	const char	*file_ext = ft_strrchr(fp, '.');
+	int			fd;
 	char		*line;
-	t_object	rt_object;
+	bool		has_config_error;
+	const char	*file_ext = ft_strrchr(fp, '.');
 
 	if (file_ext == NULL || ft_strncmp(file_ext, ".rt", 4) != 0)
 		app_exit(app, "Incorrect file extension");
+	fd = if_errno_exit(open(fp, 0), app);
+	has_config_error = false;
 	while (get_next_line(fd, &line) > 0)
 	{
 		if (!parse_line(line, app))
 		{
+			has_config_error = true;
+			ft_putstr_fd("Invalid config: ", 2);
 			ft_putendl_fd(line, 2);
-			app_exit(app, "Invalid/duplicate config");
 		}
 		free(line);
 		line = NULL;
 	}
 	free(line);
 	close(fd);
-	if (app->object_count[AMBIENT] != 1)
-		app_exit(app, "Ambient(A) must be configured and only once.");
-	if (app->object_count[CAMERA] != 1)
-		app_exit(app, "Camera(C) must be configured and only once.");
-	if (app->object_count[LIGHT] != 1)
-		app_exit(app, "Light(L) must be configured and only once.");
+	if (!are_valid_objects(app) || has_config_error)
+		app_exit(app, "Invalid rt file.");
 }

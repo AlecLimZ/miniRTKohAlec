@@ -17,9 +17,16 @@
 # include <stdbool.h>
 # include "miniRT.h"
 
+typedef t_object (*t_object_parser)(char *);
+
 // parser
-// this is the main/entry function triggering remaining functions
 void		parse_file(const char *fp, t_app *app);
+//          ^^^ this is the entry function triggering remaining functions
+
+// parse_lights
+t_object	parse_ambient(char *line);
+t_object	parse_light(char *line);
+t_object	parse_light_bonus(char *line);
 
 // parser_types
 t_object	parse_sphere(char *line);

@@ -14,6 +14,7 @@
 #include <math.h>
 #include "raytracer.h"
 
+// R = I − 2(N⋅I)N
 static t_vec3	reflect(const t_vec3 i, const t_vec3 normal)
 {
 	return (vsub(i, mulvf(normal, 2.f * mulvv(i, normal))));
@@ -27,7 +28,9 @@ t_hitpayload	scene_intersect(
 	payload = (t_hitpayload){0, 1e10, {}, {}, {{1, 0, 0}, 0, {}}, NULL};
 	while (list)
 	{
-		if (as_object(list)->type == SPHERE)
+		if (as_object(list)->hide)
+			;
+		else if (as_object(list)->type == SPHERE)
 			nearest_sphere(orig, dir, list->content, &payload);
 		else if (as_object(list)->type == PLANE)
 			nearest_plane3(orig, dir, list->content, &payload);
@@ -85,24 +88,24 @@ t_vec3	cast_ray(const t_vec3 orig, t_vec3 dir,
 	const int depth, const t_app *app)
 {
 	const t_hitpayload	a = scene_intersect(orig, dir, app->objects);
-	const t_list		*lights = app->objects;
+	const t_list		*objects = app->objects;
 	t_light_trace		rt;
-	t_vec3				color;
 
 	if (depth > 4 || !a.hit)
 		return (app->object[AMBIENT]->light_color);
 	if (app->features & FEATURE_NORMAL)
 		return (mulvf(vadd(a.normal, (t_vec3){{1, 1, 1}}), 0.5));
 	if ((app->features & FEATURE_LIGHT) == 0)
-		return (a.material.diffuse_color);
+		return (vmul(a.material.diffuse_color,
+			app->object[AMBIENT]->light_color));
 	rt = (t_light_trace){.dir = dir,
 		.diffuse_light_intensity = app->object[AMBIENT]->light_color};
-	while (lights)
+	while (objects)
 	{
-		if (as_object(lights)->type == LIGHT
-			|| as_object(lights)->type == LIGHT_BONUS)
-			cast_shadow_ray(&rt, lights->content, a, app);
-		lights = lights->next;
+		if (!as_object(objects)->hide && (as_object(objects)->type == LIGHT
+			|| as_object(objects)->type == LIGHT_BONUS))
+			cast_shadow_ray(&rt, objects->content, a, app);
+		objects = objects->next;
 	}
 	if (app->features & FEATURE_REFLECTION)
 		rt.reflect_color = cast_reflect_ray(dir, a, depth + 1, app);

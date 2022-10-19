@@ -75,11 +75,10 @@ void	nearest_cylinder(const t_vec3 orig, t_vec3 dir,
 	{
 		payload->nearest_dist = d;
 		payload->point = vadd(orig, mulvf(dir, payload->nearest_dist));
-		if (ret[0] == false && ret[1] == true)
-			payload->normal = mulvf(payload->normal, -1);
-		else
-			payload->normal = normalized(vsub(payload->point,
+		payload->normal = normalized(vsub(payload->point,
 						vadd(mulvf(r.norm, r.y), cy->coor)));
+		if (ret[0] == false && ret[1] == true)
+			payload->normal = negate(payload->normal);
 		payload->material = cy->material;
 		payload->object = cy;
 	}

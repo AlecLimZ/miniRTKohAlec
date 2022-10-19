@@ -28,12 +28,22 @@ t_object	*as_object(const t_list *p)
 	return (p->content);
 }
 
-void	select_next(t_app *app)
+// set selected object (if provided) or next of current selected
+void	select_next(t_app *app, t_list *o)
 {
-	if (app->selected_object != NULL)
+	if (o)
+		app->selected_object = o;
+	else if (app->selected_object != NULL)
 		app->selected_object = app->selected_object->next;
 	if (app->selected_object == NULL)
 		app->selected_object = app->objects;
+	if (app->features & FEATURE_CAPTION)
+	{
+		mlx_put_image_to_window(
+			app->mlx_ptr, app->win_ptr, app->image.ptr, 0, 0);
+		mlx_string_put(app->mlx_ptr, app->win_ptr, 16, 24, 0XFFFF00,
+			(char *)get_object_typename(app->selected_object->content));
+	}
 }
 
 float	add_or_minus(int add_condition, float step)

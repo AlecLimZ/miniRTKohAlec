@@ -21,7 +21,7 @@ t_object	parse_plane(char *line)
 {
 	t_object	a;
 
-	a.type = OBJECT_TYPE_ERROR;
+	a = (t_object){.type = OBJECT_TYPE_ERROR};
 	if (line != NULL
 		&& trim_chr(&line, 'p') == 1
 		&& trim_chr(&line, 'l') == 1
@@ -47,7 +47,7 @@ t_object	parse_sphere(char *line)
 {
 	t_object	a;
 
-	a.type = OBJECT_TYPE_ERROR;
+	a = (t_object){.type = OBJECT_TYPE_ERROR};
 	if (line != NULL
 		&& trim_chr(&line, 's') == 1
 		&& trim_chr(&line, 'p') == 1
@@ -73,7 +73,7 @@ t_object	parse_cylinder(char *line)
 {
 	t_object	a;
 
-	a.type = OBJECT_TYPE_ERROR;
+	a = (t_object){.type = OBJECT_TYPE_ERROR};
 	if (line != NULL
 		&& trim_chr(&line, 'c') == 1
 		&& trim_chr(&line, 'y') == 1
@@ -103,7 +103,7 @@ t_object	parse_cone_bonus(char *line)
 {
 	t_object	a;
 
-	a.type = OBJECT_TYPE_ERROR;
+	a = (t_object){.type = OBJECT_TYPE_ERROR};
 	if (line != NULL
 		&& trim_chr(&line, 'c') == 1
 		&& trim_chr(&line, 'o') == 1
@@ -132,7 +132,7 @@ t_object	parse_camera(char *line)
 {
 	t_object	a;
 
-	a.type = OBJECT_TYPE_ERROR;
+	a = (t_object){.type = OBJECT_TYPE_ERROR};
 	if (line != NULL
 		&& trim_chr(&line, 'C') == 1
 		&& trim_str(&line, ft_isspace) >= 1

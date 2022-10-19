@@ -42,13 +42,15 @@ static float	ray_sphere_intersect(
 void	nearest_sphere(const t_vec3 orig, const t_vec3 dir,
 	const t_object *s, t_hitpayload *payload)
 {
-	const float	d = ray_sphere_intersect(orig, dir, s);
+	const float	distance = ray_sphere_intersect(orig, dir, s);
 
-	if (d <= payload->nearest_dist)
+	if (distance <= payload->nearest_dist)
 	{
-		payload->nearest_dist = d;
-		payload->point = vadd(orig, mulvf(dir, payload->nearest_dist));
+		payload->nearest_dist = distance;
+		payload->point = vadd(orig, mulvf(dir, distance));
 		payload->normal = normalized(vsub(payload->point, s->coor));
+		if (mulvv(payload->normal, dir) > 0)
+			payload->normal = negate(payload->normal);
 		payload->material = s->material;
 		payload->object = s;
 	}

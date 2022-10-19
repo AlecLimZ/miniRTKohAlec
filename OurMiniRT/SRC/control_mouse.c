@@ -26,7 +26,7 @@ static t_list	*search_list(t_list *list, const t_object *o)
 	return (NULL);
 }
 
-int	gui_mouseup(int button, int x, int y, t_app *app)
+int	gui_mousedown(int button, int x, int y, t_app *app)
 {
 	const float		fov = (app->object[CAMERA]->camera_fov * PI / 180);
 	t_vec3			dir;
@@ -47,8 +47,8 @@ int	gui_mouseup(int button, int x, int y, t_app *app)
 	if (payload.hit && payload.object)
 		list = search_list(app->objects, payload.object);
 	if (!list)
-		return (0);
-	app->selected_object = list;
-	++app->invalidated;
+		list = search_list(app->objects, app->object[AMBIENT]);
+	select_next(app, list);
+	print_object(app->selected_object->content);
 	return (0);
 }

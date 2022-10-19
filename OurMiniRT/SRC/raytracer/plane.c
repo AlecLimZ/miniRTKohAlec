@@ -43,49 +43,25 @@
 // 	}
 // }
 
-// void nearest_plane2(const t_vec3 orig, const t_vec3 dir,
-	// const t_object *plane, t_hitpayload *payload)
-// {
-// 	const float	denom = mulvv(plane->orientation, dir);
-// 	if (fabs(denom) > .001 )
-// 	{
-// 		const t_vec3 p0l0 = vsub(plane->coor, orig);
-// 		const float	distance = mulvv(p0l0, plane->orientation) / denom;
-// 		if (distance > .001 && distance < payload->nearest_dist)
-// 		{
-// 			payload->nearest_dist = distance;
-// 			payload->point = vadd(orig, mulvf(dir, distance));
-// 			const t_vec3 nn = negate(plane->orientation);
-// 			if (vlenf(vsub(orig, vadd(payload->point, nn))) <
-// 			 vlenf(vsub(orig, vadd(payload->point, plane->orientation))))
-// 				payload->normal = nn;
-// 			else
-// 				payload->normal = plane->orientation;
-// 			payload->material.diffuse_color = plane->color; 
-// 		}
-// 	}
-// }
-
 void	nearest_plane3(const t_vec3 orig, const t_vec3 dir,
 	const t_object *plane, t_hitpayload *payload)
 {
-	float	den;
-	float	d;
+	float		distance;
+	const float	denom = mulvv(dir, plane->orientation);
 
-	den = mulvv(dir, plane->orientation);
-	if (!den)
-		d = INFINITY;
-	d = mulvv(vsub(plane->coor, orig), plane->orientation) / den;
-	if (payload->nearest_dist > d && d > 0.001)
+	if (fabs(denom) < 0.001)
+		return ;
+	distance = mulvv(vsub(plane->coor, orig), plane->orientation) / denom;
+	if (payload->nearest_dist > distance && distance > 0.001)
 	{
-		payload->nearest_dist = d;
-		payload->point = vadd(orig, mulvf(dir, payload->nearest_dist));
-		if (mulvv(dir, plane->orientation) > 0)
-			payload->normal = mulvf(plane->orientation, -1);
-		else
-			payload->normal = plane->orientation;
+		payload->nearest_dist = distance;
+		payload->point = vadd(orig, mulvf(dir, distance));
 		payload->material = plane->material;
 		payload->object = plane;
+		if (denom > 0)
+			payload->normal = negate(plane->orientation);
+		else
+			payload->normal = plane->orientation;
 	}
 }
 // void	nearest_plane2( t_vec3 orig, const t_vec3 dir, 

@@ -43,22 +43,14 @@ enum e_object_type
 
 typedef union s_vec3
 {
-	float	rgb[3];
+	float		e[3];
 	struct
 	{
 		float	x;
 		float	y;
 		float	z;
 	};
-	struct
-	{
-		float	r;
-		float	g;
-		float	b;
-	};
 }	t_vec3;
-
-typedef t_vec3	t_rgb;
 
 typedef struct s_ray
 {
@@ -80,11 +72,11 @@ typedef struct s_object
 {
 	unsigned int	type;
 	t_vec3			coor;
-	t_rgb			color;
+	t_vec3			color;
 	union
 	{
 		t_vec3		orientation;
-		t_rgb		light_color;
+		t_vec3		light_color;
 	};
 	union
 	{
@@ -95,6 +87,7 @@ typedef struct s_object
 	};
 	float			height;
 	t_material		material;
+	int				hide;
 }	t_object;
 
 // MLX Metal buffer width may more than requested

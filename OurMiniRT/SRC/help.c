@@ -14,7 +14,7 @@
 
 static void	text(t_app *app, int h, int c, char *s)
 {
-	mlx_string_put(app->mlx_ptr, app->win_ptr, 8, h, c, s);
+	mlx_string_put(app->mlx_ptr, app->win_ptr, 16, h, c, s);
 }
 
 void	help(t_app *app)
@@ -39,7 +39,7 @@ void	help(t_app *app)
 	mlx_clear_window(app->mlx_ptr, app->win_ptr);
 	i = -1;
 	while (++i < sizeof(s) / sizeof(*s))
-		text(app, (i + 1) * 20, 0Xffff00, s[i]);
+		text(app, (i + 1) * 24, 0Xffff00, s[i]);
 	if (app->features & FEATURE_NORMAL)
-		text(app, ++i * 20, 0xffffff, "Thank You");
+		text(app, ++i * 24, 0xffffff, "Thank You");
 }

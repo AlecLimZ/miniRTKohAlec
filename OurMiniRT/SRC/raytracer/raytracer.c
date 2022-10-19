@@ -14,8 +14,6 @@
 #include <math.h>
 #include "raytracer.h"
 
-// int g_mode = DEFAULT_RENDER;
-
 // gamma correction 1/2.2 == 0.4545
 static int	to_rgb(t_vec3 color, bool use_gamma_correction)
 {
@@ -33,24 +31,17 @@ static int	to_rgb(t_vec3 color, bool use_gamma_correction)
 		+ (int)(255.999 * color.z / max));
 }
 
-static void	update_lights(t_list *list)
+static void	cal_color_and_orient(void *content)
 {
-	t_object	*o;
+	t_object *const	o = content;
 
-	while (list)
-	{
-		o = as_object(list);
-		if (o->type == AMBIENT || o->type == LIGHT || o->type == LIGHT_BONUS)
-		{
-			o->light_color.r = o->light_brightness * o->color.r;
-			o->light_color.g = o->light_brightness * o->color.g;
-			o->light_color.b = o->light_brightness * o->color.b;
-		}
-		list = list->next;
-	}
+	if (o->type == AMBIENT || o->type == LIGHT || o->type == LIGHT_BONUS)
+		o->light_color = mulvf(o->color, o->light_brightness);
+	//o->type == CAMERA ||
+	else if (o->type == PLANE || o->type == CYLINDER || o->type == CONE)
+		o->orientation = normalized(o->orientation);
 }
 
-// g_mode = app->render_mode;
 void	*raytrace(const t_app *app)
 {
 	const int	width = app->image.width;
@@ -59,7 +50,7 @@ void	*raytrace(const t_app *app)
 	t_vec3		dir;
 	int			pix;
 
-	update_lights(app->objects);
+	ft_lstiter(app->objects, cal_color_and_orient);
 	pix = -1;
 	while (++pix < width * height)
 	{

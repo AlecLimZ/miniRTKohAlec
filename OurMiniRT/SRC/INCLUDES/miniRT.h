@@ -13,10 +13,17 @@
 #ifndef MINIRT_H
 # define MINIRT_H
 
-# define WINDOW_WIDTH 1600
-# define WINDOW_HEIGHT 900
-# define SMALL_WINDOW_WIDTH 800
-# define SMALL_WINDOW_HEIGHT 450
+# ifndef __SANITIZE_ADDRESS__
+#  define WINDOW_WIDTH 1600
+#  define WINDOW_HEIGHT 900
+#  define ALT_WINDOW_WIDTH 800
+#  define ALT_WINDOW_HEIGHT 450
+# else
+#  define WINDOW_WIDTH 800
+#  define WINDOW_HEIGHT 450
+#  define ALT_WINDOW_WIDTH 1600
+#  define ALT_WINDOW_HEIGHT 900
+# endif
 # define MIN_COOR -999
 # define MAX_COOR 999
 # define PI 3.14159
@@ -44,7 +51,7 @@ float		add_or_minus(int add_condition, float step);
 // gui
 int			gui_keydown(unsigned int key, t_app *app);
 int			gui_keyup(int keycode, t_app *app);
-int			gui_mouseup(int button, int x, int y, t_app *app);
+int			gui_mousedown(int button, int x, int y, t_app *app);
 float		clamp(float value, float lo, float hi);
 
 //util
@@ -57,7 +64,7 @@ void		rotate_y(float *x, float *z, double angle_y);
 void		rotate_z(float *x, float *y, double angle_z);
 
 // control.c
-void		select_next(t_app *app);
+void	    select_next(t_app *app, t_list *o);
 
 // raytrace.c
 t_vec3		normalized(t_vec3 v);
@@ -66,5 +73,6 @@ t_object	*as_object(const t_list *node);
 
 // export.c
 void		export_scene(t_list *object);
+void	    print_object(const t_object *o);
 
 #endif

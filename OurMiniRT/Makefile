@@ -10,8 +10,8 @@ MLXOPENGL	= minilibx_macos/libmlx.a
 LIBMLX		= $(MLXOPENGL) # choose MLXOPENGL or MLXMETAL
 VPATH		= SRC # ./miniRT from ./SRC/miniRT.c
 
-# ASAN		= -fsanitize=address
-CFLAGS		= -Wall -Werror -Wextra -MMD $(ASAN) -flto -Ofast -Wno-unused-variable #-g3
+ASAN		= -fsanitize=address
+CFLAGS		= -Wall -Werror -Wextra -MMD $(ASAN) -flto -Ofast #-Wno-unused-variable #-g3
 CPPFLAGS	= $(addprefix -I, $(HEADERDIR) $(dir $(LIBFT) $(LIBMLX)))
 LDFLAGS		= $(ASAN) -flto
 LDLIBS		= $(LIBFT) $(LIBMLX) -framework OpenGL -framework AppKit
@@ -72,5 +72,12 @@ test	: $(NAME)
 		./miniRT scenes/sample.rt
 
 info	:
-	: $(SRC)
-	: $(OBJ)
+		: $(SRC)
+		: $(OBJ)
+
+noasan	:
+		@if nm $(NAME) | grep asan_init; then make re ASAN=""; fi
+		@echo ASAN removed
+
+vg		: noasan
+		valgrind --leak-check=full  --show-leak-kinds=all ./$(NAME) scenes/sample.rt

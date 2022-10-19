@@ -84,9 +84,9 @@ int	pull_rgb(char **line, t_vec3 *d)
 		&& pull_nbr(line, &d->z, 0, 255) == 1
 	)
 	{
-		d->r /= 255.0;
-		d->g /= 255.0;
-		d->b /= 255.0;
+		d->x /= 255.0;
+		d->y /= 255.0;
+		d->z /= 255.0;
 		return (1);
 	}
 	return (0);
