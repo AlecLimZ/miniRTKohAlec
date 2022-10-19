@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/19 13:14:02 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/19 16:49:08 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,15 @@ static void	reload_scene(t_app *app)
 	app->render_mode = DEFAULT_RENDER;
 }
 
+int	ft_checklight(t_object * const object)
+{
+	if (object->type == AMBIENT
+		|| object->type == LIGHT
+		|| object->type == LIGHT_BONUS)
+		return (1);
+	return (0);
+}
+
 int	adjust_object(unsigned int key, t_app *app)
 {
 	t_object * const	object = as_object(app->selected_object);
@@ -53,17 +62,20 @@ int	adjust_object(unsigned int key, t_app *app)
 		object->coor.y += pow(-1, key != KEY_UP) * 0.5f;
 	else if (key == KEY_RIGHT || key == KEY_LEFT)
 		object->coor.x += pow(-1, key != KEY_RIGHT) * 0.5f;
-	else if (key == KEY_TWO || key == KEY_ONE)
+	else if (key >= KEY_ONE && key <= KEY_FOUR)
 	{
-		object->param1 += pow(-1, key != KEY_TWO) * a[object->type].param1_step;
+		if (ft_checklight(object) && (key == KEY_TWO || key == KEY_ONE))
+			object->param1 += pow(-1, key != KEY_ONE) * a[object->type].param1_step;
+		else if (!ft_checklight(object) && (key == KEY_THREE || key == KEY_FOUR))
+			object->param1 += pow(-1, key != KEY_THREE) * a[object->type].param1_step;
 		if (object->param1 < a[object->type].param1_min)
 			object->param1 = a[object->type].param1_min;
 		else if (object->param1 > a[object->type].param1_max)
 			object->param1 = a[object->type].param1_max;
 	}
-	else if (key == KEY_FOUR || key == KEY_THREE)
+	else if (key == KEY_FIVE || key == KEY_SIX)
 	{
-		object->param2 += pow(-1, key != KEY_FOUR) * a[object->type].param2_step;
+		object->param2 += pow(-1, key != KEY_FIVE) * a[object->type].param2_step;
 			if (object->param2 < a[object->type].param2_min)
 			object->param2 = a[object->type].param2_min;
 		else if (object->param2 > a[object->type].param2_max)
