@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 02:18:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/17 18:42:24 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/19 13:15:51 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,6 @@ bool	parse_cylinder(char *line, t_app *app)
 	{
 		a->radius = diameter / 2;
 		a->material = (t_material){{0.9,  0.5, 0.1}, 50, a->color};
-
-		// add by alec
-		a->orientation = normalized(a->orientation);
 		return (true);
 	}
 	return (false);

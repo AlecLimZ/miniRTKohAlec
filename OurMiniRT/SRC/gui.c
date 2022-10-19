@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/18 14:52:22 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/19 13:14:02 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ static void	display(t_object *c)
 {
 	printf("type: %s\n", get_object_typename(c));
 	printf("x: %f\t y: %f\t z: %f\n", c->coor.x, c->coor.y, c->coor.z);
+	printf("ox: %f\t oy: %f\t oz: %f\n", c->orientation.x, c->orientation.y, c->orientation.z);
 }
 
 int	gui_render(t_app *app)

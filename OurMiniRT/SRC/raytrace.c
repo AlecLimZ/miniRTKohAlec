@@ -124,119 +124,53 @@ static void	quadratic(float a, float b, float c, float *res)
 	}
 }
 
-static float ray_cylinder_intersect(t_vec3 orig, t_vec3 dir, const t_object *cy, t_vec3 *normal, float *y, bool ret[2])
+static float	ray_cylinder_intersect(t_ray *r,
+		const t_object *cy, bool ret[2])
 {
-	// try https://stackoverflow.com/questions/65566282/cylinder-intersection-with-ray-tracing
-//rotate_x(&dir_y, &dir_z, app->camera->orientation.x);
-//rotate_y(&dir_x, &dir_z, app->camera->orientation.y);
-//rotate_z(&dir_x, &dir_y, app->camera->orientation.z);
-//	t_vec3 pa = cy->coor;
-//	t_vec3 pb = (t_vec3){{cy->coor.x, fabs(cy->coor.y + cy->height), cy->coor.z}};
-//	t_vec3 ca = vsub(pb, pa);
-//	t_vec3 oc = vsub(orig, pa);
-//
-//	float caca = mulvv(ca, ca);
-//	float card = mulvv(ca, dir);
-//	float caoc = mulvv(ca, orig);
-//
-//	float a = caca - card * card;
-//	float b = caca * mulvv(oc, dir) - caoc * card;
-//	float c = caca * mulvv(oc, oc) - caoc * caoc - cy->radius * cy->radius * caca;
-//	float h = b * b - a * c;
-//
-//	if (h < 0.001)
-//		return INFINITY;
-//	h = sqrt(h);
-//	float d = (-b-h)/a;
-//
-//	// body
-//	float y = caoc + d * card;
-//	if (y > 0. && y < caca)
-//	{
-//		*normal = mulvf(ca, y);
-//		*normal = new_dividev(normal, caca);
-//		*normal = vsub(vadd(oc, mulvf(dir, d)), *normal);
-//		*normal = new_dividev(normal, cy->radius);
-//		return d;
-//	}
-//
-//	// caps circle
-//	d = ((y < 0. ? 0. : caca) - caoc) / card;
-//	if (fabs(b + a * d) < h)
-//	{
-//		y = (y > 0) ? 1 : ((y < 0) ? -1 : 0);
-//		*normal =	mulvf(ca, y);
-//		*normal = normalized(new_dividev(normal, caca));
-////	   *normal = new_dividev(normal, caca);
-//	   return (d);
-//	}
-	t_vec3 v[2];
-	t_vec3 v_cy2ray;
-	float time[2];
-	float dist[2];
+	t_vec3	p[2];
+	t_vec3	cyry;
+	float	t[2];
+	float	dist[2];
 
-	// cy->orientation is normalized at parser_types.c
-	v[0] = vsub(dir, mulvf(cy->orientation, mulvv(dir, cy->orientation)));
-	v[1] = vsub(vsub(orig, cy->coor), mulvf(cy->orientation, mulvv(vsub(orig, cy->coor), cy->orientation)));
-	quadratic(vlenf(v[0]), 2 * mulvv(v[0], v[1]), vlenf(v[1]) - pow(cy->radius / 2, 2), time);
-	v_cy2ray = vsub(cy->coor, orig);
-	dist[0] = mulvv(cy->orientation, vsub(mulvf(dir, time[0]), v_cy2ray));
-	dist[1] = mulvv(cy->orientation, vsub(mulvf(dir, time[1]), v_cy2ray));
-	ret[0] = (dist[0] >= 0 && dist[0] <= cy->height && time[0] > 0.001);
-	ret[1] = (dist[1] >= 0 && dist[1] <= cy->height && time[1] > 0.001);
+	p[0] = vsub(r->dir, mulvf(r->norm, mulvv(r->dir, r->norm)));
+	p[1] = vsub(vsub(r->orig, cy->coor),
+			mulvf(r->norm, mulvv(vsub(r->orig, cy->coor), r->norm)));
+	quadratic(vlenf(p[0]), 2 * mulvv(p[0], p[1]),
+		vlenf(p[1]) - pow(cy->radius / 2, 2), t);
+	cyry = vsub(cy->coor, r->orig);
+	dist[0] = mulvv(r->norm, vsub(mulvf(r->dir, t[0]), cyry));
+	dist[1] = mulvv(r->norm, vsub(mulvf(r->dir, t[1]), cyry));
+	ret[0] = (dist[0] >= 0 && dist[0] <= cy->height && t[0] > 0.001);
+	ret[1] = (dist[1] >= 0 && dist[1] <= cy->height && t[1] > 0.001);
 	if (ret[0] == false && ret[1] == true)
 	{
-		*y = dist[1];
-		return (time[1]);
+		r->y = dist[1];
+		return (t[1]);
 	}
-	*y = dist[0];
-
-	// caps circle
-	t_vec3 pa = cy->coor;
-	t_vec3 pb = (t_vec3){{cy->coor.x, fabs(cy->coor.y + cy->height), cy->coor.z}};
-	t_vec3 ca = vsub(pb, pa);
-	t_vec3 oc = vsub(orig, pa);
-	float caca = mulvv(ca, ca);
-	float card = mulvv(ca, dir);
-	float caoc = mulvv(ca, orig);
-	float a = caca - card * card;
-	float b = caca * mulvv(oc, dir) - caoc * card;
-	float c = caca * mulvv(oc, oc) - caoc * caoc - cy->radius * cy->radius * caca;
-	float h = b * b - a * c;
-	h = sqrt(h);
-	float d = (-b-h) / a;
-	float yy = caoc + d * card;
-	d = ((yy < 0. ? 0. : caca) - caoc) / card;
-	if (fabs(b + a * d) < h)
-	{
-		yy = (yy > 0) ? 1 : ((yy < 0) ? -1 : 0);
-		*normal = mulvf(ca, yy);
-		*normal = normalized(new_dividev(normal, caca));
-		*normal = new_dividev(normal, caca);
-		return (d);
-	}
-
-	// default correct
-	return (time[0]);
+	r->y = dist[0];
+	return (t[0]);
 }
 
-static void nearest_cylinder(const t_vec3 orig, t_vec3 dir, const t_object *cy, hitpayload *payload)
+static void	nearest_cylinder(const t_vec3 orig, t_vec3 dir,
+		t_object *cy, hitpayload *payload)
 {
-	t_vec3	normal;
-	bool ret[2];
-	float y;
-//	rotate_dx(&dir.y, &dir.z, cy->orientation.x);
-//	rotate_dy(&dir.x, &dir.z, cy->orientation.y);
-//	rotate_dz(&dir.x, &dir.y, cy->orientation.z);
-	float d = ray_cylinder_intersect(orig, dir, cy, &normal, &y, ret);
+	t_ray	r;
+	bool	ret[2];
+	float	d;
+
+	r.orig = orig;
+	r.dir = dir;
+	r.norm = normalized(cy->orientation);
+	d = ray_cylinder_intersect(&r, cy, ret);
 	if ((ret[0] || ret[1]) && payload->nearest_dist > d && d > 0.001)
 	{
 		payload->nearest_dist = d;
-		payload->point = vadd(orig, mulvf(dir,payload->nearest_dist));
+		payload->point = vadd(orig, mulvf(dir, payload->nearest_dist));
 		if (ret[0] == false && ret[1] == true)
 			payload->N = mulvf(payload->N, -1);
 		else
-			payload->N = normalized(vsub(payload->point, vadd(mulvf(cy->orientation, y), cy->coor)));
+			payload->N = normalized(vsub(payload->point,
+						vadd(mulvf(r.norm, r.y), cy->coor)));
 		payload->material = cy->material;
 	}
 }
