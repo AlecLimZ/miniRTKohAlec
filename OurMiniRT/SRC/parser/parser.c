@@ -18,88 +18,77 @@
 
 // a scene must have only 1 ambient, camera, light. they are stored in struct
 // "A <ratio> <r,g,b>" eg "A 0.2 255,255,25"
-static bool	parse_ambient(char *line, t_app *app)
+static t_object	parse_ambient(char *line)
 {
-	t_object *const	a = ft_calloc(1, sizeof(t_object));
-	double			ratio;
+	t_object	a;
 
-	ft_lstadd_front(&app->objects, ft_lstnew(a));
-	if (a)
-		a->type = AMBIENT;
-	app->ambient = a;
-	++app->ambient_count;
-	if (a != NULL
-		&& trim_str(&line, ft_isalpha) == 1
+	a.type = OBJECT_TYPE_ERROR;
+	if (line != NULL
+		&& trim_chr(&line, 'A') == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &ratio, 0, 1) == 1
+		&& pull_nbr(&line, &a.ambient_ratio, 0, 1) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_rgb(&line, &a->color) == 1
+		&& pull_rgb(&line, &a.color) == 1
 		&& trim_str(&line, ft_isspace) >= 0
 		&& (*line == '#' || *line == '\0'))
 	{
-		a->color.r *= ratio;
-		a->color.g *= ratio;
-		a->color.b *= ratio;
-		return (true);
+		a.type = AMBIENT;
+		a.light_color.r = a.color.r * a.ambient_ratio;
+		a.light_color.g = a.color.g * a.ambient_ratio;
+		a.light_color.b = a.color.b * a.ambient_ratio;
 	}
-	return (false);
+	return (a);
 }
 
 // "L <x,y,z> <brightness> <r,g,b>" eg "L -40.0,50.0,0.0 0.6 10,0,255"
-static bool	parse_light(char *line, t_app *app)
+static t_object	parse_light(char *line)
 {
-	t_object *const	a = ft_calloc(1, sizeof(t_object));
-	double			brightness;
+	t_object	a;
 
-	ft_lstadd_front(&app->objects, ft_lstnew(a));
-	if (a)
-		a->type = LIGHT;
-	++app->light_count;
-	if (a != NULL
-		&& trim_str(&line, ft_isalpha) == 1
+	a.type = OBJECT_TYPE_ERROR;
+	if (line != NULL
+		&& trim_chr(&line, 'L') == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_vec(&line, &a->coor, MIN_COOR, MAX_COOR) == 1
+		&& pull_vec(&line, &a.coor, MIN_COOR, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &brightness, 0, 1) == 1
+		&& pull_nbr(&line, &a.light_brightness, 0, 1) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_rgb(&line, &a->color) == 1
+		&& pull_rgb(&line, &a.color) == 1
 		&& trim_str(&line, ft_isspace) >= 0
 		&& (*line == '#' || *line == '\0'))
 	{
-		a->color.r *= brightness;
-		a->color.g *= brightness;
-		a->color.b *= brightness;
-		return (true);
+		a.type = LIGHT;
+		a.light_color.r = a.color.r * a.light_brightness;
+		a.light_color.g = a.color.g * a.light_brightness;
+		a.light_color.b = a.color.b * a.light_brightness;
 	}
-	return (false);
+	return (a);
 }
 
 // "li <x,y,z> <brightness> <r,g,b>" eg "L -40.0,50.0,0.0 0.6 10,0,255"
-static bool	parse_light_bonus(char *line, t_app *app)
+static t_object	parse_light_bonus(char *line)
 {
-	t_object *const	a = ft_calloc(1, sizeof(t_object));
-	double			brightness;
+	t_object	a;
 
-	ft_lstadd_front(&app->objects, ft_lstnew(a));
-	if (a)
-		a->type = LIGHT_BONUS;
-	if (a != NULL
-		&& trim_str(&line, ft_isalpha) == 2
+	a.type = OBJECT_TYPE_ERROR;
+	if (line != NULL
+		&& trim_chr(&line, 'l') == 1
+		&& trim_chr(&line, 'i') == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_vec(&line, &a->coor, MIN_COOR, MAX_COOR) == 1
+		&& pull_vec(&line, &a.coor, MIN_COOR, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_nbr(&line, &brightness, 0, 1) == 1
+		&& pull_nbr(&line, &a.light_brightness, 0, 1) == 1
 		&& trim_str(&line, ft_isspace) >= 1
-		&& pull_rgb(&line, &a->color) == 1
+		&& pull_rgb(&line, &a.color) == 1
 		&& trim_str(&line, ft_isspace) >= 0
 		&& (*line == '#' || *line == '\0'))
 	{
-		a->color.r *= brightness;
-		a->color.g *= brightness;
-		a->color.b *= brightness;
-		return (true);
+		a.type = LIGHT_BONUS;
+		a.light_color.r = a.color.r * a.light_brightness;
+		a.light_color.g = a.color.g * a.light_brightness;
+		a.light_color.b = a.color.b * a.light_brightness;
 	}
-	return (false);
+	return (a);
 }
 
 // parse value into struct
@@ -108,34 +97,43 @@ static bool	parse_light_bonus(char *line, t_app *app)
 static bool	parse_line(char *line, t_app *app)
 {
 	const void	*f[] = {
-		"A", &parse_ambient,
-		"C", &parse_camera,
-		"L", &parse_light,
-		"sp", &parse_sphere,
-		"pl", &parse_plane,
-		"cy", &parse_cylinder,
-		"li", &parse_light_bonus,
-		"co", &parse_cone_bonus,
+		&parse_ambient, &parse_camera, &parse_light, &parse_sphere,
+		&parse_plane, &parse_cylinder, &parse_light_bonus, &parse_cone_bonus,
 		NULL,
 	};
 	const void	**p = f;
+	t_object	object;
+	t_object	*content;
 
 	trim_str(&line, ft_isspace);
 	if (*line == '#' || *line == '\0')
 		return (1);
-	while (p[0] && ft_strncmp(line, p[0], ft_strlen(p[0])) != 0)
-		p += 2;
-	return (p[0] && ((int (*)(char *, t_app *))p[1])(line, app));
+	while (*p)
+	{
+		object = ((t_object (*)(char *))p[0])(line);
+		if (object.type < END_OF_OBJECT_TYPE)
+		{
+			content = if_null_exit(ft_calloc(1, sizeof(t_object)), app);
+			*content = object;
+			app->object_ptr[object.type] = content;
+			app->object_count[object.type] += 1;
+			ft_lstadd_front(&app->objects, if_null_exit(ft_lstnew(content), app));
+			return (true);
+		}
+		++p;
+	}
+	return (false);
 }
 
 // entry point to parser
 // rt-file as input, app struct as output
 // if any error, it will app_exit() which includes cleanup
-void	parse_file(char *fp, t_app *app)
+void	parse_file(const char *fp, t_app *app)
 {
 	const char	*file_ext = ft_strrchr(fp, '.');
 	int			fd;
 	char		*line;
+	t_object	rt_object;
 
 	if (file_ext == NULL || ft_strncmp(file_ext, ".rt", 4) != 0)
 		app_exit(app, "Incorrect file extension");
@@ -152,10 +150,10 @@ void	parse_file(char *fp, t_app *app)
 	}
 	free(line);
 	close(fd);
-	if (app->ambient_count != 1)
+	if (app->object_count[AMBIENT] != 1)
 		app_exit(app, "Ambient(A) must be configured and only once.");
-	if (app->camera_count != 1)
+	if (app->object_count[CAMERA] != 1)
 		app_exit(app, "Camera(C) must be configured and only once.");
-	if (app->light_count != 1)
+	if (app->object_count[LIGHT] != 1)
 		app_exit(app, "Light(L) must be configured and only once.");
 }

@@ -28,6 +28,8 @@ enum e_object_type
 	CYLINDER,
 	CONE,
 	END_OF_OBJECT_TYPE,
+	OBJECT_TYPE_COUNT = END_OF_OBJECT_TYPE,
+	OBJECT_TYPE_ERROR,
 };
 
 enum e_render_mode
@@ -41,19 +43,19 @@ enum e_render_mode
 
 typedef union s_vec3
 {
-	double	e[3];
-	double	rgb[3];
+	float	e[3];
+	float	rgb[3];
 	struct
 	{
-		double	x;
-		double	y;
-		double	z;
+		float	x;
+		float	y;
+		float	z;
 	};
 	struct
 	{
-		double	r;
-		double	g;
-		double	b;
+		float	r;
+		float	g;
+		float	b;
 	};
 }	t_vec3;
 
@@ -73,14 +75,25 @@ typedef struct s_object
 	unsigned int	type;
 	t_xyz			coor;
 	t_rgb			color;
-	t_xyz			orientation;
-	double			radius;
-	t_material		material;
 	union
 	{
-		double		camera_fov;
-		double		height;
+		t_xyz		orientation;
+		t_rgb		light_color;
 	};
+	union
+	{
+		float	param1;
+		float	ambient_ratio;
+		float	light_brightness;
+		float	camera_fov;
+		float	radius;
+	};
+	union
+	{
+		float	param2;
+		float	height;
+	};
+	t_material	material;
 }	t_object;
 
 // MLX Metal buffer width may more than requested
@@ -90,6 +103,8 @@ typedef struct s_object
 // t_image.c (update by char), either litte(x86) or big endian works, NOT BOTH
 typedef struct s_image
 {
+	int		width;
+	int		height;
 	void	*ptr;
 	union
 	{
@@ -100,7 +115,6 @@ typedef struct s_image
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-	int		width;
 }	t_image;
 
 // a scene has only 1 ambient, 1 camera, 1light
@@ -108,80 +122,27 @@ typedef struct s_image
 // ++last_updated when user inputs, so render() may refresh accordingly
 typedef struct s_app
 {
-	unsigned int	last_updated;
-	int				width;
-	int				height;
-	t_list			*objects;
-	t_list			*selected_object;
-	t_object		*ambient;
-	t_object		*camera;
-	int				ambient_count;
-	int				camera_count;
-	int				light_count;
-	void			*mlx_ptr;
-	void			*win_ptr;
-	t_image			image;
-	int				render_mode;
+	struct
+	{
+		const char		*scene_file;
+		t_list			*objects;
+		t_list			*selected_object;
+		int				object_count[OBJECT_TYPE_COUNT];
+		t_object		*object_ptr[OBJECT_TYPE_COUNT];
+	};
+	struct
+	{
+		void			*mlx_ptr;
+		void			*win_ptr;
+		t_image			image;
+	};
+	struct
+	{
+		unsigned int	last_updated;
+		int				render_mode;
+		int				use_gamma_correction;
+		unsigned int	mini;
+	};
 }	t_app;
 
 #endif
-
-// typedef union s_wh
-// {
-// 	int	e[2];
-// 	struct
-// 	{
-// 		int	width;
-// 		int	height;
-// 	};
-// 	struct
-// 	{
-// 		int	w;
-// 		int	h;
-// 	};
-// 	struct
-// 	{
-// 		int	col;
-// 		int	row;
-// 	};
-// 	struct
-// 	{
-// 		int	c;
-// 		int	r;
-// 	};
-// 	struct
-// 	{
-// 		int	x;
-// 		int	y;
-// 	};
-// }	t_wh;
-
-// only 1 ambient-light allowed (check "is_configured") 
-// typedef struct s_ambient
-// {
-// 	double	ratio;
-// 	t_rgb	color;
-// 	int		is_configured;
-// }	t_ambient;
-
-// only 1 camera allowed (check "is_configured") 
-// typedef struct s_camera
-// {
-// 	double	fov;
-// 	union
-// 	{
-// 		t_xyz	coor;
-// 		t_xyz	origin;
-// 	};
-// 	t_xyz	orientation;
-// 	int		is_configured;
-// }	t_camera;
-
-// only 1 light allowed (check "is_configured") 
-// typedef struct s_light
-// {
-// 	double	brightness;
-// 	t_xyz	coor;
-// 	t_rgb	color;
-// 	int		is_configured;
-// }	t_light;

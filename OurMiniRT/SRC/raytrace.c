@@ -5,10 +5,15 @@
 #include <stdlib.h>
 
 #define MAX(a, b) ((a) < (b)? (b) : (a))
-#define MIN(a, b) ((a) > (b)? (b) : (a))
+// #define MIN(a, b) ((a) > (b)? (b) : (a))
 
 int g_mode = DEFAULT_RENDER;
 t_vec3 g_background = (t_vec3){{0, 0, 0}};
+
+t_object	*as_object(const t_list *p)
+{
+	return (p->content);
+}
 
 typedef struct s_hitpayload {
 	bool hit;
@@ -18,12 +23,12 @@ typedef struct s_hitpayload {
 	t_material material;
 } hitpayload;
 
-t_vec3    vadd(t_vec3 a, t_vec3 b)
+t_vec3	vadd(t_vec3 a, t_vec3 b)
 {
 	return (t_vec3){{a.x + b.x, a.y + b.y, a.z + b.z}};
 }
 
-t_vec3    vsub(t_vec3 a, t_vec3 b)
+t_vec3	vsub(t_vec3 a, t_vec3 b)
 {
 	return (t_vec3){{a.x - b.x, a.y - b.y, a.z - b.z}};
 }
@@ -33,12 +38,12 @@ float    mulvv(t_vec3 a, t_vec3 b) // same as dot
 	return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-t_vec3    mulvf(t_vec3 a, float b)
+t_vec3	mulvf(t_vec3 a, float b)
 {
 	return (t_vec3){{a.x * b, a.y * b, a.z * b}};
 }
 
-t_vec3    negate(t_vec3 v)
+t_vec3	negate(t_vec3 v)
 {
 	return (t_vec3){{-v.x, -v.y, -v.z}};
 }
@@ -53,9 +58,9 @@ t_vec3 normalized(t_vec3 v)
 	return mulvf(v, 1.f/norm(v));
 }
 
-t_vec3 cross(const t_vec3 v1, const t_vec3 v2) {
-	return (t_vec3){{ v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x }};
-}
+// t_vec3 cross(const t_vec3 v1, const t_vec3 v2) {
+// 	return (t_vec3){{ v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x }};
+// }
 
 t_vec3	vmul(t_vec3 a, t_vec3 b)
 {
@@ -70,6 +75,22 @@ float	vlenf(t_vec3 v)
 {
 	return (v.x * v.x + v.y * v.y + v.z * v.z);
 }
+
+// float	clamp(float value, float lo, float hi)
+// {
+// 	if (value < lo)
+// 		return (lo);
+// 	if (value > hi)
+// 		return (hi);
+// 	return (value);
+// }
+
+// float smootherstep(float edge0, float edge1, float x) {
+//   // Scale, and clamp x to 0..1 range
+//   x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+//   // Evaluate polynomial
+//   return x * x * x * (x * (x * 6 - 15) + 10);
+// }
 
 static float ray_sphere_intersect(const t_vec3 orig, const t_vec3 dir, const t_object *s)
 {
@@ -184,23 +205,60 @@ static void nearest_plane(const t_vec3 orig, const t_vec3 dir, const t_object *p
 		const float d = -(orig.y+1.5)/dir.y; // the checkerboard plane has equation y = -4 // wonder if replacing this line is enuf for origin + orient
 		const t_vec3 p = vadd(orig, mulvf(dir,d));
 		if (d>.001 && d<payload->nearest_dist
-		// && fabs(p.x)<10 && p.z<-10 && p.z>-30 // this is the size (faster), minirt is unlimited (slow)
+		// && fabs(p.x)<10 && p.z<-10 && p.z>-30
 		)
 		{
 			payload->nearest_dist = d;
 			payload->point = p;
 			payload->N = (t_vec3){{0,1,0}};
-			payload->material.diffuse_color = plane->color;
+			payload->material.diffuse_color = //plane->color;
 			// below is checker box
-			 /*
+			 //*
 			// ((int)(.5*p.x+1000) + (int)(.5*p.z)) & 1 ?  // this formulate the checker box size 
-			((int)(p.x+1e9) + (int)(p.z + 1e9)) & 1 ?  // this formulate the checker box size 
+			// ((int)(p.x+1e9) + (int)(p.z + 1e9)) & 1 ?  // this formulate the checker box size 
+			(abs((int)(p.x)) + abs((int)(p.z))) % 2 ?  // this formulate the checker box size 
 			// (t_vec3){.3, .3, .3} :  (t_vec3){.3, .2, .1}; //alternate color in the checker box
-			obj->pl.diffuse_color: obj->pl.alternate_color;
-			*/
+			plane->color: vsub(plane->color, (t_vec3){{.1,.1,.1}});
+			//*/
 		}
 	}
 }
+
+static void nearest_plane2(const t_vec3 orig, const t_vec3 dir, const t_object *plane, hitpayload *payload)
+{
+	const float	denom = mulvv(plane->orientation, dir);
+	if (fabs(denom) > .001 )
+	{
+		const t_vec3 p0l0 = vsub(plane->coor, orig);
+		const float	distance = mulvv(p0l0, plane->orientation) / denom;
+		if (distance > .001 && distance < payload->nearest_dist)
+		{
+			payload->nearest_dist = distance;
+			payload->point = vadd(orig, mulvf(dir, distance));
+			const t_vec3 nn = negate(plane->orientation);
+			if (vlenf(vsub(orig, vadd(payload->point, nn))) <
+			 vlenf(vsub(orig, vadd(payload->point, plane->orientation))))
+				payload->N = nn;
+			else
+				payload->N = plane->orientation;
+			payload->material.diffuse_color = plane->color; 
+		}
+	}
+}
+
+// void	nearest_plane2( t_vec3 orig, const t_vec3 dir, const t_object *plane, hitpayload *payload)
+// {
+// 	// -(dot(ro, p.xyz) + 1.0) / dot(rd, p.xyz);
+// 	orig = vsub(orig, plane->coor);
+// 	const float t = - (mulvv(orig, plane->orientation) + 1.0) / mulvv(dir,plane->orientation);
+// 	if (t > .001 && t < payload->nearest_dist)
+// 	{
+// 		payload->nearest_dist = t;
+// 		payload->point = vadd(orig, mulvf(dir, t));
+// 		payload->N = plane->orientation;
+// 		payload->material.diffuse_color = plane->color; 
+// 	}
+// }
 
 static hitpayload scene_intersect(const t_vec3 orig, const t_vec3 dir, const t_list *list)
 {
@@ -208,12 +266,14 @@ static hitpayload scene_intersect(const t_vec3 orig, const t_vec3 dir, const t_l
 
 	while (list)
 	{
-		if (((t_object *)list->content)->type == SPHERE)
+		if (as_object(list)->type == SPHERE)
 			nearest_sphere(orig, dir, list->content, &payload);
-		else if (((t_object *)list->content)->type == PLANE)
-			nearest_plane(orig, dir, list->content, &payload);
+		else if (as_object(list)->type == PLANE)
+			nearest_plane2(orig, dir, list->content, &payload);
 		else if (((t_object *)list->content)->type == CYLINDER)
 			nearest_cylinder(orig, dir, list->content, &payload);
+		if (0)
+			nearest_plane(orig, dir, list->content, &payload);
 		list = list->next;
 	}
 	payload.hit = payload.nearest_dist < 1000;
@@ -240,14 +300,14 @@ static t_vec3 cast_ray(const t_vec3 orig, t_vec3 dir, const int depth, t_list *l
 	// checking if the point lies in the shadow of the light
 	while (lights)
 	{
-		if (((t_object *)lights->content)->type == LIGHT || ((t_object *)lights->content)->type == LIGHT_BONUS)
+		if (as_object(lights)->type == LIGHT || as_object(lights)->type == LIGHT_BONUS)
 		{
 			const t_object *light = lights->content;
 			t_vec3 light_dir = normalized(vsub(light->coor, a.point));
 			hitpayload b = scene_intersect(a.point, light_dir, list);
 			if (!(b.hit && norm(vsub(b.point, a.point)) < norm(vsub(light->coor, a.point))))
 			{
-				diffuse_light_intensity = vadd(diffuse_light_intensity, mulvf(light->color, MAX(0.f, mulvv(light_dir,a.N))));
+				diffuse_light_intensity = vadd(diffuse_light_intensity, mulvf(light->light_color, MAX(0.f, mulvv(light_dir,a.N))));
 				specular_light_intensity += pow(MAX(0.f, mulvv(negate(reflect(negate(light_dir), a.N)),dir)), a.material.specular_exponent);
 			}
 		}
@@ -262,33 +322,43 @@ static t_vec3 cast_ray(const t_vec3 orig, t_vec3 dir, const int depth, t_list *l
 	);
 }
 
-static int to_rgb(t_vec3 color)
+// gamma correction 1/2.2 == 0.4545
+static int to_rgb(t_vec3 color, bool use_gamma_correction)
 {
-	const float max = MAX(1.f, MAX(color.x, MAX(color.y, color.z)));
+	float	max;
 
-	return (((int)(255 *  color.x/max) << 16 )
-		+  ((int)(255 *  color.y/max) << 8)
-		+  (int)(255 *  color.z/max));
+	if (use_gamma_correction)
+	{
+		color.x = pow(color.x, 0.4545);
+		color.y = pow(color.y, 0.4545);
+		color.z = pow(color.z, 0.4545);
+	}
+	max = MAX(1.f, MAX(color.x, MAX(color.y, color.z)));
+
+	return (((int)(255.999 *  color.x/max) << 16 )
+		+  ((int)(255.999 *  color.y/max) << 8)
+		+  (int)(255.999 *  color.z/max));
 }
 
 void	*raytrace(const t_app *app)
 {
-	g_background = app->ambient->color;
+	g_background = app->object_ptr[AMBIENT]->light_color;
 	g_mode = app->render_mode;
-	// load_rt_objects(app);
-
-	 const int   width  = app->width;
-	 const int   height = app->height;
-	 const float fov    = app->camera->camera_fov * PI /180 ; // 1.05 = 60 degrees field of view in radians  it is there already,just to replace by .rt i will do
-	for (int pix = 0; pix<width*height; ++pix) { // actual rendering loop
+	
+	const int   width  = app->image.width;
+	const int   height = app->image.height;
+	const float fov	= app->object_ptr[CAMERA]->camera_fov * PI /180 ; // 1.05 = 60 degrees field of view in radians  it is there already,just to replace by .rt i will do
+	for (int pix = 0; pix<width*height; ++pix)
+	{ // actual rendering loop
 		float dir_x =  (pix%width + 0.5) -  width/2.;
 		float dir_y = -(pix/width + 0.5) + height/2.; // this flips the image at the same time
 		float dir_z = -height/(2.*tan(fov/2.));
-rotate_x(&dir_y, &dir_z, app->camera->orientation.x);
-rotate_y(&dir_x, &dir_z, app->camera->orientation.y);
-rotate_z(&dir_x, &dir_y, app->camera->orientation.z);
+rotate_x(&dir_y, &dir_z, app->object_ptr[CAMERA]->orientation.x);
+rotate_y(&dir_x, &dir_z, app->object_ptr[CAMERA]->orientation.y);
+rotate_z(&dir_x, &dir_y, app->object_ptr[CAMERA]->orientation.z);
 		app->image.px[pix] = to_rgb( 
-			cast_ray(app->camera->coor, normalized((t_vec3){{dir_x, dir_y, dir_z}}), 0, app->objects)
+			cast_ray(app->object_ptr[CAMERA]->coor, normalized((t_vec3){{dir_x, dir_y, dir_z}}), 0, app->objects),
+			app->use_gamma_correction
 		);
 	}
 	return app->image.ptr;
