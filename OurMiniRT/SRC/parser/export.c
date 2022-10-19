@@ -1,9 +1,9 @@
 #include "miniRT.h"
 
-void	print_objects(t_list *object)
+void	export_scene(t_list *object)
 {
 	if (object->next)
-		print_objects(object->next);
+		export_scene(object->next);
 	if (as_object(object)->type == AMBIENT)
 		printf("A	%.2f	%d,%d,%d"
 			"	# ratio color\n",

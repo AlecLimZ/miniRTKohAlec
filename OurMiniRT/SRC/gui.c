@@ -15,8 +15,8 @@
 
 static const char	*get_object_typename(t_object *object)
 {
-	const char *const		name[] = {
-	[CAMERA] = "Camera (fov)", [LIGHT] = "Light (ratio)",
+	const char *const		name[OBJECT_TYPE_COUNT] = {
+	[AMBIENT] = "Ambient (ratio)", [CAMERA] = "Camera (FOV)", [LIGHT] = "Light (ratio)",
 	[SPHERE] = "Sphere (radius)", [PLANE] = "Plane", [CYLINDER] = "Cylinder (radius, height)",
 	[CONE] = "Cone (radius, height)", [LIGHT_BONUS] = "Light bonus (ratio)"};
 
@@ -35,6 +35,44 @@ static void	reload_scene(t_app *app)
 	app->render_mode = DEFAULT_RENDER;
 }
 
+int	adjust_object(unsigned int key, t_app *app)
+{
+	t_object * const	object = as_object(app->selected_object);
+	const t_object_params	a[OBJECT_TYPE_COUNT] = {
+		[AMBIENT] = {0.1f, 0.0f, 1.0f, 0, 0, 0},
+		[CAMERA] = {10.0f, 0.0f, 180.0f, 0, 0, 0},
+		[LIGHT] = {0.1f, 0.0f, 1.0f, 0, 0, 0},
+		[LIGHT_BONUS] = {0.1f, 0.0f, 1.0f, 0, 0, 0},
+		[SPHERE] = {0.5f, 0.0f, 1000.0f, 0, 0, 0},
+		[CYLINDER] = {0.5f, 0.0f, 1000.0f, 0.5f, 0.0f, 1000.0f},
+	};
+
+	if (key == KEY_I || key == KEY_O)
+		object->coor.z += pow(-1, key != KEY_I) * 0.5f;
+	else if (key == KEY_UP || key == KEY_DOWN)
+		object->coor.y += pow(-1, key != KEY_UP) * 0.5f;
+	else if (key == KEY_RIGHT || key == KEY_LEFT)
+		object->coor.x += pow(-1, key != KEY_RIGHT) * 0.5f;
+	else if (key == KEY_TWO || key == KEY_ONE)
+	{
+		object->param1 += pow(-1, key != KEY_TWO) * a[object->type].param1_step;
+		if (object->param1 < a[object->type].param1_min)
+			object->param1 = a[object->type].param1_min;
+		else if (object->param1 > a[object->type].param1_max)
+			object->param1 = a[object->type].param1_max;
+	}
+	else if (key == KEY_FOUR || key == KEY_THREE)
+	{
+		object->param2 += pow(-1, key != KEY_FOUR) * a[object->type].param2_step;
+			if (object->param2 < a[object->type].param2_min)
+			object->param2 = a[object->type].param2_min;
+		else if (object->param2 > a[object->type].param2_max)
+			object->param2 = a[object->type].param2_max;
+	}
+	else
+		return (0);
+	return (1);
+}
 
 int	gui_input(unsigned int key, t_app *app)
 {
@@ -42,10 +80,10 @@ int	gui_input(unsigned int key, t_app *app)
 		app_exit(app, NULL);
 	else if (key == KEY_R)
 		reload_scene(app);
-	else if (key == KEY_T && ++app->mini)
+	else if (key == KEY_W && ++app->mini)
 		start_gui(app, 600 + (app->mini & 1) * 1000, 340 + (app->mini & 1) * 560);
-	else if (key == KEY_P)
-		return (print_objects(app->objects), 0);
+	else if (key == KEY_E)
+		return (export_scene(app->objects), 0);
 	else if (key == KEY_TAB)
 	{
 		select_next(app);
@@ -56,26 +94,16 @@ int	gui_input(unsigned int key, t_app *app)
 	}
 	else if (key == KEY_G)
 		app->use_gamma_correction = !app->use_gamma_correction;
-	else if (key == KEY_A || key == KEY_Z)
-		as_object(app->selected_object)->coor.z += pow(-1, key != KEY_A) * 0.5f;
-	else if (key == KEY_UP || key == KEY_DOWN)
-		as_object(app->selected_object)->coor.y += pow(-1, key != KEY_UP) * 0.5f;
-	else if (key == KEY_RIGHT || key == KEY_LEFT)
-		as_object(app->selected_object)->coor.x += pow(-1, key != KEY_RIGHT) * 0.5f;
-	else if (key == KEY_H || key == KEY_N)
-		as_object(app->selected_object)->radius += pow(-1, key != KEY_H) * 0.5;
 	else if (key == KEY_S || key == KEY_X)
-		app->object_ptr[CAMERA]->orientation.x += pow(-1, key != KEY_S) * PI * 2 / 8; // here 360 / 8 = 0,45,90,...
+		app->object_ptr[CAMERA]->orientation.x += pow(-1, key != KEY_S) * PI * 2 / 16;
 	else if (key == KEY_D || key == KEY_C)
-		app->object_ptr[CAMERA]->orientation.y += pow(-1, key != KEY_D) * PI * 2 / 8; // here 360 / 8 = 0,45,90,...
+		app->object_ptr[CAMERA]->orientation.y += pow(-1, key != KEY_D) * PI * 2 / 16;
 	else if (key == KEY_F || key == KEY_V)
-		app->object_ptr[CAMERA]->orientation.z += pow(-1, key != KEY_F) * PI * 2 / 8; // here 360 / 8 = 0,45,90,...
-	else if (key == KEY_I || key == KEY_O)
-		app->object_ptr[CAMERA]->camera_fov += pow(-1, key != KEY_I) * 10; //+-fov testing. todo: limit 0-180
-	else if (key == KEY_N)
+		app->object_ptr[CAMERA]->orientation.z += pow(-1, key != KEY_F) * PI * 2 / 16;
+	else if (key == KEY_Y)
 		app->render_mode = (app->render_mode + 1) % RENDER_MODE_END;
-	else
-		printf("unknown key %d\n", key);
+	else if (!adjust_object(key, app))
+		return (printf("unknown key %d\n", key), 0);
 	++app->last_updated;
 	return (0);
 }
@@ -109,9 +137,10 @@ int	gui_render(t_app *app)
 		display(app->selected_object->content);
 		mlx_put_image_to_window(
 		app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
-		// printf("raytracing %ffps\n", 1.0 / ((double)(clock() - begin) / CLOCKS_PER_SEC));
 		printf("raytracing %fs\n", ((double)(clock() - begin) / CLOCKS_PER_SEC));
-		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, 24, 0XFFFF00,
+		// printf("raytracing %ffps\n", 1.0 / ((double)(clock() - begin) / CLOCKS_PER_SEC));
+		display(app->selected_object->content);
+		mlx_string_put(app->mlx_ptr, app->win_ptr, 16, 24, 0XFFFF00,
 			(char *)get_object_typename(app->selected_object->content));
 		// mlx_string_put(app->mlx_ptr, app->win_ptr, 24, app->height - 30,
 		// 	0xFFFF00,

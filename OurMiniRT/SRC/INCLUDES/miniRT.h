@@ -13,6 +13,11 @@
 #ifndef MINIRT_H
 # define MINIRT_H
 
+# define WIN_TITLE "miniRT" \
+		"  [TAB]=NextObject  [Arrows]/[I]n/[O]ut=Movement" \
+		"  [1/2/3/4]=-Param1/+Param1/-Param2/+Param2" \
+		"  [G]ammaCorrection  [W]indowSize  [R]eload  [E]xport"
+
 // https://harm-smits.github.io/42docs/libs/minilibx/events.html#x11-interface
 # define KEY_PRESS_EVENT 2
 # define DESTROY_NOTIFY_EVENT 17
@@ -50,6 +55,6 @@ void	    *raytrace(const t_app *app);
 t_object    *as_object(const t_list *node);
 
 // export.c
-void	print_objects(t_list *object);
+void	export_scene(t_list *object);
 
 #endif

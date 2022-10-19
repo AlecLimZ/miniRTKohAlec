@@ -10,10 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// todo 
-// 1) function converts string to double
-// 2) unit test
-
 #include "parser.h"
 
 // a scene must have only 1 ambient, camera, light. they are stored in struct
@@ -33,9 +29,6 @@ static t_object	parse_ambient(char *line)
 		&& (*line == '#' || *line == '\0'))
 	{
 		a.type = AMBIENT;
-		a.light_color.r = a.color.r * a.ambient_ratio;
-		a.light_color.g = a.color.g * a.ambient_ratio;
-		a.light_color.b = a.color.b * a.ambient_ratio;
 	}
 	return (a);
 }
@@ -58,9 +51,6 @@ static t_object	parse_light(char *line)
 		&& (*line == '#' || *line == '\0'))
 	{
 		a.type = LIGHT;
-		a.light_color.r = a.color.r * a.light_brightness;
-		a.light_color.g = a.color.g * a.light_brightness;
-		a.light_color.b = a.color.b * a.light_brightness;
 	}
 	return (a);
 }
@@ -84,9 +74,6 @@ static t_object	parse_light_bonus(char *line)
 		&& (*line == '#' || *line == '\0'))
 	{
 		a.type = LIGHT_BONUS;
-		a.light_color.r = a.color.r * a.light_brightness;
-		a.light_color.g = a.color.g * a.light_brightness;
-		a.light_color.b = a.color.b * a.light_brightness;
 	}
 	return (a);
 }
@@ -96,21 +83,24 @@ static t_object	parse_light_bonus(char *line)
 // return 0 if invalid/duplicate config
 static bool	parse_line(char *line, t_app *app)
 {
-	const void	*f[] = {
+	t_object (* const *f)(char *) =
+	// const void	**f = 
+	// (const void *[]){
+	(t_object (*[])(char *)) {
 		&parse_ambient, &parse_camera, &parse_light, &parse_sphere,
 		&parse_plane, &parse_cylinder, &parse_light_bonus, &parse_cone_bonus,
 		NULL,
 	};
-	const void	**p = f;
 	t_object	object;
 	t_object	*content;
 
 	trim_str(&line, ft_isspace);
 	if (*line == '#' || *line == '\0')
 		return (1);
-	while (*p)
+	while (*f)
 	{
-		object = ((t_object (*)(char *))p[0])(line);
+		// object = ((t_object (*)(char *))*f)(line);
+		object = (**f)(line);
 		if (object.type < END_OF_OBJECT_TYPE)
 		{
 			content = if_null_exit(ft_calloc(1, sizeof(t_object)), app);
@@ -120,7 +110,7 @@ static bool	parse_line(char *line, t_app *app)
 			ft_lstadd_front(&app->objects, if_null_exit(ft_lstnew(content), app));
 			return (true);
 		}
-		++p;
+		++f;
 	}
 	return (false);
 }

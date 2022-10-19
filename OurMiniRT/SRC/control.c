@@ -14,7 +14,7 @@
 
 static bool	is_movable(int type)
 {
-	return (type == CAMERA || type == LIGHT || type == LIGHT_BONUS
+	return (type == AMBIENT || type == CAMERA || type == LIGHT || type == LIGHT_BONUS
 		|| type == SPHERE || type == PLANE || type == CYLINDER || type == CONE);
 }
 

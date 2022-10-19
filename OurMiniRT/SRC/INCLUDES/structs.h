@@ -96,6 +96,16 @@ typedef struct s_object
 	t_material	material;
 }	t_object;
 
+typedef struct s_object_params
+{
+	float	param1_step;
+	float	param1_min;
+	float	param1_max;
+	float	param2_step;
+	float	param2_min;
+	float	param2_max;
+}			t_object_params;
+
 // MLX Metal buffer width may more than requested
 // eg request 800px width, but actual width is 832px
 // width = line_length / (bits_per_pixel / 8)

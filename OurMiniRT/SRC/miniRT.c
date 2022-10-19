@@ -48,12 +48,8 @@ void	start_gui(t_app *app, int width, int height)
 	printf("resolution %d %d\n", app->image.width, app->image.height);
 	if (app->image.bits_per_pixel != 32 || app->image.endian != 0)
 		app_exit(app, "Require 32bit color and little-endian (x86) platform");
-	app->win_ptr = mlx_new_window(app->mlx_ptr, app->image.width, app->image.height, 
-		"miniRT "
-		"TAB=Next_Object  UP=Move_Y+  DOWN=Move_Y-  LEFT=Move_X-  "
-		"RIGHT=Move_X+  A=Move_Z+  Z=Move_Z-  "
-		"G=Gamma_Correction  T=Toggle_Size  R=Reload_Scene  P=Print"
-	);
+	app->win_ptr = mlx_new_window(
+		app->mlx_ptr, app->image.width, app->image.height, WIN_TITLE);
 	mlx_hook(app->win_ptr, KEY_PRESS_EVENT, KEY_PRESS_MASK, gui_input, app);
 	mlx_hook(app->win_ptr, DESTROY_NOTIFY_EVENT, STRUCTURE_NOTIFY_MASK, gui_exit, app);
 	if (is_first)

@@ -340,8 +340,26 @@ static int to_rgb(t_vec3 color, bool use_gamma_correction)
 		+  (int)(255.999 *  color.z/max));
 }
 
+static void	update_lights(t_list *objects)
+{
+	t_object	*o;
+
+	while (objects)
+	{
+		o = as_object(objects);
+		if (o->type == AMBIENT || o->type == LIGHT || o->type == LIGHT_BONUS)
+		{
+			o->light_color.r = o->param1 * o->color.r;
+			o->light_color.g = o->param1 * o->color.g;
+			o->light_color.b = o->param1 * o->color.b;
+		}
+		objects = objects->next;
+	}
+}
+
 void	*raytrace(const t_app *app)
 {
+	update_lights(app->objects);
 	g_background = app->object_ptr[AMBIENT]->light_color;
 	g_mode = app->render_mode;
 	
