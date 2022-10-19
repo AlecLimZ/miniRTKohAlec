@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 19:17:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/18 11:27:34 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/19 13:31:53 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,25 +48,29 @@ int	gui_input(unsigned int key, t_app *app)
 // app->camera->coor.y += dir_y;
 // app->camera->coor.z += dir_z;
 
-void	display(void *content)
+static const char	*get_object_typename(t_object *object)
 {
-	t_object *c = content;
 	const char *const		name[] = {
 	[CAMERA] = "Camera", [LIGHT] = "Light",
 	[SPHERE] = "Sphere", [PLANE] = "Plane", [CYLINDER] = "Cylinder",
 	[CONE] = "Cone", [LIGHT_BONUS] = "Light bonus"};
-	printf("type: %s\n", name[c->type]);
+
+	if (object != NULL && object->type < END_OF_OBJECT_TYPE && name[object->type])
+		return (name[object->type]);
+	return "Unknown";
+}
+
+static void	display(t_object *c)
+{
+	printf("type: %s\n", get_object_typename(c));
 	printf("x: %f\t y: %f\t z: %f\n", c->coor.x, c->coor.y, c->coor.z);
+	printf("ox: %f\t oy: %f\t oz: %f\n", c->orientation.x, c->orientation.y, c->orientation.z);
 }
 
 int	gui_render(t_app *app)
 {
 	static unsigned int		last_updated = 0;
 	const clock_t			begin = clock();
-	const char *const		name[] = {
-	[CAMERA] = "Camera", [LIGHT] = "Light",
-	[SPHERE] = "Sphere", [PLANE] = "Plane", [CYLINDER] = "Cylinder",
-	[CONE] = "Cone", [LIGHT_BONUS] = "Light bonus"};
 
 	if (last_updated < app->last_updated)
 	{
@@ -75,9 +79,8 @@ int	gui_render(t_app *app)
 		mlx_put_image_to_window(
 		app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
 		//printf("raytracing %fs\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
-		display(app->selected_object->content);
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, 24, 0XFFFF00,
-		(char *)name[((t_object *)app->selected_object->content)->type]);
+			(char *)get_object_typename(app->selected_object->content));
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 24, app->height - 30,
 			0xFFFF00,
 			"TAB=Next_Object  UP=Move_Y+  DOWN=Move_Y-  LEFT=Move_X-  "

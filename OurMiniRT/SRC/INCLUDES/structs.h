@@ -27,6 +27,7 @@ enum e_object_type
 	PLANE,	
 	CYLINDER,
 	CONE,
+	END_OF_OBJECT_TYPE,
 };
 
 enum e_render_mode
@@ -69,16 +70,16 @@ typedef struct s_material {
 // all raytracing objects as linked-list content
 typedef struct s_object
 {
-	int			type;
-	t_xyz		coor;
-	t_rgb		color;
-	t_xyz		orientation;
-	double		radius;
-	t_material	material;
+	unsigned int	type;
+	t_xyz			coor;
+	t_rgb			color;
+	t_xyz			orientation;
+	double			radius;
+	t_material		material;
 	union
 	{
-		double	camera_fov;
-		double	height;
+		double		camera_fov;
+		double		height;
 	};
 }	t_object;
 
