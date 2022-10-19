@@ -26,9 +26,15 @@
 # include "parser.h"
 # include "vecray.h"
 
-int			gui_input(unsigned int key, t_app *app);
-int			gui_render(t_app *app);
+void		benchmark(void);
+void		start_gui(t_app *app, int width, int height);
 void		create_window(t_app *app, int width, int height);
+const char	*get_object_typename(t_object *object);
+void		reload_scene(t_app *app);
+float		add_or_minus(int add_condition, float step);
+
+int			gui_input(unsigned int key, t_app *app);
+float		clamp(float value, float lo, float hi);
 
 // rotate.c
 void		rotate_x(float *y, float *z, double angle_x);

@@ -12,6 +12,8 @@
 
 #ifndef STRUCTS_H
 # define STRUCTS_H
+# include <stdbool.h>
+# include "libft.h"
 
 # define MIN_COOR -999
 # define MAX_COOR 999
@@ -69,6 +71,15 @@ typedef struct s_material {
 	t_vec3	diffuse_color;
 }	t_material;
 
+typedef struct s_hitpayload
+{
+	bool		hit;
+	float		nearest_dist;
+	t_vec3		point;
+	t_vec3		normal;
+	t_material	material;
+}				t_hitpayload;
+
 // all raytracing objects as linked-list content
 typedef struct s_object
 {
@@ -82,29 +93,14 @@ typedef struct s_object
 	};
 	union
 	{
-		float		param1;
 		float		ambient_ratio;
 		float		light_brightness;
 		float		camera_fov;
 		float		radius;
 	};
-	union
-	{
-		float		param2;
-		float		height;
-	};
+	float			height;
 	t_material		material;
 }	t_object;
-
-typedef struct s_object_params
-{
-	float	param1_step;
-	float	param1_min;
-	float	param1_max;
-	float	param2_step;
-	float	param2_min;
-	float	param2_max;
-}			t_object_params;
 
 // MLX Metal buffer width may more than requested
 // eg request 800px width, but actual width is 832px
@@ -148,7 +144,7 @@ typedef struct s_app
 	};
 	struct
 	{
-		unsigned int	last_updated;
+		unsigned int	invalidated;
 		int				render_mode;
 		int				use_gamma_correction;
 		unsigned int	mini;

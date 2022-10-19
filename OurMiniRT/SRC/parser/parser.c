@@ -82,30 +82,32 @@ static t_object	parse_light_bonus(char *line)
 // return 1 if empty/remark line or valid config line
 // return 0 if invalid/duplicate config
 	// (t_object (*[])(char *)){
+	// t_object (*const *f)(char *) 
 static bool	parse_line(char *line, t_app *app)
 {
 	t_object		object;
 	t_object		*content;
-	t_object (*const *f)(char *) = (t_object (*[])(char *)){
-	parse_ambient, parse_camera, parse_light, parse_sphere,
-	parse_plane, parse_cylinder, parse_light_bonus, parse_cone_bonus,
-	NULL};
+	const void		**p = (const void *[]){
+		parse_ambient, parse_camera, parse_light, parse_sphere, parse_plane,
+		parse_cylinder, parse_light_bonus, parse_cone_bonus, NULL};
+
 	trim_str(&line, ft_isspace);
 	if (*line == '#' || *line == '\0')
 		return (1);
-	while (*f)
+	while (*p)
 	{
-		object = (**f)(line);
+		object = ((t_object (*)(char *))*p)(line);
 		if (object.type < END_OF_OBJECT_TYPE)
 		{
 			content = if_null_exit(ft_calloc(1, sizeof(t_object)), app);
 			*content = object;
 			app->object_ptr[object.type] = content;
 			app->object_count[object.type] += 1;
-			ft_lstadd_front(&app->objects, if_null_exit(ft_lstnew(content), app));
+			ft_lstadd_front(&app->objects,
+				if_null_exit(ft_lstnew(content), app));
 			return (true);
 		}
-		++f;
+		++p;
 	}
 	return (false);
 }
