@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   raytrace.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/18 11:18:10 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/19 16:56:53 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ static float	ray_cylinder_intersect(t_ray *r,
 }
 
 static void	nearest_cylinder(const t_vec3 orig, t_vec3 dir,
-		t_object *cy, hitpayload *payload)
+		const t_object *cy, hitpayload *payload)
 {
 	t_ray	r;
 	bool	ret[2];

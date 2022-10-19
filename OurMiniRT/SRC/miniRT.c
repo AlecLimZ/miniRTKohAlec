@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/19 16:52:35 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/19 16:59:18 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	load_scene_or_exit(t_app *app, char *filepath)
 void	create_window(t_app *app, int width, int height)
 {
 	char *const	title = "miniRT" \
-		"  [TAB]NextObject  [arrows]movement  [I]Back  [O]Forward" \
+		"  [TAB]NextObject  [ARROWS]movement  [I]Back  [O]Forward" \
 		"  [1]Light++  [2]Light--  [3]radius++" \
 		"  [4]radius--  [5]height++  [6]height--" \
 		"  [G]ammaCorrection  [W]indowSize  [R]eload  [E]xport";
