@@ -33,10 +33,6 @@ void	select_next(t_app *app)
 		app->selected_object = app->selected_object->next;
 	if (app->selected_object == NULL)
 		app->selected_object = app->objects;
-	while (app->selected_object)
-		app->selected_object = app->selected_object->next;
-	if (app->selected_object == NULL)
-		select_next(app);
 }
 
 float	add_or_minus(int add_condition, float step)
