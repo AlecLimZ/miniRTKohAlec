@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "miniRT.h"
-#include "raytrace.h"
+#include "raytracer.h"
 
 static void	quadratic(float a, float b, float c, float *res)
 {

@@ -12,7 +12,7 @@
 
 #include "miniRT.h"
 #include <math.h>
-#include "raytrace.h"
+#include "raytracer.h"
 
 // int g_mode = DEFAULT_RENDER;
 

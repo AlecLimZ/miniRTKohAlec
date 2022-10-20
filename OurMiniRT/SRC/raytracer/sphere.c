@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "raytrace.h"
+#include "raytracer.h"
 
 static float	get_distance(float tca, float thc)
 {

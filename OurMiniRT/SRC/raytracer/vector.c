@@ -10,24 +10,37 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "raytrace.h"
+#include "raytracer.h"
 
-t_vec3	negate(t_vec3 v)
+t_vec3	vadd(t_vec3 a, t_vec3 b)
 {
-	return ((t_vec3){{-v.x, -v.y, -v.z}});
+	return ((t_vec3){{a.x + b.x, a.y + b.y, a.z + b.z}});
 }
 
-float	norm(t_vec3 v)
+t_vec3	vsub(t_vec3 a, t_vec3 b)
 {
-	return (sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
+	return ((t_vec3){{a.x - b.x, a.y - b.y, a.z - b.z}});
 }
 
-t_vec3	normalized(t_vec3 v)
+t_vec3	vmul(t_vec3 a, t_vec3 b)
 {
-	return (mulvf(v, 1.f / norm(v)));
+	return ((t_vec3){{a.x * b.x, a.y * b.y, a.z * b.z}});
 }
 
-float	vlenf(t_vec3 v)
+// same as dot
+float	mulvv(t_vec3 a, t_vec3 b)
 {
-	return (v.x * v.x + v.y * v.y + v.z * v.z);
+	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }
+
+t_vec3	mulvf(t_vec3 a, float b)
+{
+	return ((t_vec3){{a.x * b, a.y * b, a.z * b}});
+}
+
+// t_vec3 cross(const t_vec3 v1, const t_vec3 v2) {
+// 	return (t_vec3){{
+	// v1.y*v2.z - v1.z*v2.y,
+	// v1.z*v2.x - v1.x*v2.z,
+	// v1.x*v2.y - v1.y*v2.x }};
+// }

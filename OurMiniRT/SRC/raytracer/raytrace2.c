@@ -12,7 +12,7 @@
 
 #include "miniRT.h"
 #include <math.h>
-#include "raytrace.h"
+#include "raytracer.h"
 
 static t_vec3	reflect(const t_vec3 i, const t_vec3 normal) {
 	return (vsub(i, mulvf(normal, 2.f * mulvv(i, normal))));

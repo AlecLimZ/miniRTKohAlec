@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RAYTRACE_H
-# define RAYTRACE_H
+#ifndef RAYTRACER_H
+# define RAYTRACER_H
 
 # include "structs.h"
 # include <math.h>
