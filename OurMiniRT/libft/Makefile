@@ -21,7 +21,7 @@ SRC		=	ft_strlcpy.c ft_strlen.c ft_strncmp.c ft_strlcat.c \
 BONUS	=	ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c \
 			ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c
 GNL		=	get_next_line.o get_next_line_utils.o
-CC		=	gcc -Wall -Wextra -Werror
+CC		=	gcc -Wall -Wextra -Werror -flto
 OBJ		=	$(SRC:%.c=%.o)
 OBJB	=	$(BONUS:%.c=%.o)
 

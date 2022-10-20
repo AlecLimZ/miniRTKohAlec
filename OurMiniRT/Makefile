@@ -11,9 +11,9 @@ LIBMLX		= $(MLXOPENGL) # choose MLXOPENGL or MLXMETAL
 VPATH		= SRC # ./miniRT from ./SRC/miniRT.c
 
 # ASAN		= -fsanitize=address
-CFLAGS		= -Wall -Werror -Wextra -MMD $(ASAN) -O3 -Wno-unused-variable #-g3
+CFLAGS		= -Wall -Werror -Wextra -MMD $(ASAN) -flto -Ofast -Wno-unused-variable #-g3
 CPPFLAGS	= $(addprefix -I, $(HEADERDIR) $(dir $(LIBFT) $(LIBMLX)))
-LDFLAGS		= $(ASAN)
+LDFLAGS		= $(ASAN) -flto
 LDLIBS		= $(LIBFT) $(LIBMLX) -framework OpenGL -framework AppKit
 
 
