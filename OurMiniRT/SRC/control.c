@@ -14,8 +14,9 @@
 
 static bool	is_movable(int type)
 {
-	return (type == CAMERA || type == LIGHT || type == LIGHT_BONUS
-		|| type == SPHERE || type == PLANE || type == CYLINDER || type == CONE);
+	return (type == AMBIENT || type == CAMERA || type == LIGHT
+		|| type == LIGHT_BONUS || type == SPHERE || type == PLANE
+		|| type == CYLINDER || type == CONE);
 }
 
 void	select_next(t_app *app)

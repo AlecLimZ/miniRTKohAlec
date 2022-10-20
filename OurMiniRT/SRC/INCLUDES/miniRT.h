@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 14:53:36 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/19 13:30:40 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/18 14:52:16 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,24 @@
 # include "parser.h"
 # include "vecray.h"
 
-int		gui_input(unsigned int key, t_app *app);
-int		gui_render(t_app *app);
+int			gui_input(unsigned int key, t_app *app);
+int			gui_render(t_app *app);
+void		create_window(t_app *app, int width, int height);
 
 // rotate.c
-void	rotate_x(float *y, float *z, double angle_x);
-void	rotate_y(float *x, float *z, double angle_y);
-void	rotate_z(float *x, float *y, double angle_z);
+void		rotate_x(float *y, float *z, double angle_x);
+void		rotate_y(float *x, float *z, double angle_y);
+void		rotate_z(float *x, float *y, double angle_z);
 
 // control.c
-void	select_next(t_app *app);
+void		select_next(t_app *app);
 
 // raytrace.c
-t_vec3	normalized(t_vec3 v);
-void	*raytrace(const t_app *app);
+t_vec3		normalized(t_vec3 v);
+void		*raytrace(const t_app *app);
+t_object	*as_object(const t_list *node);
+
+// export.c
+void		export_scene(t_list *object);
 
 #endif

@@ -31,7 +31,7 @@ $(NAME): $(OBJ) $(OBJB) $(GNL)
 	ar rcs $(NAME) $?
 
 clean:
-	rm -rf $(OBJ) $(OBJB)
+	rm -rf $(OBJ) $(OBJB) $(GNL)
 
 fclean:	clean
 	rm -rf $(NAME)

@@ -14,7 +14,7 @@
 
 // left trim by c, return count of char trimmed
 // char *s = "aabc"; trim_chr(&a, 'a'); // return 2, s becomes "bc"
-static int	trim_chr(char **line, char c)
+int	trim_chr(char **line, char c)
 {
 	const char	*start = *line;
 
@@ -37,7 +37,7 @@ int	trim_str(char **line, int (*f)(int))
 // trim /^-?[0-9]+.?[0-9]*/ into number, while moving str pointer
 // return 1 if correct format and number within min and max (inclusive)
 // return 0 otherwise
-int	pull_nbr(char **line, double *d, double min, double max)
+int	pull_nbr(char **line, float *d, float min, float max)
 {
 	const char	*begin = *line;
 	char		*endptr;
@@ -59,7 +59,7 @@ int	pull_nbr(char **line, double *d, double min, double max)
 // trim <number>,<number>,<number> into t_vec3, while moving str pointer
 // return 1 if correct format and number within min and max (inclusive)
 // return 0 otherwise
-int	pull_vec(char **line, t_vec3 *d, double min, double max)
+int	pull_vec(char **line, t_vec3 *d, float min, float max)
 {
 	return (
 		pull_nbr(line, &d->x, min, max) == 1
