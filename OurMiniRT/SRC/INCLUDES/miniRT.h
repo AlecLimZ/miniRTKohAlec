@@ -13,6 +13,15 @@
 #ifndef MINIRT_H
 # define MINIRT_H
 
+# define WINDOW_WIDTH 1600
+# define WINDOW_HEIGHT 900
+# define SMALL_WINDOW_WIDTH 800
+# define SMALL_WINDOW_HEIGHT 450
+# define MIN_COOR -999
+# define MAX_COOR 999
+# define PI 3.14159
+# define ROT PI / 8
+
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -26,7 +35,8 @@
 # include "parser.h"
 # include "vecray.h"
 
-void		benchmark(void);
+void        help(t_app *app);
+void		benchmark(const char *s);
 void		start_gui(t_app *app, int width, int height);
 void		create_window(t_app *app, int width, int height);
 const char	*get_object_typename(t_object *object);

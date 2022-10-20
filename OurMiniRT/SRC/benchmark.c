@@ -16,9 +16,10 @@
 #include <time.h>
 #include <stdio.h>
 
-void	benchmark(void)
+void	benchmark(const char *s)
 {
 	static double	begin = INFINITY;
+	double			elapsed;
 
 	if (begin == INFINITY)
 	{
@@ -26,15 +27,17 @@ void	benchmark(void)
 	}
 	else
 	{
-		printf("benchmark: %fs\n", (clock() - begin) / CLOCKS_PER_SEC);
+		elapsed = (clock() - begin) / CLOCKS_PER_SEC;
+		printf("%s: %.3fs %.1ffps\n", s, elapsed, 1 / elapsed);
 		begin = INFINITY;
 	}
 }
 
 #else
 
-void	benchmark(void)
+void	benchmark(const char *s)
 {
+	(void)s;
 }
 
 #endif

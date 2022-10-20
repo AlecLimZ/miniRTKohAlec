@@ -10,13 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <time.h>
-#include <stdbool.h>
 #include "miniRT.h"
 
 const char	*get_object_typename(t_object *object)
 {
-	const char *const		name[OBJECT_TYPE_COUNT] = {
+	const char *const	name[] = {
 	[AMBIENT] = "Ambient (ratio)",
 	[CAMERA] = "Camera (FOV)",
 	[LIGHT] = "Light (ratio)",
@@ -27,7 +25,8 @@ const char	*get_object_typename(t_object *object)
 	[LIGHT_BONUS] = "Light bonus (ratio)",
 	};
 
-	if (object != NULL && object->type < OBJECT_TYPE_COUNT
+	if (object != NULL
+		&& object->type < (sizeof(name) / sizeof(*name))
 		&& name[object->type])
 		return (name[object->type]);
 	return ("Unknown");
@@ -47,28 +46,33 @@ static int	gui_render(t_app *app)
 
 	if (app->invalidated == 0)
 		++app->invalidated;
-	if (last_invalidated < app->invalidated)
+	if (last_invalidated == app->invalidated)
+		return (0);
+	last_invalidated = app->invalidated;
+	if (app->features & FEATURE_HELP)
 	{
-		last_invalidated = app->invalidated;
-		display(app->selected_object->content);
-		benchmark();
-		mlx_put_image_to_window(
-			app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
-		benchmark();
+		help(app);
+		return (0);
+	}
+	display(app->selected_object->content);
+	benchmark(NULL);
+	mlx_put_image_to_window(
+		app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
+	benchmark("Raytracing");
+	if (app->features & FEATURE_CAPTION)
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 16, 24, 0XFFFF00,
 			(char *)get_object_typename(app->selected_object->content));
-	}
 	return (0);
 }
 
 // https://harm-smits.github.io/42docs/libs/minilibx/events.html#x11-interface
+// "  [TAB]NextObject  [ARROWS]movement  [I]Back  [O]Forward"
+// "  [1]Light++  [2]Light--  [3]radius++"
+// "  [4]radius--  [5]height++  [6]height--"
+// "  [G]ammaCorrection  [W]indowSize  [R]eload  [E]xport";
 void	create_window(t_app *app, int width, int height)
 {
-	char *const	title = "miniRT" \
-		"  [TAB]NextObject  [ARROWS]movement  [I]Back  [O]Forward" \
-		"  [1]Light++  [2]Light--  [3]radius++" \
-		"  [4]radius--  [5]height++  [6]height--" \
-		"  [G]ammaCorrection  [W]indowSize  [R]eload  [E]xport";
+	char *const	title = "miniRT (Press H for Help)";
 
 	if (app->win_ptr)
 		mlx_destroy_window(app->mlx_ptr, app->win_ptr);

@@ -101,7 +101,7 @@ static bool	parse_line(char *line, t_app *app)
 		{
 			content = if_null_exit(ft_calloc(1, sizeof(t_object)), app);
 			*content = object;
-			app->object_ptr[object.type] = content;
+			app->object[object.type] = content;
 			app->object_count[object.type] += 1;
 			ft_lstadd_front(&app->objects,
 				if_null_exit(ft_lstnew(content), app));

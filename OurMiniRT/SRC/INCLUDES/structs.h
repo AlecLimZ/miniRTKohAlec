@@ -15,9 +15,14 @@
 # include <stdbool.h>
 # include "libft.h"
 
-# define MIN_COOR -999
-# define MAX_COOR 999
-# define PI 3.14159
+# define FEATURE_GAMMA_CORRECTION	1
+# define FEATURE_REFLECTION	2
+# define FEATURE_SPECULAR	4
+# define FEATURE_LIGHT	8
+# define FEATURE_NORMAL 16
+# define FEATURE_SMALLER_WINDOW 32
+# define FEATURE_HELP 64
+# define FEATURE_CAPTION 128
 
 enum e_object_type
 {
@@ -34,18 +39,8 @@ enum e_object_type
 	OBJECT_TYPE_ERROR,
 };
 
-enum e_render_mode
-{
-	DEFAULT_RENDER,
-	BY_DISTANCE,
-	BY_NORMAL,
-	BY_OBJECT,
-	RENDER_MODE_END,
-};
-
 typedef union s_vec3
 {
-	float	e[3];
 	float	rgb[3];
 	struct
 	{
@@ -62,7 +57,6 @@ typedef union s_vec3
 }	t_vec3;
 
 typedef t_vec3	t_rgb;
-typedef t_vec3	t_xyz;
 
 // tinyraytracer: albedo[diffuse, specular, reflect]
 typedef struct s_material {
@@ -71,24 +65,15 @@ typedef struct s_material {
 	t_vec3	diffuse_color;
 }	t_material;
 
-typedef struct s_hitpayload
-{
-	bool		hit;
-	float		nearest_dist;
-	t_vec3		point;
-	t_vec3		normal;
-	t_material	material;
-}				t_hitpayload;
-
 // all raytracing objects as linked-list content
 typedef struct s_object
 {
 	unsigned int	type;
-	t_xyz			coor;
+	t_vec3			coor;
 	t_rgb			color;
 	union
 	{
-		t_xyz		orientation;
+		t_vec3		orientation;
 		t_rgb		light_color;
 	};
 	union
@@ -134,7 +119,7 @@ typedef struct s_app
 		t_list			*objects;
 		t_list			*selected_object;
 		int				object_count[OBJECT_TYPE_COUNT];
-		t_object		*object_ptr[OBJECT_TYPE_COUNT];
+		t_object		*object[OBJECT_TYPE_COUNT];
 	};
 	struct
 	{
@@ -142,13 +127,8 @@ typedef struct s_app
 		void			*win_ptr;
 		t_image			image;
 	};
-	struct
-	{
-		unsigned int	invalidated;
-		int				render_mode;
-		int				use_gamma_correction;
-		unsigned int	mini;
-	};
+	unsigned int	invalidated;
+	int				features;
 }	t_app;
 
 #endif

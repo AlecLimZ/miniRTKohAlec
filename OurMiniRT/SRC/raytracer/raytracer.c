@@ -55,7 +55,7 @@ void	*raytrace(const t_app *app)
 {
 	const int	width = app->image.width;
 	const int	height = app->image.height;
-	const float	fov = (app->object_ptr[CAMERA]->camera_fov * PI / 180);
+	const float	fov = (app->object[CAMERA]->camera_fov * PI / 180);
 	t_vec3		dir;
 	int			pix;
 
@@ -66,14 +66,13 @@ void	*raytrace(const t_app *app)
 		dir.x = +(pix % width + 0.5f) - width / 2.f;
 		dir.y = -(pix / width + 0.5f) + height / 2.f;
 		dir.z = -height / (2.f * tan(fov / 2.f));
-		rotate_x(&dir.y, &dir.z, app->object_ptr[CAMERA]->orientation.x);
-		rotate_y(&dir.x, &dir.z, app->object_ptr[CAMERA]->orientation.y);
-		rotate_z(&dir.x, &dir.y, app->object_ptr[CAMERA]->orientation.z);
+		rotate_x(&dir.y, &dir.z, app->object[CAMERA]->orientation.x);
+		rotate_y(&dir.x, &dir.z, app->object[CAMERA]->orientation.y);
+		rotate_z(&dir.x, &dir.y, app->object[CAMERA]->orientation.z);
 		app->image.px[pix] = to_rgb(
-				cast_ray(app->object_ptr[CAMERA]->coor,
-					normalized(dir), 0, app->objects,
-					app->object_ptr[AMBIENT]->light_color),
-				app->use_gamma_correction);
+				cast_ray(app->object[CAMERA]->coor,
+					normalized(dir), 0, app),
+				app->features & FEATURE_GAMMA_CORRECTION);
 	}
 	return (app->image.ptr);
 }

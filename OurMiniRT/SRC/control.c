@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "miniRT.h"
-#include <stdio.h>
 
 static int	ft_checklight(const t_object *object)
 {
@@ -33,7 +32,7 @@ static bool	control_object(unsigned int key, t_object *object)
 		object->coor.y += add_or_minus(key == KEY_UP, 0.5f);
 	else if (key == KEY_RIGHT || key == KEY_LEFT)
 		object->coor.x += add_or_minus(key == KEY_RIGHT, 0.5f);
-	else if (ft_checklight(object) && (key == KEY_TWO || key == KEY_ONE))
+	else if (ft_checklight(object) && (key == KEY_ONE || key == KEY_TWO))
 		adjust_val(&object->light_brightness,
 			add_or_minus(key == KEY_ONE, 0.1f), 0.0f, 1.0f);
 	else if (!ft_checklight(object) && (key == KEY_THREE || key == KEY_FOUR))
@@ -52,29 +51,32 @@ static bool	control_object(unsigned int key, t_object *object)
 
 static void	invalidate_input(unsigned int key, t_app *app)
 {
-	if (key == KEY_R)
+	const int	toggles[] = {
+		[KEY_G] = FEATURE_GAMMA_CORRECTION, [KEY_H] = FEATURE_HELP,
+		[KEY_J] = FEATURE_SPECULAR, [KEY_K] = FEATURE_REFLECTION,
+		[KEY_L] = FEATURE_LIGHT, [KEY_N] = FEATURE_NORMAL,
+		[KEY_T] = FEATURE_CAPTION, };
+
+	if (key < sizeof(toggles) / sizeof(*toggles) && toggles[key])
+		app->features ^= toggles[key];
+	else if (key == KEY_R)
 		reload_scene(app);
-	else if (key == KEY_W && ++app->mini)
-		create_window(
-			app, 600 + (app->mini & 1) * 1000, 340 + (app->mini & 1) * 560);
-	else if (key == KEY_G)
-		app->use_gamma_correction = !app->use_gamma_correction;
-	else if (key == KEY_Y)
-		app->render_mode = (app->render_mode + 1) % RENDER_MODE_END;
-	else if (key == KEY_S || key == KEY_X)
-		app->object_ptr[CAMERA]->orientation.x
-			+= add_or_minus(key == KEY_S, PI / 8);
-	else if (key == KEY_D || key == KEY_C)
-		app->object_ptr[CAMERA]->orientation.y
-			+= add_or_minus(key == KEY_D, PI / 8);
-	else if (key == KEY_F || key == KEY_V)
-		app->object_ptr[CAMERA]->orientation.z
-			+= add_or_minus(key == KEY_F, PI / 8);
-	else if (!control_object(key, app->selected_object->content))
+	else if (key == KEY_W)
 	{
-		printf("unknown key %d\n", key);
-		return ;
+		app->features ^= FEATURE_SMALLER_WINDOW;
+		if (app->features & FEATURE_SMALLER_WINDOW)
+			create_window(app, SMALL_WINDOW_WIDTH, SMALL_WINDOW_HEIGHT);
+		else
+			create_window(app, WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
+	else if (key == KEY_S || key == KEY_X)
+		app->object[CAMERA]->orientation.x += add_or_minus(key == KEY_S, ROT);
+	else if (key == KEY_D || key == KEY_C)
+		app->object[CAMERA]->orientation.y += add_or_minus(key == KEY_D, PI / 8);
+	else if (key == KEY_F || key == KEY_V)
+		app->object[CAMERA]->orientation.z += add_or_minus(key == KEY_F, PI / 8);
+	else if (!control_object(key, app->selected_object->content))
+		return ((void)printf("unknown key pressed: %d\n", key));
 	++app->invalidated;
 }
 

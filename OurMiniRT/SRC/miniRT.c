@@ -15,7 +15,8 @@
 // app.last_updated = 1 to trigger first render
 static void	init_app(t_app *app)
 {
-	*app = (t_app){.mini = 1};
+	*app = (t_app){
+		.features = FEATURE_LIGHT };
 }
 
 static void	load_scene_or_exit(t_app *app, char *filepath)
@@ -42,6 +43,6 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		app_exit(&app, "Require 1 rt file");
 	load_scene_or_exit(&app, argv[1]);
-	start_gui(&app, 1600, 900);
+	start_gui(&app, WINDOW_WIDTH, WINDOW_HEIGHT);
 	app_exit(&app, "Unexpected GUI failure");
 }

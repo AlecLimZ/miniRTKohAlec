@@ -39,53 +39,70 @@ static t_hitpayload	scene_intersect(
 	return (payload);
 }
 
-
-static t_vec3	sum_color(t_hitpayload a, t_vec3 reflect_color,
-	t_vec3 diffuse_light_intensity, float specular_light_intensity)
+//t_vec3 diffuse_light_intensity, float specular_light_intensity
+static t_vec3	cast_reflect_ray(t_vec3 dir, t_hitpayload a, const int depth,
+	const t_app *app)
 {
-	return (vadd(
-		vadd(
-			vmul(a.material.diffuse_color, diffuse_light_intensity),
-			mulvf((t_vec3){{1., 1., 1.}},
-				specular_light_intensity * a.material.albedo[1])
-		),
-		mulvf(reflect_color,a.material.albedo[2])
-	));
+	const t_vec3 reflect_dir = normalized(reflect(dir, a.normal));
+	const t_vec3 reflect_color = cast_ray(a.point, reflect_dir, depth, app);
+
+	return (mulvf(reflect_color, a.material.albedo[2]));
+}
+
+static void	cast_shadow_ray(t_light_trace *rt, const t_object *light, 
+	t_hitpayload a, const t_app *app)
+{
+	const t_vec3		light_dir = normalized(vsub(light->coor, a.point));
+	const t_hitpayload	obstacle = scene_intersect(a.point, light_dir, app->objects);
+
+	if (!(obstacle.hit && norm(vsub(obstacle.point, a.point)) < norm(vsub(light->coor, a.point))))
+	{
+		rt->diffuse_light_intensity = vadd(rt->diffuse_light_intensity, 
+			mulvf(light->light_color, fmax(0.f, mulvv(light_dir, a.normal))));
+		if (app->features & FEATURE_SPECULAR)
+			rt->specular_light_intensity += pow(
+				fmax(0.f, mulvv(negate(reflect(negate(light_dir), a.normal)), rt->dir)),
+				a.material.specular_exponent);
+	}
 }
 
 // if (g_mode == BY_DISTANCE)
 //	return mulvf((t_vec3) {{1,1,1}}, (fmax(0,16- a.nearest_dist))/16);
-// if (g_mode == BY_NORMAL)
-//	return mulvf(vadd(a.normal, (t_vec3){{1,1,1}}), 0.5);
-// if (g_mode == BY_OBJECT) return a.material.diffuse_color;
-// the ray tracer getting final color per pixel
+
+// find closest object and distance
+// get its material
+// with hitpoint and light source, find diffuse_light_intensity (gradient)
+//		and specular_light_intensity (optional)
+// (optional) with hitpoint and hitpoint normal, find reflection[albedo]
+// pixel = (material * (ambient + diffuse_light_intensity)) 
+//		+ (white * specular_light_intensity[exponent,albedo])
+//		+ reflection
 t_vec3	cast_ray(const t_vec3 orig, t_vec3 dir,
-	const int depth, t_list *list, t_rgb bg)
+	const int depth, const t_app *app)
 {
-	const t_list	    *lights = list;
-	const t_hitpayload  a = scene_intersect(orig, dir, list);
+	const t_hitpayload 	a = scene_intersect(orig, dir, app->objects);
+	const t_list	    *lights = app->objects;
+	t_light_trace		rt;
+	t_vec3				color;
 
 	if (depth > 4 || !a.hit)
-		return (bg);
-	const t_vec3 reflect_dir = normalized(reflect(dir, a.normal));
-	const t_vec3 reflect_color = cast_ray(a.point, reflect_dir, depth + 1, list, bg);
-	float specular_light_intensity = 0;
-	t_vec3 diffuse_light_intensity = bg;
+		return (app->object[AMBIENT]->light_color);
+	if (app->features & FEATURE_NORMAL)
+		return mulvf(vadd(a.normal, (t_vec3){{1, 1, 1}}), 0.5);
+	if ((app->features & FEATURE_LIGHT) == 0)
+		return (a.material.diffuse_color);
+	rt.dir = dir;
+	rt.specular_light_intensity = 0;
+	rt.diffuse_light_intensity = app->object[AMBIENT]->light_color;
 	while (lights)
 	{
 		if (as_object(lights)->type == LIGHT || as_object(lights)->type == LIGHT_BONUS)
-		{
-			const t_object *light = lights->content;
-			t_vec3 light_dir = normalized(vsub(light->coor, a.point));
-			t_hitpayload b = scene_intersect(a.point, light_dir, list);
-			if (!(b.hit && norm(vsub(b.point, a.point)) < norm(vsub(light->coor, a.point))))
-			{
-				diffuse_light_intensity = vadd(diffuse_light_intensity, mulvf(light->light_color, fmax(0.f, mulvv(light_dir,a.normal))));
-				specular_light_intensity += pow(fmax(0.f, mulvv(negate(reflect(negate(light_dir), a.normal)),dir)), a.material.specular_exponent);
-			}
-		}
+			cast_shadow_ray(&rt, lights->content, a, app);
 		lights = lights->next;
 	}
-	return (sum_color(a, reflect_color, 
-		diffuse_light_intensity, specular_light_intensity));
+	color = vadd(vmul(a.material.diffuse_color, rt.diffuse_light_intensity),
+			mulvf((t_vec3){{1., 1., 1.}}, rt.specular_light_intensity * a.material.albedo[1]));
+	if (app->features & FEATURE_REFLECTION)
+		return (vadd(color, cast_reflect_ray(dir, a, depth + 1, app)));
+	return (color);
 }

@@ -16,6 +16,22 @@
 # include "structs.h"
 # include <math.h>
 
+typedef struct s_hitpayload
+{
+	bool		hit;
+	float		nearest_dist;
+	t_vec3		point;
+	t_vec3		normal;
+	t_material	material;
+}				t_hitpayload;
+
+typedef struct s_light_trace
+{
+	float		specular_light_intensity;
+	t_vec3		diffuse_light_intensity;
+	t_vec3		dir;
+}	t_light_trace;
+
 t_vec3		vadd(t_vec3 a, t_vec3 b);
 t_vec3		vsub(t_vec3 a, t_vec3 b);
 t_vec3		vmul(t_vec3 a, t_vec3 b);
@@ -38,6 +54,6 @@ void		nearest_plane2(const t_vec3 orig, const t_vec3 dir,
 void		nearest_plane3(const t_vec3 orig, const t_vec3 dir,
 				const t_object *plane, t_hitpayload *payload);
 t_vec3		cast_ray(const t_vec3 orig, t_vec3 dir,
-				const int depth, t_list *list, t_rgb bg);
+				const int depth, const t_app *app);
 
 #endif
