@@ -14,7 +14,7 @@
 #include <string.h>
 #include "app.h"
 
-#ifdef LINUX
+#ifdef __linux__
 
 int	mlx_destroy_display(void *mlx_ptr);
 
