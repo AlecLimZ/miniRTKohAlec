@@ -10,22 +10,31 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <time.h>
 #include "miniRT.h"
 
-// %ffps\n", 1.0 / ((double)(clock() - begin) / CLOCKS_PER_SEC));
-// (double)(clock() - begin) / CLOCKS_PER_SEC);
+#ifdef __linux__
+#include <time.h>
+#include <stdio.h>
+
 void	benchmark(void)
 {
-	static double	begin = NAN;
+	static double	begin = INFINITY;
 
-	if (begin == NAN)
+	if (begin == INFINITY)
 	{
 		begin = clock();
 	}
 	else
 	{
 		printf("benchmark: %fs\n", (clock() - begin) / CLOCKS_PER_SEC);
-		begin = NAN;
+		begin = INFINITY;
 	}
 }
+
+#else
+
+void	benchmark(void)
+{
+}
+
+#endif
