@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   control.c                                          :+:      :+:    :+:   */
+/*   raytracer.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 23:12:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/11 23:16:33 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/21 12:14:30 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_light_trace
 t_vec3			vadd(t_vec3 a, t_vec3 b);
 t_vec3			vsub(t_vec3 a, t_vec3 b);
 t_vec3			vmul(t_vec3 a, t_vec3 b);
- // same as 	dot
+// mulvv is same as dot
 float			mulvv(t_vec3 a, t_vec3 b);
 t_vec3			mulvf(t_vec3 a, float b);
 t_vec3			negate(t_vec3 v);

@@ -6,24 +6,12 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 23:12:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/11 23:16:33 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/21 12:30:30 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
-# include "key_codes.h"
-
-static int	ft_checklight(const t_object *object)
-{
-	return (object->type == AMBIENT
-		|| object->type == LIGHT
-		|| object->type == LIGHT_BONUS);
-}
-
-static void	adjust_val(float *value, float step, float lo, float hi)
-{
-	*value = clamp(*value + step, lo, hi);
-}
+#include "key_codes.h"
 
 static bool	control_object(unsigned int key, t_object *object)
 {
@@ -50,13 +38,34 @@ static bool	control_object(unsigned int key, t_object *object)
 	return (true);
 }
 
+static void	invalidate_input2(unsigned int key, t_app *app)
+{
+	if (key == KEY_S || key == KEY_X)
+		app->object[CAMERA]->orientation.x
+			+= add_or_minus(key == KEY_S, ROT);
+	else if (key == KEY_D || key == KEY_C)
+		app->object[CAMERA]->orientation.y
+			+= add_or_minus(key == KEY_D, PI / 8);
+	else if (key == KEY_F || key == KEY_V)
+		app->object[CAMERA]->orientation.z
+			+= add_or_minus(key == KEY_F, PI / 8);
+	else if (app->keypressed & KEY_SHIFT_FLAG
+		&& control_object(key, app->object[CAMERA]))
+		;
+	else if (app->keypressed & KEY_CTRL_FLAG
+		&& control_object(key, app->object[LIGHT]))
+		;
+	else if (!control_object(key, app->selected_object->content))
+		return ((void)printf("unknown key pressed: %d\n", key));
+}
+
 static void	invalidate_input(unsigned int key, t_app *app)
 {
 	const int	toggles[] = {
-		[KEY_G] = FEATURE_GAMMA_CORRECTION, [KEY_H] = FEATURE_HELP,
-		[KEY_J] = FEATURE_SPECULAR, [KEY_K] = FEATURE_REFLECTION,
-		[KEY_L] = FEATURE_LIGHT, [KEY_N] = FEATURE_NORMAL,
-		[KEY_T] = FEATURE_CAPTION, };
+	[KEY_G] = FEATURE_GAMMA_CORRECTION, [KEY_H] = FEATURE_HELP,
+	[KEY_J] = FEATURE_SPECULAR, [KEY_K] = FEATURE_REFLECTION,
+	[KEY_L] = FEATURE_LIGHT, [KEY_N] = FEATURE_NORMAL,
+	[KEY_T] = FEATURE_CAPTION, };
 
 	if (key < sizeof(toggles) / sizeof(*toggles) && toggles[key])
 		app->features ^= toggles[key];
@@ -70,18 +79,8 @@ static void	invalidate_input(unsigned int key, t_app *app)
 		else
 			create_window(app, WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
-	else if (key == KEY_S || key == KEY_X)
-		app->object[CAMERA]->orientation.x += add_or_minus(key == KEY_S, ROT);
-	else if (key == KEY_D || key == KEY_C)
-		app->object[CAMERA]->orientation.y += add_or_minus(key == KEY_D, PI / 8);
-	else if (key == KEY_F || key == KEY_V)
-		app->object[CAMERA]->orientation.z += add_or_minus(key == KEY_F, PI / 8);
-	else if (app->keypressed & KEY_SHIFT_FLAG && control_object(key, app->object[CAMERA]))
-		;
-	else if (app->keypressed & KEY_CTRL_FLAG && control_object(key, app->object[LIGHT]))
-		;
-	else if (!control_object(key, app->selected_object->content))
-		return ((void)printf("unknown key pressed: %d\n", key));
+	else
+		invalidate_input2(key, app);
 	++app->invalidated;
 }
 

@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:33:51 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/19 16:59:18 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/21 12:33:38 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 static void	init_app(t_app *app)
 {
 	*app = (t_app){
-		.features = FEATURE_LIGHT };
+		.features = FEATURE_LIGHT};
 }
 
 static void	load_scene_or_exit(t_app *app, char *filepath)

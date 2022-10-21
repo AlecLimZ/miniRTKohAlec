@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:12:26 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/18 11:25:20 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/21 12:14:47 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,14 @@ typedef union s_vec3
 }	t_vec3;
 
 typedef t_vec3	t_rgb;
+
+typedef struct s_ray
+{
+	t_vec3	orig;
+	t_vec3	dir;
+	t_vec3	norm;
+	float	y;
+}	t_ray;
 
 // tinyraytracer: albedo[diffuse, specular, reflect]
 typedef struct s_material {

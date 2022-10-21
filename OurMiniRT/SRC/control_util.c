@@ -6,14 +6,13 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 23:12:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/11 23:16:33 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/21 12:31:09 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
 #include <stddef.h>
 #include "key_codes.h"
-
 
 float	clamp(float value, float lo, float hi)
 {
@@ -45,7 +44,7 @@ float	add_or_minus(int add_condition, float step)
 		return (-step);
 }
 
-int gui_keyup(int keycode, t_app *app)
+int	gui_keyup(int keycode, t_app *app)
 {
 	if (keycode == KEY_SHIFT)
 		app->keypressed &= ~KEY_SHIFT_FLAG;

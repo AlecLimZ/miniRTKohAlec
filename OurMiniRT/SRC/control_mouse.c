@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   control_util.c                                     :+:      :+:    :+:   */
+/*   control_mouse.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 23:12:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/11 23:16:33 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/21 11:59:48 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	gui_mouseup(int button, int x, int y, t_app *app)
 	t_hitpayload	payload;
 	t_list			*list;
 
+	list = NULL;
 	if (button != MOUSE_BUTTON_LEFT)
 		return (0);
 	dir.x = (x + 0.5f) - app->image.width / 2.f;
@@ -41,15 +42,13 @@ int	gui_mouseup(int button, int x, int y, t_app *app)
 	rotate_x(&dir.y, &dir.z, app->object[CAMERA]->orientation.x);
 	rotate_y(&dir.x, &dir.z, app->object[CAMERA]->orientation.y);
 	rotate_z(&dir.x, &dir.y, app->object[CAMERA]->orientation.z);
-	payload = scene_intersect(app->object[CAMERA]->coor, normalized(dir), app->objects);
+	payload = scene_intersect(app->object[CAMERA]->coor,
+			normalized(dir), app->objects);
 	if (payload.hit && payload.object)
 		list = search_list(app->objects, payload.object);
 	if (!list)
-		list = search_list(app->objects, app->object[AMBIENT]);
-	if (list)
-	{
-		app->selected_object = list;
-		++app->invalidated;
-	}
+		return (0);
+	app->selected_object = list;
+	++app->invalidated;
 	return (0);
 }
