@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 23:12:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/21 12:14:30 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/21 13:33:47 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_light_trace
 	float		specular_light_intensity;
 	t_vec3		diffuse_light_intensity;
 	t_vec3		dir;
+	t_vec3		reflect_color;
 }				t_light_trace;
 
 t_vec3			vadd(t_vec3 a, t_vec3 b);

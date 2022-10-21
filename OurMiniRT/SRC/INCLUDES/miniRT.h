@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 14:53:36 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/21 12:23:52 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/21 13:40:08 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # define MIN_COOR -999
 # define MAX_COOR 999
 # define PI 3.14159
-# define ROT PI / 8
 
 # include <stdio.h>
 # include <unistd.h>
