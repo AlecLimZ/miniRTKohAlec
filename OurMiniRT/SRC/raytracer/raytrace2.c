@@ -100,7 +100,7 @@ t_vec3	cast_ray(const t_vec3 orig, t_vec3 dir,
 	while (lights)
 	{
 		if (as_object(lights)->type == LIGHT
-			| as_object(lights)->type == LIGHT_BONUS)
+			|| as_object(lights)->type == LIGHT_BONUS)
 			cast_shadow_ray(&rt, lights->content, a, app);
 		lights = lights->next;
 	}
