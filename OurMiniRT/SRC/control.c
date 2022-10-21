@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 23:12:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/21 12:30:30 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/21 13:46:55 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ static bool	control_object(unsigned int key, t_object *object)
 	return (true);
 }
 
-static void	invalidate_input2(unsigned int key, t_app *app)
+static bool	invalidate_input2(unsigned int key, t_app *app)
 {
 	if (key == KEY_S || key == KEY_X)
 		app->object[CAMERA]->orientation.x
-			+= add_or_minus(key == KEY_S, ROT);
+			+= add_or_minus(key == KEY_S, PI / 8);
 	else if (key == KEY_D || key == KEY_C)
 		app->object[CAMERA]->orientation.y
 			+= add_or_minus(key == KEY_D, PI / 8);
@@ -55,8 +55,11 @@ static void	invalidate_input2(unsigned int key, t_app *app)
 	else if (app->keypressed & KEY_CTRL_FLAG
 		&& control_object(key, app->object[LIGHT]))
 		;
-	else if (!control_object(key, app->selected_object->content))
-		return ((void)printf("unknown key pressed: %d\n", key));
+	else if (control_object(key, app->selected_object->content))
+		;
+	else
+		return (false);
+	return (true);
 }
 
 static void	invalidate_input(unsigned int key, t_app *app)
@@ -79,8 +82,11 @@ static void	invalidate_input(unsigned int key, t_app *app)
 		else
 			create_window(app, WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
-	else
-		invalidate_input2(key, app);
+	else if (!invalidate_input2(key, app))
+	{
+		printf("unknown key pressed: %d\n", key);
+		return ;
+	}
 	++app->invalidated;
 }
 
