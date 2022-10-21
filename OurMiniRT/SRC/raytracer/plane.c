@@ -85,6 +85,7 @@ void	nearest_plane3(const t_vec3 orig, const t_vec3 dir,
 		else
 			payload->normal = plane->orientation;
 		payload->material = plane->material;
+		payload->object = plane;
 	}
 }
 // void	nearest_plane2( t_vec3 orig, const t_vec3 dir, 

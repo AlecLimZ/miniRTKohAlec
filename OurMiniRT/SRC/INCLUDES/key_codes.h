@@ -69,6 +69,8 @@
 #  define KEY_RIGHT 124
 #  define KEY_DOWN 125
 #  define KEY_UP 126
+#  define KEY_SHIFT 56
+#  define KEY_CTRL 59
 
 # else
 
@@ -126,6 +128,8 @@
 #  define KEY_RIGHT 65363
 #  define KEY_DOWN 65364
 #  define KEY_UP 65362
+#  define KEY_SHIFT 65505
+#  define KEY_CTRL 65507
 
 # endif
 

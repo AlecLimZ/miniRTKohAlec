@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "miniRT.h"
+# include "key_codes.h"
 
 static int	ft_checklight(const t_object *object)
 {
@@ -75,17 +76,25 @@ static void	invalidate_input(unsigned int key, t_app *app)
 		app->object[CAMERA]->orientation.y += add_or_minus(key == KEY_D, PI / 8);
 	else if (key == KEY_F || key == KEY_V)
 		app->object[CAMERA]->orientation.z += add_or_minus(key == KEY_F, PI / 8);
+	else if (app->keypressed & KEY_SHIFT_FLAG && control_object(key, app->object[CAMERA]))
+		;
+	else if (app->keypressed & KEY_CTRL_FLAG && control_object(key, app->object[LIGHT]))
+		;
 	else if (!control_object(key, app->selected_object->content))
 		return ((void)printf("unknown key pressed: %d\n", key));
 	++app->invalidated;
 }
 
-int	gui_input(unsigned int key, t_app *app)
+int	gui_keydown(unsigned int key, t_app *app)
 {
 	if (key == KEY_ESC)
 		app_exit(app, NULL);
 	else if (key == KEY_E)
 		export_scene(app->objects);
+	else if (key == KEY_SHIFT)
+		app->keypressed |= KEY_SHIFT_FLAG;
+	else if (key == KEY_CTRL)
+		app->keypressed |= KEY_CTRL_FLAG;
 	else if (key == KEY_TAB)
 	{
 		select_next(app);

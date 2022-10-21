@@ -12,7 +12,7 @@
 
 #include "miniRT.h"
 
-const char	*get_object_typename(t_object *object)
+const char	*get_object_typename(const t_object *object)
 {
 	const char *const	name[] = {
 	[AMBIENT] = "Ambient (ratio)",
@@ -89,7 +89,9 @@ void	create_window(t_app *app, int width, int height)
 		app_exit(app, "Require 32bit color and little-endian (x86) platform");
 	app->win_ptr = mlx_new_window(
 			app->mlx_ptr, app->image.width, app->image.height, title);
-	mlx_hook(app->win_ptr, 2, 1L << 0, gui_input, app);
+	mlx_hook(app->win_ptr, 2, 1L << 0, gui_keydown, app);
+	mlx_hook(app->win_ptr, 3, 1L << 1, gui_keyup, app);
+	mlx_hook(app->win_ptr, 4, 1L << 2, gui_mouseup, app);
 	mlx_hook(app->win_ptr, 17, 1L << 17, gui_exit, app);
 }
 

@@ -23,6 +23,8 @@
 # define FEATURE_SMALLER_WINDOW 32
 # define FEATURE_HELP 64
 # define FEATURE_CAPTION 128
+# define KEY_SHIFT_FLAG 1
+# define KEY_CTRL_FLAG 2
 
 enum e_object_type
 {
@@ -129,6 +131,7 @@ typedef struct s_app
 	};
 	unsigned int	invalidated;
 	int				features;
+	int				keypressed;
 }	t_app;
 
 #endif

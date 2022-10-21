@@ -22,7 +22,7 @@ void    help(t_app *app)
 	size_t		i;
 	char *const	s[] = {
 		"Object Control:",
-		"  [T]Caption(Toggle)  [TAB]Next Object",
+		"  [T]Caption(Toggle)  [TAB]Next Object  [Hold Shift]Camera Shortcut  [Hold Ctrl]Light Shortcut",
 		"  [ARROWS]Movement  [I]Back  [O]Forward",
 		"  [1]Light++  [2]Light--  [3]Radius++"
 		"  [4]Radius--  [5]Height++  [6]Height--"

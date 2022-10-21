@@ -29,7 +29,6 @@
 # include "libft.h"
 # include "get_next_line.h"
 # include "ansi_colors.h"
-# include "key_codes.h"
 # include "structs.h"
 # include "app.h"
 # include "parser.h"
@@ -39,11 +38,13 @@ void        help(t_app *app);
 void		benchmark(const char *s);
 void		start_gui(t_app *app, int width, int height);
 void		create_window(t_app *app, int width, int height);
-const char	*get_object_typename(t_object *object);
+const char	*get_object_typename(const t_object *object);
 void		reload_scene(t_app *app);
 float		add_or_minus(int add_condition, float step);
 
-int			gui_input(unsigned int key, t_app *app);
+int			gui_keydown(unsigned int key, t_app *app);
+int         gui_keyup(int keycode, t_app *app);
+int         gui_mouseup(int button, int x, int y, t_app *app);
 float		clamp(float value, float lo, float hi);
 
 // rotate.c

@@ -50,5 +50,6 @@ void	nearest_sphere(const t_vec3 orig, const t_vec3 dir,
 		payload->point = vadd(orig, mulvf(dir, payload->nearest_dist));
 		payload->normal = normalized(vsub(payload->point, s->coor));
 		payload->material = s->material;
+		payload->object = s;
 	}
 }

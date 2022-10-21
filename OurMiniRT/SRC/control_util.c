@@ -12,6 +12,8 @@
 
 #include "miniRT.h"
 #include <stddef.h>
+#include "key_codes.h"
+
 
 float	clamp(float value, float lo, float hi)
 {
@@ -41,4 +43,13 @@ float	add_or_minus(int add_condition, float step)
 		return (step);
 	else
 		return (-step);
+}
+
+int gui_keyup(int keycode, t_app *app)
+{
+	if (keycode == KEY_SHIFT)
+		app->keypressed &= ~KEY_SHIFT_FLAG;
+	else if (keycode == KEY_CTRL)
+		app->keypressed &= ~KEY_CTRL_FLAG;
+	return (0);
 }

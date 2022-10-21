@@ -18,13 +18,13 @@ static t_vec3	reflect(const t_vec3 i, const t_vec3 normal) {
 	return (vsub(i, mulvf(normal, 2.f * mulvv(i, normal))));
 }
 
-static t_hitpayload	scene_intersect(
+t_hitpayload	scene_intersect(
 	const t_vec3 orig, const t_vec3 dir, const t_list *list)
 {
 	t_hitpayload payload;
 		
 	payload = (t_hitpayload)
-		{0, 1e10, {{0,0,0}}, {{0,0,0}}, {{1,0,0}, 0, {{0,0,0}}}};
+		{0, 1e10, {{0,0,0}}, {{0,0,0}}, {{1,0,0}, 0, {{0,0,0}}}, NULL};
 	while (list)
 	{
 		if (as_object(list)->type == SPHERE)
