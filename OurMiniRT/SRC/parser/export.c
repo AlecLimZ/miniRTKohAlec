@@ -44,26 +44,26 @@ static void	pfmt(const char *fmt, const void **param)
 static void	print_object(const t_object *o)
 {
 	if (o->type == AMBIENT)
-		pfmt("A	f	D	# ratio color",
+		pfmt("A	f	D	",
 			(const void *[]){&o->ambient_ratio, &o->color});
 	else if (o->type == LIGHT)
-		pfmt("L	F		f	D	# center brightness color",
+		pfmt("L	F		f	D	",
 			(const void *[]){&o->coor, &o->light_brightness, &o->color});
 	else if (o->type == LIGHT_BONUS)
-		pfmt("li	F		f	D	# center brightness color",
+		pfmt("li	F		f	D	",
 			(const void *[]){&o->coor, &o->light_brightness, &o->color});
 	else if (o->type == CAMERA)
-		pfmt("C	F		F	f	# center orientation fov",
+		pfmt("C	F		F	f	",
 			(const void *[]){&o->coor, &o->orientation, &o->camera_fov});
 	else if (o->type == PLANE)
-		pfmt("pl	F		F	D	# center orientation color",
+		pfmt("pl	F		F	D	",
 			(const void *[]){&o->coor, &o->orientation, &o->color});
 	else if (o->type == SPHERE)
-		pfmt("sp	F		f	D	# center diameter color",
+		pfmt("sp	F		d	D	",
 			(const void *[]){&o->coor, &o->radius, &o->color});
 	else if (o->type == CYLINDER)
 		pfmt(
-			"cy	F		F	f	f	D	# center orient diameter height color",
+			"cy	F		F	d	f	D	",
 			(const void *[]){&o->coor, &o->orientation,
 			&o->radius, &o->height, &o->color});
 	else
