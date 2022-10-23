@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cylinder.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leng-chu <leng-chu@student.42kl.edu.m      +#+  +:+       +#+        */
+/*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 14:44:43 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/09/17 14:45:13 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/23 14:36:34 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	nearest_cylinder(const t_vec3 orig, t_vec3 dir,
 		payload->nearest_dist = d;
 		payload->point = vadd(orig, mulvf(dir, payload->nearest_dist));
 		payload->normal = normalized(vsub(payload->point,
-						vadd(mulvf(r.norm, r.y), cy->coor)));
+					vadd(mulvf(r.norm, r.y), cy->coor)));
 		if (ret[0] == false && ret[1] == true)
 			payload->normal = negate(payload->normal);
 		payload->material = cy->material;

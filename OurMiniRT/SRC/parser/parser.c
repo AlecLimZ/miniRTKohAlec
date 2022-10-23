@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 13:10:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/13 14:19:14 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/23 14:32:01 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static bool	parse_line(char *line, t_app *app)
 {
 	t_object				object;
 	t_object				*content;
-	const t_object_parser 	*pfunc = (t_object_parser[]){
+	const t_object_parser	*pfunc = (t_object_parser[]){
 		parse_ambient, parse_camera, parse_light, parse_sphere, parse_plane,
 		parse_cylinder, parse_light_bonus, parse_cone_bonus, NULL};
 

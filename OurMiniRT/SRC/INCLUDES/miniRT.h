@@ -6,23 +6,30 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 14:53:36 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/21 13:40:08 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/23 14:47:19 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
 
-# ifndef __SANITIZE_ADDRESS__
-#  define WINDOW_WIDTH 1600
-#  define WINDOW_HEIGHT 900
-#  define ALT_WINDOW_WIDTH 800
-#  define ALT_WINDOW_HEIGHT 450
-# else
+// clang 
+# if defined(__has_feature) && __has_feature(address_sanitizer)
 #  define WINDOW_WIDTH 800
 #  define WINDOW_HEIGHT 450
 #  define ALT_WINDOW_WIDTH 1600
 #  define ALT_WINDOW_HEIGHT 900
+// gcc
+# elif defined(__SANITIZE_ADDRESS__)
+#  define WINDOW_WIDTH 800
+#  define WINDOW_HEIGHT 450
+#  define ALT_WINDOW_WIDTH 1600
+#  define ALT_WINDOW_HEIGHT 900
+# else
+#  define WINDOW_WIDTH 1600
+#  define WINDOW_HEIGHT 900
+#  define ALT_WINDOW_WIDTH 800
+#  define ALT_WINDOW_HEIGHT 450
 # endif
 # define MIN_COOR -999
 # define MAX_COOR 999
@@ -64,7 +71,7 @@ void		rotate_y(float *x, float *z, double angle_y);
 void		rotate_z(float *x, float *y, double angle_z);
 
 // control.c
-void	    select_next(t_app *app, t_list *o);
+void		select_next(t_app *app, t_list *o);
 
 // raytrace.c
 t_vec3		normalized(t_vec3 v);
@@ -73,6 +80,6 @@ t_object	*as_object(const t_list *node);
 
 // export.c
 void		export_scene(t_list *object);
-void	    print_object(const t_object *o);
+void		print_object(const t_object *o);
 
 #endif

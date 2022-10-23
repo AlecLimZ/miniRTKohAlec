@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   raytrace.c                                         :+:      :+:    :+:   */
+/*   raytracer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/19 18:20:03 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/23 14:33:21 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,18 @@ static int	to_rgb(t_vec3 color, bool use_gamma_correction)
 		+ (int)(255.999 * color.z / max));
 }
 
+// todo camera
 static void	cal_color_and_orient(void *content)
 {
 	t_object *const	o = content;
 
 	if (o->type == AMBIENT || o->type == LIGHT || o->type == LIGHT_BONUS)
 		o->light_color = mulvf(o->color, o->light_brightness);
-	//o->type == CAMERA ||
 	else if (o->type == PLANE || o->type == CYLINDER || o->type == CONE)
 		o->orientation = normalized(o->orientation);
 }
 
+// todo camera orientation vs rotation
 void	*raytrace(const t_app *app)
 {
 	const int	width = app->image.width;

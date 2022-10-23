@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/21 13:37:36 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/23 14:32:48 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,13 @@ t_vec3	cast_ray(const t_vec3 orig, t_vec3 dir,
 		return (mulvf(vadd(a.normal, (t_vec3){{1, 1, 1}}), 0.5));
 	if ((app->features & FEATURE_LIGHT) == 0)
 		return (vmul(a.material.diffuse_color,
-			app->object[AMBIENT]->light_color));
+				app->object[AMBIENT]->light_color));
 	rt = (t_light_trace){.dir = dir,
 		.diffuse_light_intensity = app->object[AMBIENT]->light_color};
 	while (objects)
 	{
 		if (!as_object(objects)->hide && (as_object(objects)->type == LIGHT
-			|| as_object(objects)->type == LIGHT_BONUS))
+				|| as_object(objects)->type == LIGHT_BONUS))
 			cast_shadow_ray(&rt, objects->content, a, app);
 		objects = objects->next;
 	}

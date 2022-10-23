@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/21 15:13:52 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/23 14:31:37 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,7 @@ void	print_object(const t_object *o)
 	if (o->hide)
 		printf("# ");
 	if (o->type == AMBIENT)
-		pfmt("A	f	D	",
-			(const void *[]){&o->ambient_ratio, &o->color});
+		pfmt("A	f	D	", (const void *[]){&o->ambient_ratio, &o->color});
 	else if (o->type == LIGHT)
 		pfmt("L	F		f	D	",
 			(const void *[]){&o->coor, &o->light_brightness, &o->color});
