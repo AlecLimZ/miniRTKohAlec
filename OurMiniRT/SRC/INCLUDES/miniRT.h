@@ -13,14 +13,23 @@
 #ifndef MINIRT_H
 # define MINIRT_H
 
+// clang 
+# if __clang__
+#  if defined(__has_feature) && __has_feature(address_sanitizer)
+#    define WINDOW_WIDTH 800
+#    define WINDOW_HEIGHT 450
+#    define ALT_WINDOW_WIDTH 1600
+#    define ALT_WINDOW_HEIGHT 900
+#  else
+#   define WINDOW_WIDTH 1600
+#   define WINDOW_HEIGHT 900
+#   define ALT_WINDOW_WIDTH 800
+#   define ALT_WINDOW_HEIGHT 450
+#  endif
+# endif
+
 // gcc
 # if defined(__SANITIZE_ADDRESS__)
-#  define WINDOW_WIDTH 800
-#  define WINDOW_HEIGHT 450
-#  define ALT_WINDOW_WIDTH 1600
-#  define ALT_WINDOW_HEIGHT 900
-// clang 
-# elif defined(__has_feature) && __has_feature(address_sanitizer)
 #  define WINDOW_WIDTH 800
 #  define WINDOW_HEIGHT 450
 #  define ALT_WINDOW_WIDTH 1600
@@ -31,6 +40,7 @@
 #  define ALT_WINDOW_WIDTH 800
 #  define ALT_WINDOW_HEIGHT 450
 # endif
+
 # define MIN_COOR -999
 # define MAX_COOR 999
 # define PI 3.14159
