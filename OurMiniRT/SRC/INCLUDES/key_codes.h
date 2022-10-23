@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 08:27:54 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/21 11:57:23 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/23 15:45:42 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@
 #  define KEY_DOWN 125
 #  define KEY_UP 126
 #  define KEY_SHIFT 257
-//#  define KEY_CTRL 256
 #  define KEY_CTRL 259
 
 # else

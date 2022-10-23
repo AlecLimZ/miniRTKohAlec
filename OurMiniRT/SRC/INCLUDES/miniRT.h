@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 14:53:36 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/23 15:20:58 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/23 15:45:25 by leng-chu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 // clang 
 # if __clang__
 #  if defined(__has_feature) && __has_feature(address_sanitizer)
-#    define WINDOW_WIDTH 800
-#    define WINDOW_HEIGHT 450
-#    define ALT_WINDOW_WIDTH 1600
-#    define ALT_WINDOW_HEIGHT 900
+#   define WINDOW_WIDTH 800
+#   define WINDOW_HEIGHT 450
+#   define ALT_WINDOW_WIDTH 1600
+#   define ALT_WINDOW_HEIGHT 900
 #  else
 #   define WINDOW_WIDTH 1600
 #   define WINDOW_HEIGHT 900
@@ -27,6 +27,7 @@
 #   define ALT_WINDOW_HEIGHT 450
 #  endif
 # else
+
 // gcc
 #  if defined(__SANITIZE_ADDRESS__)
 #   define WINDOW_WIDTH 800
@@ -40,7 +41,6 @@
 #   define ALT_WINDOW_HEIGHT 450
 #  endif
 # endif
-
 
 # define MIN_COOR -999
 # define MAX_COOR 999
@@ -56,7 +56,6 @@
 # include "structs.h"
 # include "app.h"
 # include "parser.h"
-//# include "vecray.h"
 
 void		help(t_app *app);
 void		benchmark(const char *s);
@@ -72,7 +71,7 @@ int			gui_keyup(int keycode, t_app *app);
 int			gui_mousedown(int button, int x, int y, t_app *app);
 float		clamp(float value, float lo, float hi);
 
-//util
+// util
 int			ft_checklight(const t_object *object);
 void		adjust_val(float *value, float step, float lo, float hi);
 
