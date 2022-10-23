@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 14:53:36 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/23 14:47:19 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/23 15:20:58 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,21 @@
 #   define ALT_WINDOW_WIDTH 800
 #   define ALT_WINDOW_HEIGHT 450
 #  endif
+# else
+// gcc
+#  if defined(__SANITIZE_ADDRESS__)
+#   define WINDOW_WIDTH 800
+#   define WINDOW_HEIGHT 450
+#   define ALT_WINDOW_WIDTH 1600
+#   define ALT_WINDOW_HEIGHT 900
+#  else
+#   define WINDOW_WIDTH 1600
+#   define WINDOW_HEIGHT 900
+#   define ALT_WINDOW_WIDTH 800
+#   define ALT_WINDOW_HEIGHT 450
+#  endif
 # endif
 
-// gcc
-# if defined(__SANITIZE_ADDRESS__)
-#  define WINDOW_WIDTH 800
-#  define WINDOW_HEIGHT 450
-#  define ALT_WINDOW_WIDTH 1600
-#  define ALT_WINDOW_HEIGHT 900
-# else
-#  define WINDOW_WIDTH 1600
-#  define WINDOW_HEIGHT 900
-#  define ALT_WINDOW_WIDTH 800
-#  define ALT_WINDOW_HEIGHT 450
-# endif
 
 # define MIN_COOR -999
 # define MAX_COOR 999
