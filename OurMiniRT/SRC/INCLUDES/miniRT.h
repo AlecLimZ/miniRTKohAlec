@@ -13,14 +13,14 @@
 #ifndef MINIRT_H
 # define MINIRT_H
 
-// clang 
-# if defined(__has_feature) && __has_feature(address_sanitizer)
+// gcc
+# if defined(__SANITIZE_ADDRESS__)
 #  define WINDOW_WIDTH 800
 #  define WINDOW_HEIGHT 450
 #  define ALT_WINDOW_WIDTH 1600
 #  define ALT_WINDOW_HEIGHT 900
-// gcc
-# elif defined(__SANITIZE_ADDRESS__)
+// clang 
+# elif defined(__has_feature) && __has_feature(address_sanitizer)
 #  define WINDOW_WIDTH 800
 #  define WINDOW_HEIGHT 450
 #  define ALT_WINDOW_WIDTH 1600
