@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/23 14:31:37 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/24 12:54:19 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,14 @@ static void	pfmt(const char *fmt, const void **param)
 static void	export_camera(const t_object *o)
 {
 	t_vec3	dir;
-	
-	dir = (t_vec3){{0,0,-1}};
+
+	dir = (t_vec3){{0, 0, -1}};
 	dir = normalized(look_at(dir, o->orientation));
 	rotate_x(&dir.y, &dir.z, o->camera_rotation.x);
 	rotate_y(&dir.x, &dir.z, o->camera_rotation.y);
 	dir = normalized(dir);
 	pfmt("C	F		F	f	",
-			(const void *[]){&o->coor, &dir, &o->camera_fov});
+		(const void *[]){&o->coor, &dir, &o->camera_fov});
 }
 
 void	print_object(const t_object *o)

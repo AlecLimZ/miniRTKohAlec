@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/23 14:33:21 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/24 12:54:52 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ t_vec3	look_at(t_vec3 dir, t_vec3 orientation)
 
 	up = (t_vec3){{0, 1, 0}};
 	if (forward.y == 1)
-		right = (t_vec3) {{1, 0, 0}};
+		right = (t_vec3){{1, 0, 0}};
 	else if (forward.y == -1)
-		right = (t_vec3) {{-1, 0, 0}};
+		right = (t_vec3){{-1, 0, 0}};
 	else
 		right = normalized(cross(up, forward));
 	up = cross(forward, right);
@@ -82,7 +82,6 @@ void	*raytrace(const t_app *app)
 		dir.x = +(pix % width + 0.5f) - width / 2.f;
 		dir.y = -(pix / width + 0.5f) + height / 2.f;
 		dir.z = -height / (2.f * tan(fov / 2.f));
-
 		dir = look_at(dir, app->object[CAMERA]->orientation);
 		rotate_x(&dir.y, &dir.z, app->object[CAMERA]->camera_rotation.x);
 		rotate_y(&dir.x, &dir.z, app->object[CAMERA]->camera_rotation.y);
