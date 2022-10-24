@@ -2,7 +2,7 @@ A       0.25    255,255,255     # ratio color
 # sp      -1.00,1.00,0.00         1.00    255,255,0       # center diameter color
 # sp      0.00,1.00,0.00          1.00    255,0,255       # center diameter color
 # sp      1.00,1.00,0.00          1.00    0,255,255       # center diameter color
-# sp      -1.00,0.00,0.00         1.00    255,0,0 # center diameter color
+# sp      -1.00,0.00,0.00         1.00    255,0,0 			# center diameter color
 # sp      0.00,0.00,0.00          1.00    0,255,0 # center diameter color
 # sp      1.00,0.00,0.00          1.00    0,0,255 # center diameter color
 # sp      -1.00,-1.00,0.00                1.00    0,0,0   # center diameter color
@@ -11,22 +11,22 @@ A       0.25    255,255,255     # ratio color
 sp      0,10,3   8   255,255,255
 # sp      10,10,10   3   255,255,255
 #bot
-pl      0.00,-10,0               0.00,1.00,0.00  255,255,255     # center orientation color
+pl      0.00,-10,0		0.00,1.00,0.00  255,255,255     # center orientation color
 #back
-pl      0.00,0,-10                0.00,0,1 255,255,255 # center orientation color
-pl      0.00,10.00,0                1,1,0   255,255,255 # center orientation color
-pl      0.00,10.00,0                -1,1,0   255,255,255 # center orientation color
+pl      0.00,0,-10      0.00,0,1 255,255,255 # center orientation color
+pl      0.00,10.00,0    1,1,0   255,255,255 # center orientation color
+pl      0.00,10.00,0    -1,1,0   255,255,255 # center orientation color
 
 #top segment 3 light r+g+b = white
 L       0,20,10          0.80    255,0,0     # center brightness color
-li       0,20,10          0.80    0,255,0     # center brightness color
-li       0,20,10          0.80    0,0,255     # center brightness color
+li       0,20,10         0.80    0,255,0     # center brightness color
+li       0,20,10         0.80    0,0,255     # center brightness color
 # right green
-li       10,10,10          0.80    0,255,0     # center brightness color
+li       10,10,10        0.80    0,255,0     # center brightness color
 # left red
-li       -10,10,10          0.80    255,0,0     # center brightness color
+li       -10,10,10       0.80    255,0,0     # center brightness color
 # bottom blue
 li       0,5,10          0.80    0,0,255     # center brightness color
 
-C       0,10,30                0.00,0.00,0.00  60.000000       # center orientation fov
+C       0,10,30                0.00,0.00,-1  60.000000       # center orientation fov
 # cy      3.00,-1.50,0.50         1.00,0.00,0.00          1.00    3.00    255,255,255     # center orientation diameter height color

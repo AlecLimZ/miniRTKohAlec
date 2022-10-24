@@ -53,4 +53,4 @@ sp      12.00,0.00,-4.00                1.00    255,204,0       # center diamete
 sp      12.00,0.00,-6.00                1.00    216,56,136      # center diameter color
 sp      12.00,0.00,-8.00                1.00    0,176,240       # center diameter color
 sp      12.00,0.00,-10.00               1.00    68,194,164      # center diameter color
-C       8.00,9.00,5.50          -0.78,0.00,0.00 66.000000       # center orientation fov
+C       17.50,10.50,-6.00               -0.63,-0.77,0.00 56.000000       # center orientation fov
