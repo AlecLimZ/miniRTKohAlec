@@ -44,6 +44,8 @@ t_vec3			negate(t_vec3 v);
 float			norm(t_vec3 v);
 t_vec3			normalized(t_vec3 v);
 float			vlenf(t_vec3 v);
+t_vec3			cross(const t_vec3 v1, const t_vec3 v2);
+t_vec3			look_at(t_vec3 dir, t_vec3 orientation);
 
 void			nearest_cylinder(const t_vec3 orig, t_vec3 dir,
 					const t_object *cy, t_hitpayload *payload);

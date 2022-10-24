@@ -37,10 +37,3 @@ t_vec3	mulvf(t_vec3 a, float b)
 {
 	return ((t_vec3){{a.x * b, a.y * b, a.z * b}});
 }
-
-// t_vec3 cross(const t_vec3 v1, const t_vec3 v2) {
-// 	return (t_vec3){{
-	// v1.y*v2.z - v1.z*v2.y,
-	// v1.z*v2.x - v1.x*v2.z,
-	// v1.x*v2.y - v1.y*v2.x }};
-// }

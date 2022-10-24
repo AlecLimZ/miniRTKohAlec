@@ -17,23 +17,21 @@
 static bool	gui_orientation(unsigned int key, t_object *c)
 {
 	if (c->type == CAMERA && (key == KEY_S || key == KEY_X))
-		c->orientation.x += pow(-1, key != KEY_S) * PI * 2 / 8;
+		c->camera_rotation.x += pow(-1, key != KEY_S) * PI / 8;
 	else if (c->type == CAMERA && (key == KEY_D || key == KEY_C))
-		c->orientation.y += pow(-1, key != KEY_D) * PI * 2 / 8;
-	else if (c->type == CAMERA && (key == KEY_F || key == KEY_V))
-		c->orientation.z += pow(-1, key != KEY_F) * PI * 2 / 8;
+		c->camera_rotation.y += pow(-1, key != KEY_D) * PI / 8;
 	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_S)
-		c->orientation.x += pow(0.1, 1) * PI * 2 / 8;
+		c->orientation.x += 0.1f;
 	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_X)
-		c->orientation.x -= pow(0.1, 1) * PI * 2 / 8;
+		c->orientation.x -= 0.1f;
 	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_D)
-		c->orientation.y += pow(0.1, 1) * PI * 2 / 8;
+		c->orientation.y += 0.1f;
 	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_C)
-		c->orientation.y -= pow(0.1, 1) * PI * 2 / 8;
+		c->orientation.y -= 0.1f;
 	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_F)
-		c->orientation.z += pow(0.1, 1) * PI * 2 / 8;
+		c->orientation.z += 0.1f;
 	else if ((c->type == CYLINDER || c->type == PLANE) && key == KEY_V)
-		c->orientation.z -= pow(0.1, 1) * PI * 2 / 8;
+		c->orientation.z -= 0.1f;
 	else
 		return (false);
 	return (true);

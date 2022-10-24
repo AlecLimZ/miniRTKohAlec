@@ -72,7 +72,11 @@ typedef struct s_object
 {
 	unsigned int	type;
 	t_vec3			coor;
-	t_vec3			color;
+	union
+	{
+		t_vec3		color;
+		t_vec3		camera_rotation;
+	};
 	union
 	{
 		t_vec3		orientation;

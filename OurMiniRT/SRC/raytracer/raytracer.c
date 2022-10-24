@@ -42,6 +42,30 @@ static void	cal_color_and_orient(void *content)
 		o->orientation = normalized(o->orientation);
 }
 
+//normalized(orientation) = normalized(from - to);
+t_vec3	look_at(t_vec3 dir, t_vec3 orientation)
+{
+	const t_vec3	forward = normalized(orientation);
+	t_vec3			right;
+	t_vec3			up;
+	t_vec3			rotated;
+
+	up = (t_vec3){{0, 1, 0}};
+	if (forward.y == 1)
+		right = (t_vec3) {{1, 0, 0}};
+	else if (forward.y == -1)
+		right = (t_vec3) {{-1, 0, 0}};
+	else
+		right = normalized(cross(up, forward));
+	up = cross(forward, right);
+	dir.x = -dir.x;
+	dir.z = -dir.z;
+	rotated.x = dir.x * right.x + dir.y * up.x + dir.z * forward.x;
+	rotated.y = dir.x * right.y + dir.y * up.y + dir.z * forward.y;
+	rotated.z = dir.x * right.z + dir.y * up.z + dir.z * forward.z;
+	return (rotated);
+}
+
 // todo camera orientation vs rotation
 void	*raytrace(const t_app *app)
 {
@@ -58,9 +82,10 @@ void	*raytrace(const t_app *app)
 		dir.x = +(pix % width + 0.5f) - width / 2.f;
 		dir.y = -(pix / width + 0.5f) + height / 2.f;
 		dir.z = -height / (2.f * tan(fov / 2.f));
-		rotate_x(&dir.y, &dir.z, app->object[CAMERA]->orientation.x);
-		rotate_y(&dir.x, &dir.z, app->object[CAMERA]->orientation.y);
-		rotate_z(&dir.x, &dir.y, app->object[CAMERA]->orientation.z);
+
+		dir = look_at(dir, app->object[CAMERA]->orientation);
+		rotate_x(&dir.y, &dir.z, app->object[CAMERA]->camera_rotation.x);
+		rotate_y(&dir.x, &dir.z, app->object[CAMERA]->camera_rotation.y);
 		app->image.px[pix] = to_rgb(
 				cast_ray(app->object[CAMERA]->coor,
 					normalized(dir), 0, app),

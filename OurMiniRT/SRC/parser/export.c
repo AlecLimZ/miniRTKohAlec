@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "miniRT.h"
+#include "raytracer.h"
 
 // reserve d(radius x2) D(R,G,B) f(float) F(3 floats)
 static void	pfmt(const char *fmt, const void **param)
@@ -41,6 +42,19 @@ static void	pfmt(const char *fmt, const void **param)
 	printf("\n");
 }
 
+static void	export_camera(const t_object *o)
+{
+	t_vec3	dir;
+	
+	dir = (t_vec3){{0,0,-1}};
+	dir = normalized(look_at(dir, o->orientation));
+	rotate_x(&dir.y, &dir.z, o->camera_rotation.x);
+	rotate_y(&dir.x, &dir.z, o->camera_rotation.y);
+	dir = normalized(dir);
+	pfmt("C	F		F	f	",
+			(const void *[]){&o->coor, &dir, &o->camera_fov});
+}
+
 void	print_object(const t_object *o)
 {
 	if (o->hide)
@@ -54,8 +68,7 @@ void	print_object(const t_object *o)
 		pfmt("li	F		f	D	",
 			(const void *[]){&o->coor, &o->light_brightness, &o->color});
 	else if (o->type == CAMERA)
-		pfmt("C	F		F	f	",
-			(const void *[]){&o->coor, &o->orientation, &o->camera_fov});
+		export_camera(o);
 	else if (o->type == PLANE)
 		pfmt("pl	F		F	D	",
 			(const void *[]){&o->coor, &o->orientation, &o->color});
