@@ -33,6 +33,18 @@ static void	quadratic(float a, float b, float c, float *res)
 	}
 }
 
+static void	set_checkerboard(const t_object *cy, t_hitpayload *payload)
+{
+	const t_vec3	p = vsub(payload->point, cy->coor);
+	const float		theta = atan2(p.x, p.z);
+	const float		raw_u = theta / (2 * 3.14159);
+	const float		u = 1 - (raw_u + 0.5);
+	const float		v = p.y;
+
+	if (((int)(u * 16 * cy->radius) + (int)(v *3 )) & 1)
+		payload->material.diffuse_color = mulvf(payload->material.diffuse_color, .9);
+}
+
 static float	ray_cylinder_intersect(t_ray *r,
 		const t_object *cy, bool ret[2])
 {
@@ -81,5 +93,7 @@ void	nearest_cylinder(const t_vec3 orig, t_vec3 dir,
 			payload->normal = negate(payload->normal);
 		payload->material = cy->material;
 		payload->object = cy;
+		if (cy->checkerboard_enabled)
+			set_checkerboard(cy, payload);
 	}
 }

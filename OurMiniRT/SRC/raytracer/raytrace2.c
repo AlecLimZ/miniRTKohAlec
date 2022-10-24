@@ -33,7 +33,7 @@ t_hitpayload	scene_intersect(
 		else if (as_object(list)->type == SPHERE)
 			nearest_sphere(orig, dir, list->content, &payload);
 		else if (as_object(list)->type == PLANE)
-			nearest_plane3(orig, dir, list->content, &payload);
+			nearest_plane(orig, dir, list->content, &payload);
 		else if (((t_object *)list->content)->type == CYLINDER)
 			nearest_cylinder(orig, dir, list->content, &payload);
 		list = list->next;

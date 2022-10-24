@@ -31,21 +31,21 @@ static int	to_rgb(t_vec3 color, bool use_gamma_correction)
 		+ (int)(255.999 * color.z / max));
 }
 
-// todo camera
 static void	cal_color_and_orient(void *content)
 {
 	t_object *const	o = content;
 
 	if (o->type == AMBIENT || o->type == LIGHT || o->type == LIGHT_BONUS)
 		o->light_color = mulvf(o->color, o->light_brightness);
-	else if (o->type == PLANE || o->type == CYLINDER || o->type == CONE)
+	else if (o->type == PLANE || o->type == CYLINDER || o->type == CONE
+		|| o->type == CAMERA)
 		o->orientation = normalized(o->orientation);
 }
 
 //normalized(orientation) = normalized(from - to);
 t_vec3	look_at(t_vec3 dir, t_vec3 orientation)
 {
-	const t_vec3	forward = normalized(orientation);
+	const t_vec3	forward = orientation;
 	t_vec3			right;
 	t_vec3			up;
 	t_vec3			rotated;
@@ -66,7 +66,6 @@ t_vec3	look_at(t_vec3 dir, t_vec3 orientation)
 	return (rotated);
 }
 
-// todo camera orientation vs rotation
 void	*raytrace(const t_app *app)
 {
 	const int	width = app->image.width;
@@ -92,10 +91,3 @@ void	*raytrace(const t_app *app)
 	}
 	return (app->image.ptr);
 }
-
-// float smootherstep(float edge0, float edge1, float x) {
-//   // Scale, and clamp x to 0..1 range
-//   x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-//   // Evaluate polynomial
-//   return x * x * x * (x * (x * 6 - 15) + 10);
-// }

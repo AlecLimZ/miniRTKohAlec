@@ -53,10 +53,6 @@ void			nearest_sphere(const t_vec3 orig, const t_vec3 dir,
 					const t_object *s, t_hitpayload *payload);
 void			nearest_plane(const t_vec3 orig, const t_vec3 dir,
 					const t_object *plane, t_hitpayload *payload);
-void			nearest_plane2(const t_vec3 orig, const t_vec3 dir,
-					const t_object *plane, t_hitpayload *payload);
-void			nearest_plane3(const t_vec3 orig, const t_vec3 dir,
-					const t_object *plane, t_hitpayload *payload);
 t_vec3			cast_ray(const t_vec3 orig, t_vec3 dir,
 					const int depth, const t_app *app);
 t_hitpayload	scene_intersect(

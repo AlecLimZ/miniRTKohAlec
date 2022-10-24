@@ -55,11 +55,14 @@ static int	gui_render(t_app *app)
 		help(app);
 		return (0);
 	}
-	display(app->selected_object->content);
-	benchmark(NULL);
+	if (app->features & FEATURE_LOG)
+		display(app->selected_object->content);
+	if (app->features & FEATURE_LOG)
+		benchmark(NULL);
 	mlx_put_image_to_window(
 		app->mlx_ptr, app->win_ptr, raytrace(app), 0, 0);
-	benchmark("Raytracing");
+	if (app->features & FEATURE_LOG)
+		benchmark("Raytracing");
 	if (app->features & FEATURE_CAPTION)
 		mlx_string_put(app->mlx_ptr, app->win_ptr, 16, 24, 0XFFFF00,
 			(char *)get_object_typename(app->selected_object->content));

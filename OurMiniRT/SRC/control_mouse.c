@@ -49,6 +49,7 @@ int	gui_mousedown(int button, int x, int y, t_app *app)
 	if (!list)
 		list = search_list(app->objects, app->object[AMBIENT]);
 	select_next(app, list);
-	print_object(app->selected_object->content);
+	if (app->features & FEATURE_LOG)
+		print_object(app->selected_object->content);
 	return (0);
 }

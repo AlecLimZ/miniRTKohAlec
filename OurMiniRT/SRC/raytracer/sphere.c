@@ -12,6 +12,18 @@
 
 #include "raytracer.h"
 
+static void	set_checkerboard(const t_object *s, t_hitpayload *payload)
+{
+	const t_vec3	p = vsub(payload->point, s->coor);
+	const float		phi = acos(p.y / norm(p));
+	const float		ru = atan2(p.x, p.z) / (2 * 3.14159);
+	const float		u = 1 - (ru + 0.5);
+	const float		v = 1 - phi / 3.14159;
+
+	if (((int)(u * 16 * s->radius) + (int)(v * 9 * s->radius)) & 1)
+		payload->material.diffuse_color = mulvf(payload->material.diffuse_color, .9);
+}
+
 static float	get_distance(float tca, float thc)
 {
 	const float	t0 = tca - thc;
@@ -53,5 +65,7 @@ void	nearest_sphere(const t_vec3 orig, const t_vec3 dir,
 			payload->normal = negate(payload->normal);
 		payload->material = s->material;
 		payload->object = s;
+		if (s->checkerboard_enabled)
+			set_checkerboard(s, payload);
 	}
 }

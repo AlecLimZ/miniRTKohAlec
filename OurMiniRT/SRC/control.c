@@ -40,7 +40,7 @@ static bool	gui_orientation(unsigned int key, t_object *c)
 static bool	control_object(unsigned int key, t_object *object)
 {
 	if (key == KEY_I || key == KEY_O)
-		object->coor.z += add_or_minus(key == KEY_I, 0.5f);
+		object->coor.z += add_or_minus(key == KEY_O, 0.5f);
 	else if (key == KEY_UP || key == KEY_DOWN)
 		object->coor.y += add_or_minus(key == KEY_UP, 0.5f);
 	else if (key == KEY_RIGHT || key == KEY_LEFT)
@@ -57,6 +57,8 @@ static bool	control_object(unsigned int key, t_object *object)
 	else if (object->type == CAMERA && (key == KEY_SEVEN || key == KEY_EIGHT))
 		adjust_val(&object->camera_fov,
 			add_or_minus(key == KEY_SEVEN, 10.0f), 0.0f, 180.0f);
+	else if (key == KEY_NINE)
+		object->checkerboard_enabled = !object->checkerboard_enabled;
 	else if (key == KEY_ZERO)
 		object->hide = !object->hide;
 	else
@@ -120,6 +122,8 @@ int	gui_keydown(unsigned int key, t_app *app)
 		app->keypressed |= KEY_CTRL_FLAG;
 	else if (key == KEY_TAB)
 		select_next(app, NULL);
+	else if (key == KEY_Q)
+		app->features |= FEATURE_LOG;
 	else
 		invalidate_input(key, app);
 	return (0);

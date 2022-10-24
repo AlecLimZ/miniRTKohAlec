@@ -22,17 +22,20 @@ void	help(t_app *app)
 	size_t		i;
 	char *const	s[] = {
 		"Object Control:",
-		"  [T]Caption(Toggle)  [TAB]Next Object  [Hold Shift]Camera Shortcut",
-		"  [Hold Ctrl]/[Hold Cmd(Mac)]Light Shortcut",
-		"  [ARROWS]Movement  [I]Back  [O]Forward",
-		"  [1]Light++  [2]Light--  [3]Radius++"
-		"  [4]Radius--  [5]Height++  [6]Height--"
-		"  [7]FOV++  [8]FOV--",
+		"  [T]Caption(Toggle)  [Mouse Click]Select Object  [TAB]Next Object",
+		"  Shortcuts: [Hold Shift]Camera  [Hold Ctrl]/[Hold Cmd(Mac)]Light",
+		"  Movements: [Up]Y++  [Down]Y--  [Left]X--  [Right]X++  [I]Z--  [O]Z++",
+		"  Amibient/Light: [1]Brightness++  [2]Brightness--  ",
+		"  Sphere/Cylinder: [3]Radius++   [4]Radius--",
+		"  Cylinder: [5]Height++  [6]Height--",
+		"  Camera: [7]FOV++  [8]FOV--",
+		"  Cylinder/Plane/Sphere: [9]Checkerboard(toggle)",
+		"  [0]Hide(toggle)",
 		"Render Toggles:",
-		"  [J]Specular  [G]Gamma Correction  [K]Reflection"
-		"  [L]Lighting  [N]Normal",
-		"Misc:",
-		"  [W]indow Size(Toggle)  [R]eload  [E]xport",
+		"  [J]Specular  [G]Gamma Correction  [K]Reflection",
+		"  [L]Lighting  [N]Normal  [W]indow Size(Toggle)",
+		"Data:",
+		"    [R]eload  [E]xport(Print)  [Q]Log",
 		"[H]Help(Toggle)"
 	};
 

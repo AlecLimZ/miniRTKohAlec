@@ -23,6 +23,7 @@
 # define FEATURE_SMALLER_WINDOW 32
 # define FEATURE_HELP 64
 # define FEATURE_CAPTION 128
+# define FEATURE_LOG 256
 # define KEY_SHIFT_FLAG 1
 # define KEY_CTRL_FLAG 2
 
@@ -92,6 +93,7 @@ typedef struct s_object
 	float			height;
 	t_material		material;
 	int				hide;
+	int				checkerboard_enabled;
 }	t_object;
 
 // MLX Metal buffer width may more than requested
