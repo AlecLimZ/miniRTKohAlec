@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "raytracer.h"
 
 // a scene may have none/multiple sphere/plane/cylinder
 // these objects are malloc'ed and added to linked-list
@@ -29,6 +30,7 @@ t_object	parse_plane(char *line)
 		&& pull_vec(&line, &a.coor, MIN_COOR, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_vec(&line, &a.orientation, -1, 1) == 1
+		&& norm(a.orientation) > 0
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_rgb(&line, &a.color) == 1
 		&& trim_str(&line, ft_isspace) >= 0
@@ -81,6 +83,7 @@ t_object	parse_cylinder(char *line)
 		&& pull_vec(&line, &a.coor, MIN_COOR, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_vec(&line, &a.orientation, -1, 1) == 1
+		&& norm(a.orientation) > 0
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_nbr(&line, &a.radius, 0, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
@@ -111,6 +114,7 @@ t_object	parse_cone_bonus(char *line)
 		&& pull_vec(&line, &a.coor, MIN_COOR, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_vec(&line, &a.orientation, -1, 1) == 1
+		&& norm(a.orientation) > 0
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_nbr(&line, &a.radius, 0, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
@@ -139,6 +143,7 @@ t_object	parse_camera(char *line)
 		&& pull_vec(&line, &a.coor, MIN_COOR, MAX_COOR) == 1
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_vec(&line, &a.orientation, -1, 1) == 1
+		&& norm(a.orientation) > 0
 		&& trim_str(&line, ft_isspace) >= 1
 		&& pull_nbr(&line, &a.camera_fov, 0, 180) == 1
 		&& trim_str(&line, ft_isspace) >= 0
