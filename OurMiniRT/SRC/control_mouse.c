@@ -39,9 +39,9 @@ int	gui_mousedown(int button, int x, int y, t_app *app)
 	dir.x = (x + 0.5f) - app->image.width / 2.f;
 	dir.y = -(y + 0.5f) + app->image.height / 2.f;
 	dir.z = -app->image.height / (2.f * tan(fov / 2.f));
-	rotate_x(&dir.y, &dir.z, app->object[CAMERA]->orientation.x);
-	rotate_y(&dir.x, &dir.z, app->object[CAMERA]->orientation.y);
-	rotate_z(&dir.x, &dir.y, app->object[CAMERA]->orientation.z);
+	dir = look_at(dir, app->object[CAMERA]->orientation);
+	rotate_x(&dir.y, &dir.z, app->object[CAMERA]->camera_rotation.x);
+	rotate_y(&dir.x, &dir.z, app->object[CAMERA]->camera_rotation.y);
 	payload = scene_intersect(app->object[CAMERA]->coor,
 			normalized(dir), app->objects);
 	if (payload.hit && payload.object)

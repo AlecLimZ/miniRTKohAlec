@@ -32,7 +32,7 @@ void	help(t_app *app)
 		"  [J]Specular  [G]Gamma Correction  [K]Reflection"
 		"  [L]Lighting  [N]Normal",
 		"Misc:",
-		"  [W]indowSize(Toggle)  [R]eload  [E]xport",
+		"  [W]indow Size(Toggle)  [R]eload  [E]xport",
 		"[H]Help(Toggle)"
 	};
 

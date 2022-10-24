@@ -32,7 +32,6 @@ void	reload_scene(t_app *app)
 	ft_lstclear(&app->objects, free);
 	ft_bzero(app->object_count, sizeof(app->object_count));
 	parse_file(app->scene_file, app);
-	app->selected_object = NULL;
 	select_next(app, app->objects);
 }
 
