@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   control.c                                          :+:      :+:    :+:   */
+/*   sphere.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 23:12:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/11 23:16:33 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/25 07:34:33 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static void	set_checkerboard(const t_object *s, t_hitpayload *payload)
 	const float		v = 1 - phi / 3.14159;
 
 	if (((int)(u * 16 * s->radius) + (int)(v * 9 * s->radius)) & 1)
-		payload->material.diffuse_color = mulvf(payload->material.diffuse_color, .9);
+		payload->material.diffuse_color
+			= mulvf(payload->material.diffuse_color, .9);
 }
 
 static float	get_distance(float tca, float thc)

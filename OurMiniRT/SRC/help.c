@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 23:12:51 by Koh               #+#    #+#             */
-/*   Updated: 2022/10/21 12:32:42 by leng-chu         ###   ########.fr       */
+/*   Updated: 2022/10/25 07:33:31 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,17 @@ void	help(t_app *app)
 		"Object Control:",
 		"  [T]Caption(Toggle)  [Mouse Click]Select Object  [TAB]Next Object",
 		"  Shortcuts: [Hold Shift]Camera  [Hold Ctrl]/[Hold Cmd(Mac)]Light",
-		"  Movements: [Up]Y++  [Down]Y--  [Left]X--  [Right]X++  [I]Z--  [O]Z++",
+		"  Movements: [Up]Y++  [Down]Y--  [Left]X--  [Right]X++"
+		"  [I]Z--  [O]Z++",
 		"  Amibient/Light: [1]Brightness++  [2]Brightness--  ",
 		"  Sphere/Cylinder: [3]Radius++   [4]Radius--",
-		"  Cylinder: [5]Height++  [6]Height--",
-		"  Camera: [7]FOV++  [8]FOV--",
+		"  Cylinder: [5]Height++  [6]Height--", "  Camera: [7]FOV++  [8]FOV--",
 		"  Cylinder/Plane/Sphere: [9]Checkerboard(toggle)",
 		"  [0]Hide(toggle)",
 		"Render Toggles:",
 		"  [J]Specular  [G]Gamma Correction  [K]Reflection",
 		"  [L]Lighting  [N]Normal  [W]indow Size(Toggle)",
-		"Data:",
-		"    [R]eload  [E]xport(Print)  [Q]Log",
-		"[H]Help(Toggle)"
+		"Data:", "  [R]eload  [E]xport(Print)  [Q]Log", "[H]Help(Toggle)"
 	};
 
 	mlx_clear_window(app->mlx_ptr, app->win_ptr);

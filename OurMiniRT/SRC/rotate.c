@@ -6,35 +6,24 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 20:19:34 by Koh               #+#    #+#             */
-/*   Updated: 2022/09/18 11:18:10 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/25 07:40:08 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
 
-void	rotate_x(float *y, float *z, double angle_x)
+void	rotate_x(float *y, float *z, double radian_x)
 {
-	const float	previous_y = *y;
+	const float	y_ = *y;
 
-	*y = previous_y * cos(angle_x) - *z * sin(angle_x);
-	*z = previous_y * sin(angle_x) + *z * cos(angle_x);
+	*y = y_ * cos(radian_x) - *z * sin(radian_x);
+	*z = y_ * sin(radian_x) + *z * cos(radian_x);
 }
 
-/*rotate about y-axis anticlockwise about angle_y*/
-void	rotate_y(float *x, float *z, double angle_y)
+void	rotate_y(float *x, float *z, double radian_y)
 {
-	const float	previous_x = *x;
+	const float	x_ = *x;
 
-	*x = previous_x * cos(angle_y) + *z * sin(angle_y);
-	*z = -previous_x * sin(angle_y) + *z * cos(angle_y);
-}
-
-/*rotate about z-axis anticlockwise about angle_z*/
-void	rotate_z(float *x, float *y, double angle_z)
-{
-	const float	previous_x = *x;
-	const float	previous_y = *y;
-
-	*x = previous_x * cos(angle_z) - previous_y * sin(angle_z);
-	*y = previous_x * sin(angle_z) + previous_y * cos(angle_z);
+	*x = x_ * cos(radian_y) + *z * sin(radian_y);
+	*z = -x_ * sin(radian_y) + *z * cos(radian_y);
 }

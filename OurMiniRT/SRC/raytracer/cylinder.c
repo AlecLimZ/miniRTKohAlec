@@ -6,7 +6,7 @@
 /*   By: Koh <Koh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 14:44:43 by leng-chu          #+#    #+#             */
-/*   Updated: 2022/10/23 14:36:34 by Koh              ###   ########.fr       */
+/*   Updated: 2022/10/25 07:34:44 by Koh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,9 @@ static void	set_checkerboard(const t_object *cy, t_hitpayload *payload)
 	const float		u = 1 - (raw_u + 0.5);
 	const float		v = p.y;
 
-	if (((int)(u * 16 * cy->radius) + (int)(v *3 )) & 1)
-		payload->material.diffuse_color = mulvf(payload->material.diffuse_color, .9);
+	if (((int)(u * 16 * cy->radius) + (int)(v * 3)) & 1)
+		payload->material.diffuse_color
+			= mulvf(payload->material.diffuse_color, .9);
 }
 
 static float	ray_cylinder_intersect(t_ray *r,
