@@ -123,7 +123,7 @@ int	gui_keydown(unsigned int key, t_app *app)
 	else if (key == KEY_TAB)
 		select_next(app, NULL);
 	else if (key == KEY_Q)
-		app->features |= FEATURE_LOG;
+		app->features ^= FEATURE_LOG;
 	else
 		invalidate_input(key, app);
 	return (0);
