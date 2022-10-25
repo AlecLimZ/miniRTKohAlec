@@ -1,7 +1,31 @@
 NAME		= miniRT
-SRC			= $(wildcard SRC/*.c) $(wildcard SRC/*/*.c)
-OBJ			= $(SRC:%.c=%.o)
-DEP			= $(SRC:%.c=%.d)
+SRCS			= \
+	SRC/app.c \
+	SRC/benchmark.c \
+	SRC/control.c \
+	SRC/control_mouse.c \
+	SRC/control_util.c \
+	SRC/control_util2.c \
+	SRC/gui.c \
+	SRC/help.c \
+	SRC/miniRT.c \
+	SRC/parser/export.c \
+	SRC/parser/parser.c \
+	SRC/parser/parser_types.c \
+	SRC/parser/parser_utils.c \
+	SRC/parser/parser_utils_2.c \
+	SRC/parser/parse_lights.c \
+	SRC/raytracer/cylinder.c \
+	SRC/raytracer/plane.c \
+	SRC/raytracer/raytrace2.c \
+	SRC/raytracer/raytracer.c \
+	SRC/raytracer/sphere.c \
+	SRC/raytracer/vector.c \
+	SRC/raytracer/vector2.c \
+	SRC/rotate.c
+
+OBJ			= $(SRCS:%.c=%.o)
+DEP			= $(SRCS:%.c=%.d)
 HEADERDIR	= SRC/INCLUDES
 LIBFT		= libft/libft.a
 MLXLINUX	= mlx_linux/libmlx.a
@@ -56,7 +80,7 @@ re		: fclean all
 
 .PHONY	: all clean fclean re
 
-norm	: $(SRC) $(wildcard $(HEADERDIR)/*)
+norm	: $(SRCS) $(wildcard $(HEADERDIR)/*)
 		- @ norminette $? && touch $@
 
 test	: $(NAME)
@@ -72,7 +96,7 @@ test	: $(NAME)
 		./miniRT scenes/sample.rt
 
 info	:
-		: $(SRC)
+		: $(SRCS)
 		: $(OBJ)
 
 noasan	:
