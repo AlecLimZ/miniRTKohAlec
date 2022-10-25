@@ -12,6 +12,7 @@
 
 #include "miniRT.h"
 #include <math.h>
+#include <float.h>
 #include "raytracer.h"
 
 // gamma correction 1/2.2 == 0.4545
@@ -51,9 +52,9 @@ t_vec3	look_at(t_vec3 dir, t_vec3 orientation)
 	t_vec3			rotated;
 
 	up = (t_vec3){{0, 1, 0}};
-	if (forward.y == 1)
+	if (1.0f - forward.y < FLT_EPSILON)
 		right = (t_vec3){{1, 0, 0}};
-	else if (forward.y == -1)
+	else if (forward.y + 1.0f < FLT_EPSILON)
 		right = (t_vec3){{-1, 0, 0}};
 	else
 		right = normalized(cross(up, forward));
