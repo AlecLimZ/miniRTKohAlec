@@ -57,6 +57,7 @@
 # include "app.h"
 # include "parser.h"
 
+void        add_object(t_app *app, const t_object *object);
 void		help(t_app *app);
 void		benchmark(const char *s);
 void		start_gui(t_app *app, int width, int height);

@@ -46,6 +46,11 @@ int	gui_mousedown(int button, int x, int y, t_app *app)
 			normalized(dir), app->objects);
 	if (payload.hit && payload.object)
 		list = search_list(app->objects, payload.object);
+	if (list && app->keypressed & KEY_CTRL_FLAG)
+	{
+		add_object(app, list->content);
+		list = app->objects;
+	}
 	if (!list)
 		list = search_list(app->objects, app->object[AMBIENT]);
 	select_next(app, list);

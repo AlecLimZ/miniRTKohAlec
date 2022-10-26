@@ -41,7 +41,6 @@ static bool	are_valid_objects(t_app *app)
 static bool	parse_line(char *line, t_app *app)
 {
 	t_object				object;
-	t_object				*content;
 	const t_object_parser	*pfunc = (t_object_parser[]){
 		parse_ambient, parse_camera, parse_light, parse_sphere, parse_plane,
 		parse_cylinder, parse_light_bonus, parse_cone_bonus, NULL};
@@ -54,12 +53,7 @@ static bool	parse_line(char *line, t_app *app)
 		object = (*pfunc)(line);
 		if (object.type < END_OF_OBJECT_TYPE)
 		{
-			content = if_null_exit(ft_calloc(1, sizeof(t_object)), app);
-			*content = object;
-			app->object[object.type] = content;
-			app->object_count[object.type] += 1;
-			ft_lstadd_front(&app->objects,
-				if_null_exit(ft_lstnew(content), app));
+			add_object(app, &object);
 			return (true);
 		}
 		++pfunc;

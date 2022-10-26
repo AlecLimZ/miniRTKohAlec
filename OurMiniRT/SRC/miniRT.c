@@ -35,6 +35,18 @@ void	reload_scene(t_app *app)
 	select_next(app, app->objects);
 }
 
+void	add_object(t_app *app, const t_object *object)
+{
+	t_object	*content;
+	
+	content = if_null_exit(ft_calloc(1, sizeof(t_object)), app);
+	*content = *object;
+	app->object[object->type] = content;
+	app->object_count[object->type] += 1;
+	ft_lstadd_front(&app->objects,
+		if_null_exit(ft_lstnew(content), app));
+}
+
 int	main(int argc, char **argv)
 {
 	t_app		app;

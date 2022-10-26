@@ -22,19 +22,20 @@ void	help(t_app *app)
 	size_t		i;
 	char *const	s[] = {
 		"Object Control:",
-		"  [T]Caption(Toggle)  [Mouse Click]Select Object  [TAB]Next Object",
+		"  [T]Caption(Toggle)  [Click]Select Object  [TAB]Next Object",
 		"  Shortcuts: [Hold Shift]Camera  [Hold Ctrl]/[Hold Cmd(Mac)]Light",
 		"  Movements: [Up]Y++  [Down]Y--  [Left]X--  [Right]X++"
 		"  [I]Z--  [O]Z++",
+		"  Camera Rotations: [S/X]Around X  [D/C]Around Y",
+		"  Object Orientation: [S/X]X  [D/C]Y  [F/C]Z  ",
 		"  Amibient/Light: [1]Brightness++  [2]Brightness--  ",
 		"  Sphere/Cylinder: [3]Radius++   [4]Radius--",
 		"  Cylinder: [5]Height++  [6]Height--", "  Camera: [7]FOV++  [8]FOV--",
 		"  Cylinder/Plane/Sphere: [9]Checkerboard(toggle)",
-		"  [0]Hide(toggle)",
-		"Render Toggles:",
-		"  [J]Specular  [G]Gamma Correction  [K]Reflection",
+		"  [0]Hide(toggle)", "  [Ctrl/Cmd + Click]Clone Object",
+		"Render Toggles:", "  [J]Specular  [G]Gamma Correction  [K]Reflection",
 		"  [L]Lighting  [N]Normal  [W]indow Size(Toggle)",
-		"Data:", "  [R]eload  [E]xport(Print)  [Q]Log", "[H]Help(Toggle)"
+		"Data:", "  [R]eload  [E]xport(Print)  [Q]Log(Toggle)", "[H]Help(Toggle)"
 	};
 
 	mlx_clear_window(app->mlx_ptr, app->win_ptr);
